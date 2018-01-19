@@ -1,0 +1,44 @@
+@width: 100%;
+@navWidth: 225px;
+.center {
+  text-align: center;
+  th {
+    text-align: center;
+  }
+}
+.zifi-container {
+  width: @width;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+.height-full {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.vertical-middle {
+  text-align: center;
+  font-size: 0;
+}
+.vertical-middle:after {
+  content: '';
+  width: 0;
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.aside {
+  position: fixed;
+  z-index: 999;
+  width: @navWidth;
+  background-color: #1b6d85;
+}
+
+.content-right {
+  margin-left: @navWidth;
+}
