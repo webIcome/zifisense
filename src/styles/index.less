@@ -1,5 +1,10 @@
 @width: 100%;
 @navWidth: 225px;
+@fontFamily: 'Microsoft YaHei';
+html {
+  font-family: @fontFamily;
+  font-size: 16px;
+}
 .center {
   text-align: center;
   th {
@@ -8,10 +13,14 @@
 }
 .zifi-container {
   width: @width;
+  min-width: 1000px;
   margin-right: auto;
   margin-left: auto;
   padding-left: 0;
   padding-right: 0;
+  background: url("../assets/bg.png") no-repeat;
+  background-size: cover;
+  overflow: auto;
 }
 .height-full {
   position: absolute;

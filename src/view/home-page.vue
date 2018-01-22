@@ -1,20 +1,20 @@
 <template>
   <div class="zifi-container height-full">
-    <header-component></header-component>
+    <header-component class="home " :isHome="true"></header-component>
 
     <div class="section">
       <div class="section-manage">
         <div class="section-manage-app">
           <div class="section-manage-header" data-toggle="collapse" data-target="#applications" aria-expanded="true">
-            <span class="glyphicon"></span>
+            <span class="icon"></span>
             <span class="section-manage-header-title">应用管理</span>
           </div>
           <div class="section-manage-container collapse in" id="applications">
-            <div class="section-manage-container-items">
+            <div class="section-manage-container-items clearfix">
               <template v-for="app in applications">
-                <div class="section-manage-container-item" @click="goToApplication(app.url)">
+                <div class="section-manage-container-item col-md-4" @click="goToApplication(app.url)" @mouseover="appHover(app)" @mouseout="appNormal(app)">
                   <div class="section-manage-container-item-img">
-                    <img src="app.url">
+                    <img :src="app.isActive ? app.imgActive : app.img" :class="{active: app.isActive}">
                   </div>
                   <div class="section-manage-container-item-title">{{app.title}}</div>
                 </div>
@@ -24,14 +24,14 @@
         </div>
         <div class="section-manage-subsidiary">
           <div class="section-manage-header" data-toggle="collapse" data-target="#subsidiary" aria-expanded="true">
-            <span class="glyphicon"></span>
+            <span class="icon"></span>
             <span class="section-manage-header-title">管理辅助</span>
           </div>
           <div class="section-manage-container collapse in" id="subsidiary">
-            <div class="section-manage-container-items">
-              <div class="section-manage-container-item" v-for="app in subsidiary">
+            <div class="section-manage-container-items clearfix">
+              <div class="section-manage-container-item col-md-4" v-for="app in subsidiary" @mouseover="appHover(app)" @mouseout="appNormal(app)">
                 <div class="section-manage-container-item-img">
-                  <img src="app.url">
+                  <img :src="app.isActive ? app.imgActive : app.img" :class="{active: app.isActive}">
                 </div>
                 <div class="section-manage-container-item-title">{{app.title}}</div>
               </div>
@@ -52,15 +52,22 @@
         data() {
             return {
                 user: {
-                    name: '系统管理员'
+                    name: '系统管理员',
+                    active: false
                 },
-                applications: [{title: '智慧照明', url: '/management'},
-                    {title: '智慧照明', url: ''},
-                    {title: '智慧照明', url: ''}],
+                applications: [],
                 subsidiary: [
-                    {title: '智慧照明', url: ''}
+                    {title: '智慧照明', url: '', img: '../static/img/home/sys.png', imgActive: '../static/img/home/sys-active.png', isActive: false}
                 ]
             }
+        },
+        created: function () {
+            this.applications = [
+                {title: '智慧照明', url: '/management', img: '../static/img/home/light-app.png', imgActive: '../static/img/home/light-app-active.png', isActive: false},
+                {title: '智慧照明', url: '', img: '../static/img/home/estate-app.png', imgActive: '../static/img/home/estate-app-active.png', isActive: false},
+                {title: '智慧照明', url: '', img: '../static/img/home/worker-app.png', imgActive: '../static/img/home/worker-app-active.png', isActive: false},
+            ];
+//            this.getApplications()
         },
         methods: {
             getApplications: function () {
@@ -72,6 +79,12 @@
             },
             goToApplication: function (url) {
                 this.$router.push(url)
+            },
+            appHover: function (app) {
+                app.isActive = true;
+            },
+            appNormal: function (app) {
+                app.isActive = false;
             }
         }
     }
@@ -80,5 +93,75 @@
 <style scoped lang="less">
   .zifi-container {
     height: 100%;
+    .section {
+    }
+    .section-manage {
+      width: 62.5%;
+      min-width: 800px;
+      margin-top: 42px;
+      margin-left: auto;
+      margin-right: auto;
+      .section-manage-header {
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        color: #fff;
+        background: linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));
+        font-size: 24px;
+        .icon {
+          display: inline-block;
+          width: 24px;
+          height: 24px;
+          vertical-align: middle;
+          margin-left: 23px;
+          margin-right: 23px;
+        }
+      }
+      .section-manage-container {
+        margin-right: auto;
+        margin-left: auto;
+        font-size: 32px;
+        .section-manage-container-items {
+          padding: 40px 0;
+          color: #fff;
+          .section-manage-container-item {
+            &:hover {
+              color: #61b5f5;
+              .section-manage-container-item-img {
+                box-shadow: 0px 5px 50px rgba(0,0,0,0.5);
+                background-image: url("../assets/home/app-bg-active.png");
+              }
+            }
+            display: inline-block;
+            text-align: center;
+            .section-manage-container-item-img {
+              display: inline-block;
+              width: 200px;
+              height: 200px;
+              line-height: 200px;
+              border-radius: 50%;
+              margin-bottom: 30px;
+              background: url("../assets/home/app-bg.png") no-repeat center center;
+              .active {
+                margin-bottom: 20px;
+              }
+            }
+          }
+        }
+
+      }
+      .section-manage-app {
+        .icon {
+          background-image: url("../assets/home/management-app-icon.png");
+        }
+      }
+      .section-manage-subsidiary {
+        .icon {
+          width: 28px;
+          height: 28px;
+          background-image: url("../assets/home/management-subsidiary-icon.png");
+        }
+      }
+    }
   }
 </style>
