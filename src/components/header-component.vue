@@ -9,7 +9,7 @@
         <div class="personal-center" data-toggle="dropdown" aria-expanded="false"><i class="personal-center-icon"></i>个人中心
         </div>
         <ul class="dropdown-menu">
-          <li><a href="#" data-toggle="modal" data-target=".modal">修改密码</a></li>
+          <li class="change-password"><a href="#" data-toggle="modal" data-target=".modal">修改密码</a></li>
           <li @click="logout"><a href="#">退出登录</a></li>
         </ul>
       </div>
@@ -68,10 +68,10 @@
 <style scoped lang="less">
   .header {
     &.home {
+      margin-left: 0;
       height: 120px;
       background-color: #0d296d;
       background-color: rgba(13, 41, 109, 0.8);
-      font-size: 16px;
       .header-title {
         float: left;
         margin-left: 122px;
@@ -102,33 +102,93 @@
             display: inline-block;
             width: 14px;
             height: 16px;
-            vertical-align: middle;
+            vertical-align: text-bottom;
             background-image: url("../assets/home/header/personal-center-icon.png");
           }
         }
         .dropdown:active,
         .dropdown:hover {
+          color: #a8ecfe;
           background-image: url("../assets/home/header/personal-center-bg-active.png");
-        }
-        .go-home {
-          display: inline-block;
-          color: #51b0f8;
-          &:hover {
-            .home-icon {
-              background-image: url("../assets/home/header/home-icon-active.png");
-            }
-          }
-          .home-icon {
-            margin-right: 8px;
-            display: inline-block;
-            width: 18px;
-            height: 16px;
-            vertical-align: middle;
-            background-image: url("../assets/home/header/home-icon.png");
-          }
         }
       }
     }
-
+    height: 80px;
+    background-color: #071627;
+    font-size: 16px;
+    margin-left: 320px;
+    .personal {
+      float:right;
+      margin-top: 30px;
+      margin-right: 80px;
+      .personal-describe {
+        margin-right: 20px;
+        color: #fff;
+        letter-spacing: 2px;
+      }
+      .dropdown {
+        display: inline-block;
+        height: 23px;
+        line-height: 23px;
+        margin-right: 20px;
+        text-align: center;
+        color: #51b0f8;
+        &:hover {
+          color: #a8ecfe;
+          .personal-center-icon {
+            background-image: url("../assets/header/personal-center-icon-active.png");
+          }
+        }
+        .personal-center-icon {
+          margin-right: 8px;
+          display: inline-block;
+          width: 14px;
+          height: 16px;
+          vertical-align: text-bottom;
+          background-image: url("../assets/header/personal-center-icon.png");
+        }
+      }
+      .go-home {
+        display: inline-block;
+        color: #51b0f8;
+        &:hover {
+          color: #a8ecfe;
+          .home-icon {
+            background-image: url("../assets/header/home-icon-active.png");
+          }
+        }
+        .home-icon {
+          margin-right: 8px;
+          display: inline-block;
+          width: 18px;
+          height: 16px;
+          vertical-align: text-bottom;
+          background-image: url("../assets/header/home-icon.png");
+        }
+      }
+    }
+    .dropdown-menu {
+      width: 91px;
+      min-width: 91px;
+      height: 80px;
+      min-height: 81px;
+      left: 50%;
+      margin-left: -45.5px;
+      padding: 0 !important;
+      text-align: center;
+      .change-password {
+        a {
+          color: #4395d7
+        };
+        border-bottom: 1px solid #ddd;
+      }
+      a {
+        color: #ff5151;
+        padding: 0 !important;
+        height: 39px;
+        line-height: 39px;
+        border-radius: 4px;
+      }
+    }
   }
 </style>

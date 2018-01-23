@@ -1,6 +1,6 @@
 <template>
   <div class="zifi-container height-full">
-    <header-component class="home " :isHome="true"></header-component>
+    <header-component class="home" :isHome="false"></header-component>
 
     <div class="section">
       <div class="section-manage">
