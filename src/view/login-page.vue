@@ -27,7 +27,7 @@
           <div class="col-md-8 col-xs-8">
             <input type="text" class="form-control verify-code" id="verifyCode" name="verifyCode" v-model="verifyCode" placeholder="验证码输入">
           </div>
-          <div @click="getVerifyCode" class="verify-code-img pull-left"></div>
+          <div @click="getVerifyCode" class="verify-code-img pull-left" id="code"></div>
         </div>
         <div class="form-group">
           <div class="col-md-12">
@@ -44,6 +44,7 @@
     import RestfulConstant from "../constants/restful";
     import {mapActions} from 'vuex';
     import MutationTypes from "../store/mutation-types";
+    import GVerify from "../utils/g-verify";
     export default {
         name: 'login',
         data() {
@@ -51,12 +52,18 @@
                 username: '',
                 password: '',
                 verifyCode: '',
-                showPassword: false
+                showPassword: false,
+                gVerifyCode: null,
             }
+        },
+        mounted: function () {
+            this.gVerifyCode = new GVerify({id: 'code'})
         },
         methods: {
             login: function () {
-                this.getUser({username: this.username, password: this.password}).then(() => {
+                let access = {username: this.username, password: this.password};
+                if (this.verifyCode) access.code = this.verifyCode;
+                this.getUser(access).then(() => {
                     this.$router.push('/')
                 }).catch(err => {
 
@@ -66,7 +73,8 @@
               this.showPassword = !this.showPassword;
             },
             getVerifyCode: function () {
-
+                let code = '1234';
+                this.gVerifyCode.refresh(code)
             },
             ...mapActions({
                 getUser: MutationTypes.GET_USER
@@ -140,22 +148,23 @@
         width: 100px;
         height: 32px;
         background-color: #3bb9dd;
+        border-radius: 4px;
+        box-shadow: 0 0 10px #555;
       }
-      .not-show-password {
+      .not-show-password,
+      .show-password{
         position: absolute;
         right: 15px;
-        top: 15px;
-        width: 22px;
-        height: 10px;
-        background-image: url("../assets/login/not-show-password.png");
+        top: 5px;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+      }
+      .not-show-password{
+        background: url("../assets/login/not-show-password.png") no-repeat center center;
       }
       .show-password {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        width: 22px;
-        height: 15px;
-        background-image: url("../assets/login/show-password.png");
+        background: url("../assets/login/show-password.png") no-repeat center center;
       }
     }
   }
