@@ -3,12 +3,12 @@
     <div class="search">
       <form class="form-inline">
         <div class="form-group">
-          <label for="createTimeStart">操作时间：</label>
-          <input type="text" class="form-control" id="createTimeStart" v-model="searchParams.createTimeStart"/>
+          <label>操作时间：</label>
+          <vue-datepicker-local clearable :inputClass="'form-control'" v-model="searchParams.createTimeStart"></vue-datepicker-local>
         </div>
         <div class="form-group">
-          <label for="createTimeEnd">至：</label>
-          <input type="text" class="form-control" id="createTimeEnd" v-model="searchParams.createTimeEnd"/>
+          <label>至：</label>
+          <vue-datepicker-local clearable :inputClass="'form-control'" v-model="searchParams.createTimeEnd"></vue-datepicker-local>
         </div>
         <div class="form-group">
           <label for="username">用户名：</label>
@@ -71,11 +71,9 @@
 </script>
 
 <style scoped lang="less">
-  .aside {
-    position: fixed;
-    z-index: 999;
-    width: 225px;
-    background-color: #1b6d85;
+  .content-right {
+    box-shadow: 0 0 20px #ccc;
+    padding: 40px;
   }
 
 </style>

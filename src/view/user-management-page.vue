@@ -95,11 +95,8 @@
 </script>
 
 <style scoped lang="less">
-  .aside {
-    position: fixed;
-    z-index: 999;
-    width: 225px;
-    background-color: #1b6d85;
+  .content-right {
+    box-shadow: 0 0 20px #ccc;
+    padding: 40px;
   }
-
 </style>

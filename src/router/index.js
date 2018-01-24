@@ -2,11 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import loginPage from '../view/login-page';
 import homePage from '../view/home-page';
-import systemManagementPage from '../view/system-management-page';
-import userManagementPage from '../view/user-management-page';
-import logManagementPage from '../view/log-management-page';
+const systemManagementPage =  () => import(/* webpackChunkName: "group-sys" */'../view/system-management-page');
+const userManagementPage =  () => import(/* webpackChunkName: "group-sys" */'../view/user-management-page');
+const logManagementPage =  () => import(/* webpackChunkName: "group-sys" */'../view/log-management-page');
+const organizeManagementPage =  () => import(/* webpackChunkName: "group-sys" */'../view/organize-management-page');
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
     // mode:'history',
@@ -16,7 +17,7 @@ export default new Router({
         {path: '/management', name: 'systemManagement', component: systemManagementPage,
         children: [
             {path: 'user', component: userManagementPage},
-            // {path: 'organization', component: ''},
+            {path: 'organize', component: organizeManagementPage},
             {path: 'log', component: logManagementPage},
         ]},
     ]

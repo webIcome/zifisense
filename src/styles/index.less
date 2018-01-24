@@ -1,8 +1,25 @@
 @width: 100%;
-@navWidth: 225px;
 @fontFamily: 'Microsoft YaHei';
-html {
+html, body {
   font-family: @fontFamily;
+  font-size: 14px;
+}
+a {
+  &:hover,
+  &:focus{
+    text-decoration: none;
+  }
+}
+label {
+  font-weight: normal;
+  color: #000;
+}
+th {
+  font-weight: normal;
+  font-size: 18px;
+}
+td {
+  color: #656565;
   font-size: 16px;
 }
 .center {
@@ -39,15 +56,4 @@ html {
   height: 100%;
   display: inline-block;
   vertical-align: middle;
-}
-
-.aside {
-  position: fixed;
-  z-index: 999;
-  width: @navWidth;
-  background-color: #1b6d85;
-}
-
-.content-right {
-  margin-left: @navWidth;
 }

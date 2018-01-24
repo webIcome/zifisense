@@ -1,6 +1,6 @@
 <template>
   <div class="zifi-container height-full">
-    <header-component class="home" :isHome="false"></header-component>
+    <header-component class="home" :isHome="true"></header-component>
 
     <div class="section">
       <div class="section-manage">
@@ -12,12 +12,11 @@
           <div class="section-manage-container collapse in" id="applications">
             <div class="section-manage-container-items clearfix">
               <template v-for="app in applications">
-                <div class="section-manage-container-item col-md-4" @click="goToApplication(app.url)" @mouseover="appHover(app)" @mouseout="appNormal(app)">
-                  <div class="section-manage-container-item-img">
-                    <img :src="app.isActive ? app.imgActive : app.img" :class="{active: app.isActive}">
+                <a class="section-manage-container-item col-md-4" :href="app.url" @mouseover="appHover(app)" @mouseout="appNormal(app)">
+                  <div class="section-manage-container-item-img" :style="'background:' +  'url(' + (app.isActive ? app.imgActive : app.img) +') no-repeat center center'">
                   </div>
                   <div class="section-manage-container-item-title">{{app.title}}</div>
-                </div>
+                </a>
               </template>
             </div>
           </div>
@@ -29,9 +28,8 @@
           </div>
           <div class="section-manage-container collapse in" id="subsidiary">
             <div class="section-manage-container-items clearfix">
-              <div class="section-manage-container-item col-md-4" v-for="app in subsidiary" @mouseover="appHover(app)" @mouseout="appNormal(app)">
-                <div class="section-manage-container-item-img">
-                  <img :src="app.isActive ? app.imgActive : app.img" :class="{active: app.isActive}">
+              <div class="section-manage-container-item col-md-4" v-for="app in subsidiary" @click="goToApplication(app.url)" @mouseover="appHover(app)" @mouseout="appNormal(app)">
+                <div class="section-manage-container-item-img" :style="'background:' +  'url(' + (app.isActive ? app.imgActive : app.img) +') no-repeat center center'">
                 </div>
                 <div class="section-manage-container-item-title">{{app.title}}</div>
               </div>
@@ -57,13 +55,13 @@
                 },
                 applications: [],
                 subsidiary: [
-                    {title: '智慧照明', url: '', img: '../static/img/home/sys.png', imgActive: '../static/img/home/sys-active.png', isActive: false}
+                    {title: '系统管理', url: '/management', img: '../static/img/home/sys.png', imgActive: '../static/img/home/sys-active.png', isActive: false}
                 ]
             }
         },
         created: function () {
             this.applications = [
-                {title: '智慧照明', url: '/management', img: '../static/img/home/light-app.png', imgActive: '../static/img/home/light-app-active.png', isActive: false},
+                {title: '智慧照明', url: '', img: '../static/img/home/light-app.png', imgActive: '../static/img/home/light-app-active.png', isActive: false},
                 {title: '智慧照明', url: '', img: '../static/img/home/estate-app.png', imgActive: '../static/img/home/estate-app-active.png', isActive: false},
                 {title: '智慧照明', url: '', img: '../static/img/home/worker-app.png', imgActive: '../static/img/home/worker-app-active.png', isActive: false},
             ];
@@ -123,8 +121,9 @@
         font-size: 32px;
         .section-manage-container-items {
           padding: 40px 0;
-          color: #fff;
           .section-manage-container-item {
+            color: #fff;
+            cursor: pointer;
             &:hover {
               color: #61b5f5;
               .section-manage-container-item-img {
@@ -138,13 +137,8 @@
               display: inline-block;
               width: 200px;
               height: 200px;
-              line-height: 200px;
-              border-radius: 50%;
               margin-bottom: 30px;
-              background: url("../assets/home/app-bg.png") no-repeat center center;
-              .active {
-                margin-bottom: 20px;
-              }
+              border-radius: 50%;
             }
           }
         }
