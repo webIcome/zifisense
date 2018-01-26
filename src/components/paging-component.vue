@@ -101,6 +101,9 @@
 </script>
 
 <style scoped>
+  #table-page {
+    text-align: right;
+  }
   .box {
     display: inline-block;
     user-select: none;
@@ -136,7 +139,7 @@
   }
 
   a.active {
-    background-color: #009688;
+    background-color: #1789e1;
     color: #fff;
     border-radius: 2px;
   }

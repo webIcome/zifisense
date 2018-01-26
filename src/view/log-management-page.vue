@@ -74,6 +74,11 @@
   .content-right {
     box-shadow: 0 0 20px #ccc;
     padding: 40px;
+    .search {
+    }
+    .table {
+      margin-top: 90px;
+    }
   }
 
 </style>

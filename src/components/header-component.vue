@@ -96,6 +96,7 @@
           line-height: 42px;
           text-align: center;
           color: #51b0f8;
+          cursor: pointer;
           background-image: url("../assets/home/header/personal-center-bg.png");
           .personal-center-icon {
             margin-right: 8px;
@@ -133,6 +134,7 @@
         margin-right: 20px;
         text-align: center;
         color: #51b0f8;
+        cursor: pointer;
         &:hover {
           color: #a8ecfe;
           .personal-center-icon {
@@ -151,6 +153,7 @@
       .go-home {
         display: inline-block;
         color: #51b0f8;
+        cursor: pointer;
         &:hover {
           color: #a8ecfe;
           .home-icon {

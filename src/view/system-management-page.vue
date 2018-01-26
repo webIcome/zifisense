@@ -12,6 +12,7 @@
           </ul>
         </div>
       </div>
+      <div class="bg"></div>
       <div class="content">
         <router-view></router-view>
       </div>
@@ -74,15 +75,23 @@
 
 <style scoped lang="less">
   @navWidth: 320px;
+  @navBackgroundColor: #071627;
   .section {
-    .aside {
+    .bg {
       position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: @navWidth;
+      background-color: @navBackgroundColor;
+    }
+    .aside {
+      position: absolute;
       top: 0;
       left: 0;
       z-index: 999;
       width: @navWidth;
-      height: 100%;
-      background-color: #071627;
+      background-color: @navBackgroundColor;
       .title {
         width: 200px;
         height: 72px;
