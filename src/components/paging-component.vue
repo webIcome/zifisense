@@ -1,16 +1,16 @@
 <template>
   <div id="table-page">
     <div class="box">
-      <button class="prev" @click="goToPre" :disabled="firstPage">上一页</button>
+      <span class="prev" @click="goToPre" :class="{disabled: firstPage}"></span>
       <template v-for="number in numbers">
-        <span v-if="!Number(number)"> {{number}}</span>
+        <span class="pointer" v-if="!Number(number)"> {{number}}</span>
         <a v-else href="javascript:;" class="number" :class="{active: (number === pageNumber)}"
            @click="goToPage(number)">{{number}}</a>
       </template>
-      <button class="next" :disabled="lastPage" @click="goToNext">下一页</button>
-      <span class="skip">到第
-        <input type="text" min="1" v-model="givenPage">页
-        <button type="button" class="btn" @click="goToGivenPage()">确定</button>
+      <span class="next" :class="{disabled: lastPage}" @click="goToNext"></span>
+      <span class="skip">
+        <input type="text" min="1" v-model="givenPage">
+        <span class="confirm" @click="goToGivenPage()">跳转</span>
       </span>
     </div>
   </div>
@@ -39,7 +39,7 @@
         },
         computed: {
             numbers: function () {
-                let spr = '...'
+                let spr = '......'
                 let numbers
                 if (this.pages < 5 || (this.pageNumber === 3 && this.pages === 5)) {
                     numbers = this.pages
@@ -69,7 +69,7 @@
         },
         methods: {
             goToPage: function (number) {
-                if (!Number(number)) return
+                if (!Number(number)) return;
                 if (number === this.pageNumber) {
                     this.search(number, true)
                 } else {
@@ -77,6 +77,7 @@
                 }
             },
             goToGivenPage: function () {
+                if (!Number(this.givenPage)) return;
                 if (this.givenPage <= 0 || this.givenPage > this.pages) return
                 this.search(Number(this.givenPage))
             },
@@ -100,90 +101,90 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
   #table-page {
     text-align: right;
+    font-size: 18px;
   }
+
   .box {
     display: inline-block;
     user-select: none;
-  }
-
-  span, a {
-    display: inline-block;
     vertical-align: middle;
-    height: 26px;
-    line-height: 26px;
-    padding: 0 12px;
-    margin: 0 -1px 5px 0;
-    border: none;
-    background: 0 0;
-    color: #333;
-    font-size: 12px;
+    .prev,
+    .next {
+      display: inline-block;
+      width: 40px;
+      height: 30px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .prev {
+      background-image: url("../assets/sys/pre-active.png");
+      &.disabled {
+        background-image: url("../assets/sys/pre.png");
+        cursor: not-allowed;
+      }
+    }
+    .next {
+      background-image: url("../assets/sys/next-active.png");
+      &.disabled {
+        background-image: url("../assets/sys/next.png");
+        cursor: not-allowed;
+      }
+    }
+    .pointer {
+      color: #1789e1;
+    }
+    a {
+      display: inline-block;
+      color: #999;
+      text-decoration: none;
+      border: 1px solid #999999;
+      width: 40px;
+      height: 30px;
+      line-height: 30px;
+      margin: 0 5px;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 2px;
+      &.active {
+        background-color: #1789e1;
+        color: #fff;
+        border: none;
+      }
+      &:hover {
+        background-color: #2b71b8;
+        color: #fff;
+        border: none;
+      }
+    }
+    input {
+      display: inline-block;
+      width: 50px;
+      height: 30px;
+      line-height: 30px;
+      margin: 0 10px;
+      text-align: center;
+      border: 1px solid #999;
+      border-radius: 2px;
+      box-shadow: 1px 1px 2px #999 inset;
+      &:focus {
+        border-color: #1789e1 !important;
+        outline: 0;
+      }
+    }
+    .skip {
+      display: inline-block;
+      vertical-align: middle;
+      .confirm {
+        color: #1889e1;
+        cursor: pointer;
+        &:hover {
+          color: #2b71b8;
+        }
+      }
+    }
   }
 
-  span {
-    margin-left: 0;
-    padding: 0;
-    color: #999;
-    font-weight: 700;
-  }
-
-  a {
-    color: #333;
-    text-decoration: none;
-  }
-
-  .number {
-    padding: 0 12px;
-  }
-
-  a.active {
-    background-color: #1789e1;
-    color: #fff;
-    border-radius: 2px;
-  }
-
-  input {
-    display: inline-block;
-    width: 40px;
-    height: 26px;
-    line-height: 26px;
-    margin: 0 10px;
-    padding: 0 3px;
-    text-align: center;
-    border: 1px solid #e2e2e2;
-    border-radius: 2px;
-    vertical-align: top;
-    background-color: #fff;
-    box-sizing: border-box;
-  }
-
-  input:focus {
-    border-color: #009688 !important;
-    outline: 0;
-  }
-
-  .skip {
-    color: #999;
-    margin-right: 10px;
-  }
-
-  button {
-    display: inline-block;
-    height: 26px;
-    line-height: 26px;
-    padding: 0 10px;
-    cursor: pointer;
-    border-radius: 2px;
-    vertical-align: top;
-    background-color: #fff;
-    box-sizing: border-box;
-    border: 1px solid #e2e2e2;
-    outline: 0;
-  }
-  button[disabled] {
-    color: #d2d2d2 !important;
-    cursor: not-allowed !important;
-  }
 </style>

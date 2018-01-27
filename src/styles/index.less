@@ -1,6 +1,9 @@
 @width: 100%;
 @fontFamily: 'Microsoft YaHei';
 @defaultBtnColor: #1789e1;
+@defaultBtnActiveColor: #2b71b8;
+@lineHeight: 2px;
+@lineColor: #efefef;
 html, body {
   font-family: @fontFamily;
   font-size: 14px;
@@ -29,9 +32,37 @@ td {
     text-align: center;
   }
 }
-.default-btn-color {
+.default-btn {
+  display: inline-block;
+  padding: 7.5px 24px;
+  border-radius: 4px;
   background-color: @defaultBtnColor;
   color: #fff;
+  cursor: pointer;
+  &:hover {
+    background-color: @defaultBtnActiveColor;
+  }
+}
+.default-form {
+  font-size: 18px;
+  label {
+
+  }
+  input {
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 18px !important;
+    box-shadow: 1px 1px 2px #999 inset
+  }
+  .form-group {
+    margin-right: 20px;
+  }
+}
+.default-input {
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 18px !important;
+  box-shadow: 1px 1px 2px #999 inset
 }
 .zifi-container {
   width: @width;
@@ -61,4 +92,43 @@ td {
   height: 100%;
   display: inline-block;
   vertical-align: middle;
+}
+
+//tree
+.tree-folder-children >
+.tree-folder-items >
+.tree-folder-header-branch{
+  display: inline-block;
+  width: 40px;
+  height: @lineHeight;
+  background-color: @lineColor;
+  vertical-align: middle;
+}
+.tree-folder-end-branch{
+  display: inline-block;
+  width: 40px;
+  height: @lineHeight;
+  background-color: @lineColor;
+  vertical-align: middle;
+}
+.tree-folder-children
+.tree-folder-items {
+  &:before {
+    content: '';
+    position: absolute;
+    height: 50%;
+    width: @lineHeight;
+    bottom: 0;
+    background-color: @lineColor;
+  }
+  &:last-child {
+    &:before {
+      content: '';
+      position: absolute;
+      height: 50%;
+      width: @lineHeight;
+      top: 0;
+      background-color: @lineColor;
+    }
+  }
 }

@@ -117,7 +117,6 @@
     height: 80px;
     background-color: #071627;
     font-size: 16px;
-    margin-left: 320px;
     .personal {
       float:right;
       margin-top: 30px;

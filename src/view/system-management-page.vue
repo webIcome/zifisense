@@ -1,23 +1,23 @@
 <template>
-  <div>
-    <header-component></header-component>
-    <div class="section">
-      <div class="aside">
-        <div class="title">
-          <h1 class="sr-only">纵行科技</h1>
+  <div class="bg">
+    <div class="test">
+      <header-component></header-component>
+      <div class="section">
+        <div class="aside">
+          <div class="title">
+            <h1 class="sr-only">纵行科技</h1>
+          </div>
+          <div class="aside-nav">
+            <ul>
+              <li v-for="nav in navs"  @click="clickNav(nav)" @mouseover="navHover(nav)" @mouseout="navNormal(nav)"><router-link :to="nav.url" :class="{active: nav.active || nav.hover}"><img class="nav-icon" :src="(nav.active||nav.hover? nav.imgActive:nav.img)"></img>{{nav.name}}</router-link></li>
+            </ul>
+          </div>
         </div>
-        <div class="aside-nav">
-          <ul>
-            <li v-for="nav in navs"  @click="clickNav(nav)" @mouseover="navHover(nav)" @mouseout="navNormal(nav)"><router-link :to="nav.url" :class="{active: nav.active || nav.hover}"><img class="nav-icon" :src="(nav.active||nav.hover? nav.imgActive:nav.img)"></img>{{nav.name}}</router-link></li>
-          </ul>
+        <div class="content">
+          <router-view></router-view>
         </div>
-      </div>
-      <div class="bg"></div>
-      <div class="content">
-        <router-view></router-view>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -76,18 +76,30 @@
 <style scoped lang="less">
   @navWidth: 320px;
   @navBackgroundColor: #071627;
-  .section {
-    .bg {
-      position: fixed;
-      top: 0;
-      left: 0;
+  .test {
+    position: relative;
+    &:before {
+      position: absolute;
+      content: '';
       height: 100%;
       width: @navWidth;
       background-color: @navBackgroundColor;
     }
+  }
+  .bg {
+    &:before {
+      position: absolute;
+      content: '';
+      height: 100%;
+      width: @navWidth;
+      background-color: @navBackgroundColor;
+    }
+  }
+  .section {
+    position: relative;
     .aside {
       position: absolute;
-      top: 0;
+      top: -80px;
       left: 0;
       z-index: 999;
       width: @navWidth;
@@ -125,7 +137,6 @@
     .content {
       margin-left: @navWidth;
       padding: 40px;
-      /*font-size: 18px;*/
     }
   }
 </style>

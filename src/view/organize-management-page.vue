@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="organize">
     <div class="company">
       <div class="company-title clearfix">
         <div class="company-title-name">公司</div>
@@ -57,7 +57,8 @@
         name: 'organizeManagementPage',
         data() {
             return {
-                companies: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: []}]},{name: '厦门纵行科技', children: []}]}],
+                companies: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: []}]}]},{name: '厦门纵行科技', children: []}]},
+        {name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: []}]},{name: '厦门纵行科技', children: []}]}],
                 jobs: [{name: '岗位'}],
                 limits: [{title: '系统权限', items: [{title: '组织管理'}, {title: '组织管理'}]}, {
                     title: '管理权限',
@@ -85,14 +86,21 @@
 </script>
 
 <style scoped lang="less">
+  @lineHeight: 2px;
+  @lineColor: #efefef;
+  .organize {
+    white-space: nowrap;
+  }
   .company,
   .job,
   .limit {
+    position: relative;
     display: inline-block;
     padding: 30px 20px;
     vertical-align: top;
     box-shadow: 0 0 20px #ccc;
     margin-right: 20px;
+    overflow: auto;
     .company-title,
     .job-title,
     .limit-title {
@@ -153,12 +161,15 @@
     max-width: 880px;
     max-height: 910px;
     .company-content {
-      position: relative;
+      display: inline-block;
+      white-space: nowrap;
       overflow: auto;
       font-size: 16px;
       .company-conent-items {
-        padding-bottom: 33px;
-        border-bottom: 1px solid #ddd;
+        padding: 33px 33px 33px 0;
+        &:nth-of-type(even) {
+          border-top: 1px solid #ddd;
+        }
       }
     }
   }
@@ -195,6 +206,7 @@
 
   .limit {
     width: 280px;
+    margin-right: 0;
     .limit-content {
       text-align: center;
       .limit-content-title {
@@ -229,6 +241,15 @@
         }
       }
     }
+  }
+  .tree-folder-children >
+  .tree-folder-items >
+  .tree-folder-branch{
+    display: inline-block;
+    width: 40px;
+    height: @lineHeight;
+    background-color: @lineColor;
+    vertical-align: middle;
   }
 
 </style>

@@ -18,9 +18,10 @@
 </script>
 
 <style scoped lang="less">
+  @lineHeight: 2px;
+  @lineColor: #efefef;
   .tree-folder-children {
     display: inline-block;
-    margin-left: 80px;
     vertical-align: middle;
   }
 </style>

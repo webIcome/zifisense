@@ -1,13 +1,16 @@
 <template>
   <div class="tree-folder-items" v-if="company">
-        <div class="tree-folder-item">
-          <div class="tree-folder-item-name">{{company.name}}</div>
-          <div class="tree-folder-item-edit"></div>
-          <div class="tree-folder-item-delete"></div>
-          <div class="tree-folder-item-add"></div>
-        </div>
-        <tree-folder-contents-component :children="company.children"></tree-folder-contents-component>
-      </div>
+    <!--<div class="tree-folder-branch"></div>-->
+    <div class="tree-folder-header-branch"></div>
+    <div class="tree-folder-item">
+      <div class="tree-folder-item-name">{{company.name}}</div>
+      <div class="tree-folder-item-edit"></div>
+      <div class="tree-folder-item-delete"></div>
+      <div class="tree-folder-item-add"></div>
+    </div>
+    <div v-if="company.children.length" class="tree-folder-end-branch"></div>
+    <tree-folder-contents-component :children="company.children"></tree-folder-contents-component>
+  </div>
 </template>
 
 <script>
@@ -22,15 +25,27 @@
 </script>
 
 <style scoped lang="less">
+  @lineHeight: 2px;
+  @lineColor: #efefef;
   .tree-folder-items {
+    position: relative;
+    font-size: 0;
   }
+  .tree-folder-header-branch,
+  .tree-folder-end-branch,
+  .tree-folder-branch{
+    display: inline-block;
+  }
+
   .tree-folder-item {
     display: inline-block;
     min-width: 200px;
     padding: 15px;
-    margin-bottom: 18px;
+    margin: 9px 0;
+    vertical-align: middle;
     background-color: #efefef;
     text-align: center;
+    font-size: 16px;
     .tree-folder-item-name {
       margin-bottom: 15px;
     }

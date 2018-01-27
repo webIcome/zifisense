@@ -1,7 +1,7 @@
 <template>
   <div class="content-right">
     <div class="search">
-      <form class="form-inline">
+      <form class="form-inline default-form">
         <div class="form-group">
           <label for="enterprise">归属企业：</label>
           <input type="text" class="form-control" id="enterprise" v-model="searchParams.enterprise"/>
@@ -14,12 +14,12 @@
           <label for="jopName">岗位名称：</label>
           <input type="text" class="form-control" id="jopName" v-model="searchParams.jobName"/>
         </div>
-        <button class="btn btn-primary" @click="search">筛选</button>
+        <div class="default-btn" @click="search">筛选</div>
       </form>
     </div>
     <div class="pull-right">
-      <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>高级搜索</button>
-      <button class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>创建账号</button>
+      <div class="default-btn"><span class="search-icon"></span>高级搜索</div>
+      <div class="default-btn"><span class="add-icon"></span>创建账号</div>
     </div>
     <div class="table center">
       <table class="table table-hover table-striped">
@@ -40,10 +40,10 @@
           <td>{{user}}</td>
           <td>{{user}}</td>
           <td>{{user}}</td>
-          <td>
-            <button class="btn"><span class="glypion glypion-edit"></span></button>
-            <button class="btn"><span class="glypion glypion-edit"></span></button>
-            <button class="btn"><span class="glypion glypion-edit"></span></button>
+          <td class="td-btns">
+            <div class="edit-icon-item"><span class="edit-icon"></span></div>
+            <div class="edit-icon-item"><span class="reset-icon"></span></div>
+            <div class="edit-icon-item"><span class="delete-icon"></span></div>
           </td>
         </tr>
         </tbody>
@@ -98,11 +98,68 @@
   .content-right {
     box-shadow: 0 0 20px #ccc;
     padding: 40px;
+    min-width: 1360px;
     .search {
       display: inline-block;
+
+    }
+    .pull-right {
+      .default-btn {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        .search-icon {
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          background-image: url("../assets/sys/search.png");
+          vertical-align: middle;
+          margin-right: 10px;
+        }
+        .add-icon {
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          background-image: url("../assets/sys/add-number.png");
+          vertical-align: middle;
+          margin-right: 10px;
+        }
+      }
     }
     .table {
       margin-top: 90px;
     }
+    .td-btns {
+      white-space: nowrap;
+    }
+    .edit-icon-item {
+      display: inline-block;
+      width: 33%;
+      vertical-align: middle;
+      .edit-icon,
+      .reset-icon,
+      .delete-icon {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+      .edit-icon{
+        width: 18px;
+        height: 16px;
+        background-image: url("../assets/sys/edit.png");
+      }
+      .reset-icon {
+        width: 18px;
+        height: 18px;
+        background-image: url("../assets/sys/reset-password.png");
+      }
+      .delete-icon {
+        width: 14px;
+        height: 18px;
+        background-image: url("../assets/sys/delete.png");
+      }
+    }
+
   }
 </style>

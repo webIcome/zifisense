@@ -1,14 +1,14 @@
 <template>
   <div class="content-right">
     <div class="search">
-      <form class="form-inline">
+      <form class="form-inline default-form">
         <div class="form-group">
           <label>操作时间：</label>
-          <vue-datepicker-local clearable :inputClass="'form-control'" v-model="searchParams.createTimeStart"></vue-datepicker-local>
+          <vue-datepicker-local clearable :inputClass="'form-control default-input'" v-model="searchParams.createTimeStart"></vue-datepicker-local>
         </div>
         <div class="form-group">
           <label>至：</label>
-          <vue-datepicker-local clearable :inputClass="'form-control'" v-model="searchParams.createTimeEnd"></vue-datepicker-local>
+          <vue-datepicker-local clearable :inputClass="'default-input form-control'" v-model="searchParams.createTimeEnd"></vue-datepicker-local>
         </div>
         <div class="form-group">
           <label for="username">用户名：</label>
@@ -18,7 +18,7 @@
           <label for="phone">手机号码：</label>
           <input type="text" class="form-control" id="phone" v-model="searchParams.phone"/>
         </div>
-        <button class="btn btn-primary">搜索</button>
+        <div class="default-btn">搜索</div>
       </form>
     </div>
     <div class="table center">
@@ -57,7 +57,7 @@
                     phone: ''
                 },
                 pageNumber: 1,
-                pages: 1,
+                pages: 6,
                 logs: [{},{}]
             }
         },
@@ -74,6 +74,7 @@
   .content-right {
     box-shadow: 0 0 20px #ccc;
     padding: 40px;
+    min-width: 1515px;
     .search {
     }
     .table {
