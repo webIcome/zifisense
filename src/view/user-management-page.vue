@@ -18,8 +18,8 @@
       </form>
     </div>
     <div class="pull-right">
-      <div class="default-btn"><span class="search-icon"></span>高级搜索</div>
-      <div class="default-btn"><span class="add-icon"></span>创建账号</div>
+      <div @click="dialogHighSearch" class="default-btn"><span class="search-icon"></span>高级搜索</div>
+      <div @click="dialogAddUser" class="default-btn"><span class="add-icon"></span>创建账号</div>
     </div>
     <div class="table center">
       <table class="table table-hover table-striped">
@@ -41,15 +41,208 @@
           <td>{{user}}</td>
           <td>{{user}}</td>
           <td class="td-btns">
-            <div class="edit-icon-item"><span class="edit-icon"></span></div>
-            <div class="edit-icon-item"><span class="reset-icon"></span></div>
-            <div class="edit-icon-item"><span class="delete-icon"></span></div>
+            <div class="edit-icon-item"><span @click="dialogEditUser(user)" class="edit-icon"></span></div>
+            <div class="edit-icon-item"><span @click="dialogResetPassword(user)" class="reset-icon"></span></div>
+            <div class="edit-icon-item"><span @click="dialogDeleteUser(user)" class="delete-icon"></span></div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNumber" :pages="searchParams.pages" @pagingEvent='pagingEvent'></paging-component>
+    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNumber" :pages="searchParams.pages"
+                      @pagingEvent='pagingEvent'></paging-component>
+    <dialog-component id="reset-password">
+      <div slot="body">
+        <div class="dialog-title">重置密码</div>
+        <p class="text-center">您确认要重置账号：<a>{{operUser.name}}</a>的密码吗？
+
+        <div class="col-md-12 dialog-btn">
+          <span @click="resetPassword" class="dialog-btn-icon">确认</span>
+        </div>
+      </div>
+    </dialog-component>
+    <dialog-component id="add-user">
+      <div slot="body">
+        <div class="dialog-title">创建账号</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label">归属企业：</label>
+            <div class="col-md-8">
+              <select v-model="operUser.company" class="form-control">
+                <template v-for="company in companies">
+                  <option>{{company.name}}</option>
+                </template>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">归属岗位：</label>
+            <div class="col-md-8">
+              <select v-model="operUser.job" class="form-control">
+                <template v-for="company in companies">
+                  <option>{{company.name}}</option>
+                </template>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">登录名：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">姓名：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">电子邮箱：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">有效期至：</label>
+            <div class="col-md-8">
+              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
+                                    v-model="operUser.validity"></vue-datepicker-local>
+            </div>
+          </div>
+          <div class="dialog-btn">
+            <span @click="addUser" class="dialog-btn-icon">创建账号</span>
+          </div>
+        </form>
+      </div>
+    </dialog-component>
+    <dialog-component id="edit-user">
+      <div slot="body">
+        <div class="dialog-title">编辑账号</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label">归属企业：</label>
+            <div class="col-md-8">
+              <select v-model="operUser.company" class="form-control">
+                <template v-for="company in companies">
+                  <option>{{company.name}}</option>
+                </template>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">归属岗位：</label>
+            <div class="col-md-8">
+              <select v-model="operUser.job" class="form-control">
+                <template v-for="company in companies">
+                  <option>{{company.name}}</option>
+                </template>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">登录名：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">姓名：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">电子邮箱：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">有效期至：</label>
+            <div class="col-md-8">
+              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
+                                    v-model="operUser.validity"></vue-datepicker-local>
+            </div>
+          </div>
+          <div class="dialog-btn">
+            <span @click="addUser" class="dialog-btn-icon">确认修改</span>
+          </div>
+        </form>
+      </div>
+    </dialog-component>
+    <dialog-component id="delete-user">
+      <div slot="body">
+        <div class="dialog-title">删除账号</div>
+        <div class="text-center">
+          <div class="dialog-warning"></div>
+        </div>
+        <p>您确认要删除账号：<a>{{operUser.name}}</a>吗？</p>
+        <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+        <div class="dialog-btn">
+          <span @click="deleteUser" class="dialog-btn-icon">确认删除</span>
+        </div>
+      </div>
+    </dialog-component>
+
+    <dialog-component id="high-search">
+      <div slot="body">
+        <div class="dialog-title">高级搜索</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label">归属企业：</label>
+            <div class="col-md-8">
+              <select v-model="operUser.company" class="form-control">
+                <template v-for="company in companies">
+                  <option>{{company.name}}</option>
+                </template>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">归属岗位：</label>
+            <div class="col-md-8">
+              <select v-model="operUser.job" class="form-control">
+                <template v-for="company in companies">
+                  <option>{{company.name}}</option>
+                </template>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">登录名：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">姓名：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">电子邮箱：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operUser.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">有效期至：</label>
+            <div class="col-md-8">
+              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
+                                    v-model="operUser.validity"></vue-datepicker-local>
+              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
+                                    v-model="operUser.validity"></vue-datepicker-local>
+            </div>
+          </div>
+
+          <div class=" dialog-btn">
+            <span @click="editUser" class="dialog-btn-icon">确认修改</span>
+          </div>
+        </form>
+      </div>
+    </dialog-component>
   </div>
 </template>
 
@@ -69,7 +262,9 @@
                     pageNumber: 0,
                     pages: 0,
                 },
-                users: [{},{}],
+                users: [{}, {}],
+                operUser: {},
+                companies: [],
             }
         },
         created: function () {
@@ -79,15 +274,41 @@
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNumber = pageNumber
             },
-            getLogs: function () {
+            getUsers: function () {
                 HttpClient.getPaging(RestfulConstant.LOGS, this.searchParams).then(res => {
                     this.searchParams.pageNumber = res.pageNumber;
                     this.searchParams.pages = res.pages;
                     this.logs = res.rows;
                 })
             },
+            dialogHighSearch: function () {
+                $('#high-search').modal();
+            },
             search: function () {
-                this.getLogs();
+            },
+            dialogAddUser: function () {
+                $('#add-user').modal();
+            },
+            addUser: function () {
+
+            },
+            dialogResetPassword: function (user) {
+                $('#reset-password').modal();
+            },
+            resetPassword: function () {
+
+            },
+            dialogEditUser: function (user) {
+                $('#edit-user').modal();
+            },
+            editUser: function () {
+
+            },
+            dialogDeleteUser: function (user) {
+                $('#delete-user').modal();
+            },
+            deleteUser: function () {
+
             }
 
         }
@@ -144,7 +365,7 @@
         vertical-align: middle;
         cursor: pointer;
       }
-      .edit-icon{
+      .edit-icon {
         width: 18px;
         height: 16px;
         background-image: url("../assets/sys/edit.png");

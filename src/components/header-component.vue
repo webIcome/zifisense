@@ -6,18 +6,44 @@
     <div class="personal">
       <span class="personal-describe">您好，{{user.userName}}</span>
       <div class="dropdown">
-        <div class="personal-center" data-toggle="dropdown" aria-expanded="false"><i class="personal-center-icon"></i>个人中心
+        <div @click="dropdown" class="personal-center" data-toggle="dropdown" aria-expanded="false"><i class="personal-center-icon"></i>个人中心
         </div>
         <ul class="dropdown-menu">
-          <li class="change-password"><a href="#" data-toggle="modal" data-target=".modal">修改密码</a></li>
+          <li class="change-password"><a href="#" @click="dialogChangePassword" data-toggle="#changePassword" data-target="#changePassword">修改密码</a></li>
           <li @click="logout"><a href="#">退出登录</a></li>
         </ul>
       </div>
       <div @click="goToHome" v-if="!isHome" class="go-home"><i class="home-icon"></i>返回主页
       </div>
     </div>
-    <dialog-component>
+    <dialog-component id="changePassword">
       <div slot="body">
+        <div class="dialog-title">修改密码</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="currentPassword">当前密码：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="currentPassword" v-model="password.current"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="new">新密码：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="new" v-model="password.new"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="second-new">确认新密码：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="second-new" v-model="password.secondNew"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12 dialog-btn">
+              <span @click="changePassword" class="dialog-btn-icon">确认</span>
+            </div>
+          </div>
+        </form>
       </div>
     </dialog-component>
   </div>
@@ -26,12 +52,17 @@
 <script>
     import {mapGetters, mapActions} from 'vuex';
     import MutationTypes from "../store/mutation-types";
-    import DialogComponent from "./dialog-component";
+    import DialogComponent from "./dialog-component/dialog-component";
     export default {
         components: {DialogComponent}, name: 'headerComponent',
         data () {
             return {
-                user: {}
+                user: {},
+                password: {
+                    current: '',
+                    new: '',
+                    secondNew: ''
+                }
             }
         },
         props: {
@@ -56,11 +87,17 @@
 
             },
             dialogChangePassword: function () {
-
+                $('#changePassword').modal()
             },
             logout: function () {
 
+            },
+            dropdown: function () {
+                $('.personal-center').dropdown()
             }
+        },
+        mounted: function () {
+            this.dropdown()
         }
     }
 </script>

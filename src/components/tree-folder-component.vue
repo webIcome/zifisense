@@ -4,12 +4,12 @@
     <div class="tree-folder-header-branch"></div>
     <div class="tree-folder-item">
       <div class="tree-folder-item-name">{{company.name}}</div>
-      <div class="tree-folder-item-edit"></div>
-      <div class="tree-folder-item-delete"></div>
-      <div class="tree-folder-item-add"></div>
+      <div @click="dialogEdit(company)" class="tree-folder-item-edit"></div>
+      <div @click="dialogDelete(company)" class="tree-folder-item-delete"></div>
+      <div @click="dialogAdd(company)" class="tree-folder-item-add"></div>
     </div>
     <div v-if="company.children.length" class="tree-folder-end-branch"></div>
-    <tree-folder-contents-component :children="company.children"></tree-folder-contents-component>
+    <tree-folder-contents-component :children="company.children" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete"></tree-folder-contents-component>
   </div>
 </template>
 
@@ -19,6 +19,17 @@
             company: {
                 type: Object,
                 default: ''
+            }
+        },
+        methods: {
+            dialogEdit: function (company) {
+                this.$emit('edit', company)
+            },
+            dialogDelete: function (company) {
+                this.$emit('delete', company)
+            },
+            dialogAdd: function (company) {
+                this.$emit('add', company)
             }
         }
     }

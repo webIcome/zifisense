@@ -4,17 +4,17 @@
       <div class="modal-content">
         <div v-if="header" class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span class="close-img" aria-hidden="true"></span>
           </button>
           <h4 class="modal-title">
             <slot name="title"></slot>
           </h4>
         </div>
 
-        <div class="modal-body">
+        <div class="modal-body clearfix">
           <div v-if="bodyClose" class="clearfix">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
+              <span class="close-img" aria-hidden="true"></span>
             </button>
           </div>
           <slot name="body"></slot>
@@ -32,9 +32,7 @@
     export default {
         name: 'dialogComponent',
         data () {
-            return {
-
-            }
+            return {}
         },
         props: {
             dialog: {
@@ -58,4 +56,48 @@
 </script>
 
 <style scoped lang="less">
+  .close-img {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-image: url("./imgs/close.png");
+  }
+
+  .dialog-title {
+    text-align: center;
+    font-size: 20px;
+    color: #1789e1;
+    margin-bottom: 40px;
+  }
+
+  .dialog-btn {
+    text-align: center;
+    .dialog-btn-icon {
+      display: inline-block;
+      width: 200px;
+      height: 48px;
+      line-height: 48px;
+      background-image: url("./imgs/btn.png");
+      font-size: 18px;
+      color: #fff;
+      margin-top: 50px;
+      margin-bottom: 40px;
+      cursor: pointer;
+      &:hover {
+        background-image: url("./imgs/btn-active.png");
+      }
+    }
+  }
+  p{
+    font-size: 18px;
+    white-space: normal;
+  }
+
+  .dialog-warning {
+    display: inline-block;
+    width: 56px;
+    height: 47px;
+    margin-bottom: 40px;
+    background-image: url("./imgs/warning.png");
+  }
 </style>

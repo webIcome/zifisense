@@ -1,6 +1,6 @@
 <template>
-  <div class="bg">
-    <div class="test">
+  <div class="full-view-bg">
+    <div class="content-view-bg">
       <header-component></header-component>
       <div class="section">
         <div class="aside">
@@ -9,7 +9,11 @@
           </div>
           <div class="aside-nav">
             <ul>
-              <li v-for="nav in navs"  @click="clickNav(nav)" @mouseover="navHover(nav)" @mouseout="navNormal(nav)"><router-link :to="nav.url" :class="{active: nav.active || nav.hover}"><img class="nav-icon" :src="(nav.active||nav.hover? nav.imgActive:nav.img)"></img>{{nav.name}}</router-link></li>
+              <li v-for="nav in navs" @click="clickNav(nav)" @mouseover="navHover(nav)" @mouseout="navNormal(nav)">
+                <router-link :to="nav.url" :class="{active: nav.active || nav.hover}"><img class="nav-icon"
+                                                                                           :src="(nav.active||nav.hover? nav.imgActive:nav.img)"></img>{{nav.name}}
+                </router-link>
+              </li>
             </ul>
           </div>
         </div>
@@ -38,9 +42,30 @@
         methods: {
             getSysMenus: function () {
                 let navs = [
-                    {name: '用户管理', url: '/management/user', active: true, hover: false, img: '../static/img/sys/user.png', imgActive: '../static/img/sys/user-active.png'},
-                    {name: '组织管理', url: '/management/organize', active: false, hover: false, img: '../static/img/sys/organize.png', imgActive: '../static/img/sys/organize-active.png'},
-                    {name: '操作日志', url: '/management/log', active: false, hover: false, img: '../static/img/sys/log.png', imgActive: '../static/img/sys/log-active.png'},
+                    {
+                        name: '用户管理',
+                        url: '/management/user',
+                        active: true,
+                        hover: false,
+                        img: '../static/img/sys/user.png',
+                        imgActive: '../static/img/sys/user-active.png'
+                    },
+                    {
+                        name: '组织管理',
+                        url: '/management/organize',
+                        active: false,
+                        hover: false,
+                        img: '../static/img/sys/organize.png',
+                        imgActive: '../static/img/sys/organize-active.png'
+                    },
+                    {
+                        name: '操作日志',
+                        url: '/management/log',
+                        active: false,
+                        hover: false,
+                        img: '../static/img/sys/log.png',
+                        imgActive: '../static/img/sys/log-active.png'
+                    },
                 ];
                 this.navs = navs;
                 this.$router.push('/management/user')
@@ -57,9 +82,9 @@
                 nav.hover = false;
             },
             resetNav: function () {
-              this.navs.forEach(nav => {
-                  nav.active = false;
-              })
+                this.navs.forEach(nav => {
+                    nav.active = false;
+                })
             },
             initMenus: function () {
                 this.navs.forEach(nav => {
@@ -68,7 +93,26 @@
             },
             initDefaultMenu: function () {
 
+            },
+            initView: function () {
+                let viewWidth = $(window).width();
+                let sectionWidth = $('.section').width();
+                if (sectionWidth > viewWidth) {
+                    $('.content-view-bg').addClass('display-inline-block')
+                } else {
+                    $('.content-view-bg').removeClass('display-inline-block')
+                }
+            },
+            listernEvent: function () {
+                let that = this;
+                $('.section').resize(function () {
+                    that.initView();
+                });
             }
+        },
+        mounted: function () {
+            this.initView();
+            this.listernEvent();
         }
     }
 </script>
@@ -76,8 +120,13 @@
 <style scoped lang="less">
   @navWidth: 320px;
   @navBackgroundColor: #071627;
-  .test {
+  .display-inline-block {
+    display: inline-block;
+  }
+
+  .content-view-bg {
     position: relative;
+    min-width: 1920px;
     &:before {
       position: absolute;
       content: '';
@@ -86,7 +135,9 @@
       background-color: @navBackgroundColor;
     }
   }
-  .bg {
+
+  .full-view-bg {
+    font-size: 0px;
     &:before {
       position: absolute;
       content: '';

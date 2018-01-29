@@ -1,30 +1,31 @@
 <template>
   <div class="organize">
     <div class="company">
-      <div class="company-title clearfix">
-        <div class="company-title-name">公司</div>
-        <div class="btn-add-company">创建一级企业</div>
+      <div class="company-full">
+        <div class="company-title clearfix">
+          <div class="company-title-name">公司</div>
+          <div @click="dialogFirstClassEnterPrise" class="btn-add-company">创建一级企业</div>
+        </div>
+        <div class="company-content">
+          <template v-for="company in companies">
+            <div class="company-conent-items">
+              <tree-folder-component :company="company" v-on:edit="dialogEditCompany" v-on:add="dialogAddCompany" v-on:delete="dialogDeleteCompany"></tree-folder-component>
+            </div>
+          </template>
+        </div>
       </div>
-      <div class="company-content">
-        <template v-for="company in companies">
-          <div class="company-conent-items">
-            <tree-folder :company="company"></tree-folder>
-          </div>
-        </template>
-      </div>
-
     </div>
     <div class="job">
       <div class="job-title clearfix">
         <div class="job-title-name">岗位</div>
-        <div class="btn-add-job">创建岗位</div>
+        <div @click="dialogAddJob"  class="btn-add-job">创建岗位</div>
       </div>
       <div class="job-content">
         <template v-for="job in jobs">
           <div class="job-content-item">
             <div class="job-content-item-name">{{job.name}}</div>
-            <span class="job-content-item-edit"></span>
-            <span class="job-content-item-delete"></span>
+            <span @click="dialogEditJob(job)" class="job-content-item-edit"></span>
+            <span @click="dialogDeleteJob(job.id)" class="job-content-item-delete"></span>
           </div>
         </template>
       </div>
@@ -34,17 +35,165 @@
         <div class="limit-title-name">选择权限</div>
       </div>
       <div class="limit-content">
-        <template v-for="limit in limits">
-          <div class="limit-content-title">{{limit.title}}：</div>
-          <div class="limit-content-items">
-            <template v-for="item in limit.items">
-              <div class="limit-content-item">{{item.title}}</div>
-            </template>
-          </div>
-        </template>
-        <div class="limit-btn">修改</div>
+        <form>
+          <template v-for="limit in limits">
+            <div class="limit-content-title">{{limit.title}}：</div>
+            <div class="limit-content-items">
+              <template v-for="item in limit.items">
+                <div class="limit-content-item"><input v-if="isEditLimit" class="limit-content-checkbox" type="checkbox" name="limit" value="item.title">{{item.title}}</div>
+              </template>
+            </div>
+          </template>
+          <div @click="editLimit" v-if="!isEditLimit" class="limit-btn">修改</div>
+          <div @click="confirmLimit" v-else class="limit-btn">确认</div>
+        </form>
       </div>
     </div>
+
+    <dialog-component id="first-class-enterprise">
+      <div slot="body">
+        <div class="dialog-title">创建一级企业</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="">企业名称：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="firstClassEnterprise.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="">时区：</label>
+            <div class="col-md-8">
+              <select type="text" class="form-control" v-model="firstClassEnterprise.timeZone"/>
+            </div>
+          </div>
+            <div class="dialog-btn">
+              <span @click="editCompany" class="dialog-btn-icon">确认创建</span>
+            </div>
+        </form>
+      </div>
+    </dialog-component>
+    <!--job-->
+    <dialog-component id="add-job">
+      <div slot="body">
+        <div class="dialog-title">创建岗位</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="name">岗位名称：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operJob.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">岗位描述：</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" v-model="operJob.description"/>
+            </div>
+          </div>
+            <div class="dialog-btn">
+              <span @click="editJob" class="dialog-btn-icon">确认创建</span>
+            </div>
+        </form>
+      </div>
+    </dialog-component>
+    <dialog-component id="edit-job">
+      <div slot="body">
+        <div class="dialog-title">编辑岗位</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="name">岗位名称：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="name" v-model="operJob.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="description">岗位描述：</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" id="description" v-model="operJob.description"/>
+            </div>
+          </div>
+            <div class="dialog-btn">
+              <span @click="editJob" class="dialog-btn-icon">确认修改</span>
+            </div>
+        </form>
+      </div>
+    </dialog-component>
+    <dialog-component id="delete-job">
+      <div slot="body">
+        <div class="dialog-title">删除岗位</div>
+        <div class="text-center">
+          <div class="dialog-warning"></div>
+        </div>
+        <p>您确认要删除岗位：<a>operJob.name</a>吗？相关岗位下的属性的账号将一并删除！</p>
+        <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+        <div class="dialog-btn">
+          <span @click="editCompany" class="dialog-btn-icon">确认删除</span>
+        </div>
+      </div>
+    </dialog-component>
+    <!--company-->
+    <dialog-component id="edit-company">
+      <div slot="body">
+        <div class="dialog-title">编辑企业</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="company-name">名称：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="company-name" v-model="operCompany.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="time-zone">时区：</label>
+            <div class="col-md-8">
+              <select type="text" class="form-control" id="time-zone" v-model="operCompany.timeZone"/>
+            </div>
+          </div>
+            <div class="dialog-btn">
+              <span @click="editCompany" class="dialog-btn-icon">确认修改</span>
+            </div>
+        </form>
+      </div>
+    </dialog-component>
+    <dialog-component id="add-company">
+      <div slot="body">
+        <div class="dialog-title">创建企业</div>
+        <form class="form-horizontal default-form">
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="parent">上级企业：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="parent" v-model="operCompany.parent"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">名称：</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" v-model="operCompany.name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="">时区：</label>
+            <div class="col-md-8">
+              <select type="text" class="form-control" id="" v-model="operCompany.timeZone"/>
+            </div>
+          </div>
+            <div class="dialog-btn">
+              <span @click="editCompany" class="dialog-btn-icon">确认创建</span>
+            </div>
+        </form>
+      </div>
+    </dialog-component>
+    <dialog-component id="delete-company">
+      <div slot="body">
+        <div class="dialog-title">删除企业</div>
+        <div class="text-center">
+          <div class="dialog-warning"></div>
+        </div>
+        <p>您确认要删除企业：<a>operCompany.name</a>及其名下的所有分支机构吗？相关部门下的属性的账号将一并删除！</p>
+        <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+        <div class="dialog-btn">
+          <span @click="editCompany" class="dialog-btn-icon">确认删除</span>
+        </div>
+      </div>
+    </dialog-component>
   </div>
 </template>
 
@@ -57,13 +206,35 @@
         name: 'organizeManagementPage',
         data() {
             return {
-                companies: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: []}]}]},{name: '厦门纵行科技', children: []}]},
-        {name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: [{name: '厦门纵行科技', children: []},{name: '厦门纵行科技', children: []}]},{name: '厦门纵行科技', children: []}]}],
+                companies: [{
+                    name: '厦门纵行科技',
+                    children: [{
+                        name: '厦门纵行科技',
+                        children: [{name: '厦门纵行科技', children: []}, {
+                            name: '厦门纵行科技',
+                            children: []
+                        }]
+                    }, {name: '厦门纵行科技', children: []}]
+                }],
                 jobs: [{name: '岗位'}],
                 limits: [{title: '系统权限', items: [{title: '组织管理'}, {title: '组织管理'}]}, {
                     title: '管理权限',
                     items: [{title: '组织管理'}]
-                }]
+                }],
+                operJob: {
+                    name: '',
+                    description: ''
+                },
+                operCompany: {
+                    name: '',
+                    timeZone: '',
+                    parent: ''
+                },
+                firstClassEnterprise: {
+                    name: '',
+                    timeZone: ''
+                },
+                isEditLimit: false
             }
         },
         created: function () {
@@ -76,8 +247,44 @@
                     this.searchParams.pages = res.pages;
                     this.logs = res.rows;
                 })
-            }
+            },
+            dialogFirstClassEnterPrise: function () {
+                $('#first-class-enterprise').modal('show');
+            },
+            dialogEditCompany: function (event) {
+                $('#edit-company').modal();
+            },
+            dialogAddCompany: function () {
+                $('#add-company').modal();
+            },
+            dialogDeleteCompany: function () {
+                $('#delete-company').modal();
+            },
+            editCompany: function () {
 
+            },
+            editJob: function () {
+
+            },
+            deleteJob: function (id) {
+
+            },
+            dialogAddJob: function () {
+                $('#add-job').modal()
+            },
+            dialogEditJob: function () {
+                $('#edit-job').modal()
+            },
+            dialogDeleteJob: function () {
+                $('#delete-job').modal()
+            },
+            editLimit: function () {
+                this.isEditLimit = true;
+            },
+            confirmLimit: function () {
+                this.isEditLimit = false;
+
+            }
         },
         components: {
             'tree-folder': treeFolderComponent,
@@ -91,11 +298,13 @@
   .organize {
     white-space: nowrap;
   }
+
   .company,
   .job,
   .limit {
     position: relative;
-    display: inline-block;
+    /*display: inline-block;*/
+    float: left;
     padding: 30px 20px;
     vertical-align: top;
     box-shadow: 0 0 20px #ccc;
@@ -129,6 +338,7 @@
         color: #fff;
         padding-left: 10px;
         vertical-align: middle;
+        cursor: pointer;
       }
       .btn-add-company {
         width: 160px;
@@ -160,6 +370,9 @@
   .company {
     max-width: 880px;
     max-height: 910px;
+    .company-full {
+      display: inline-block;
+    }
     .company-content {
       display: inline-block;
       white-space: nowrap;
@@ -175,7 +388,7 @@
   }
 
   .job {
-    .job-content-item{
+    .job-content-item {
       min-width: 240px;
       height: 100px;
       margin-bottom: 20px;
@@ -218,11 +431,20 @@
         margin-bottom: 35px;
         font-size: 20px;
         color: #656565;
-        text-align: center;
+        text-align: left;
         .limit-content-item {
+          position: relative;
           margin-bottom: 22px;
+          margin-left: 80px;
           .job-content-item-edit {
             margin-right: 50%;
+          }
+          .limit-content-checkbox {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            left: -20px;
+            top: 3px;
           }
         }
       }
@@ -242,9 +464,10 @@
       }
     }
   }
+
   .tree-folder-children >
   .tree-folder-items >
-  .tree-folder-branch{
+  .tree-folder-branch {
     display: inline-block;
     width: 40px;
     height: @lineHeight;
