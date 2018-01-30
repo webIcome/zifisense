@@ -65,7 +65,7 @@
 
   .dialog-title {
     text-align: center;
-    font-size: 20px;
+    font-size: 24px;
     color: #1789e1;
     margin-bottom: 40px;
   }
@@ -89,8 +89,14 @@
     }
   }
   p{
-    font-size: 18px;
+    font-size: 16px;
     white-space: normal;
+    &.title {
+      font-size: 20px;
+      margin-bottom: 40px;
+      color: #000;
+      text-align: center;
+    }
   }
 
   .dialog-warning {

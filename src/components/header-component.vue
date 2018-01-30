@@ -53,6 +53,7 @@
     import {mapGetters, mapActions} from 'vuex';
     import MutationTypes from "../store/mutation-types";
     import DialogComponent from "./dialog-component/dialog-component";
+    import Config from "../config";
     export default {
         components: {DialogComponent}, name: 'headerComponent',
         data () {
@@ -81,7 +82,8 @@
                 getUser: MutationTypes.GET_USER_LOCAL
             }),
             goToHome: function () {
-                this.$router.push('/');
+//                this.$router.push('/');
+                window.location.replace('/')
             },
             changePassword: function () {
 
