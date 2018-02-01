@@ -52,7 +52,6 @@
         },
         created: function () {
             this.getSysMenus();
-//            this.initMenus();
         },
         methods: {
             getSysMenus: function () {
@@ -64,7 +63,8 @@
                         imgActive: '../static/img/sys/user-active.png',
                         children: [
                             {name: '灯控器', url: '/device/lamp'},
-                            {name: '回路控制器', url: '/device/loop'}
+                            {name: '回路控制器', url: '/device/loop'},
+                            {name: '控制面板', url: '/device/panel'},
                         ]
                     },
                     {
@@ -82,7 +82,12 @@
                 this.navs = navs;
             },
             initMenus: function () {
-                $('.collapse .router-link-active').parent().addClass('in').parent().find('[aria-expanded]').attr('aria-expanded', true);
+                if (window.location.hash == '#/') {
+                    this.$router.push({name: 'lamp'});
+                }
+                this.$nextTick(function () {
+                    $('.collapse .router-link-active').parent().addClass('in').parent().find('[aria-expanded]').attr('aria-expanded', true);
+                })
             },
         },
         mounted: function () {
@@ -107,7 +112,6 @@
   }
 
   .full-view-bg {
-    font-size: 0px;
     &:before {
       position: absolute;
       content: '';

@@ -4,15 +4,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import UserModule from './modules/user';
+import actions from './actions';
 
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
-    // actions,
+    actions,
     modules: {
-        UserModule
+        UserModule,
     },
     strict: debug,
     // plugins: debug ? [createLogger()] : []

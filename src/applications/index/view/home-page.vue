@@ -12,8 +12,8 @@
           <div class="section-manage-container collapse in" id="applications">
             <div class="section-manage-container-items clearfix">
               <template v-for="app in applications">
-                <a class="section-manage-container-item col-md-4" :href="app.url" @mouseover="appHover(app)" @mouseout="appNormal(app)">
-                  <div class="section-manage-container-item-img" :style="'background:' +  'url(' + (app.isActive ? app.imgActive : app.img) +') no-repeat center center'">
+                <a class="section-manage-container-item col-md-4" :href="app.url" :class="app.ename">
+                  <div class="section-manage-container-item-img">
                   </div>
                   <div class="section-manage-container-item-title">{{app.title}}</div>
                 </a>
@@ -28,8 +28,8 @@
           </div>
           <div class="section-manage-container collapse in" id="subsidiary">
             <div class="section-manage-container-items clearfix">
-              <div class="section-manage-container-item col-md-4" v-for="app in subsidiary" @click="goToApplication(app.url)" @mouseover="appHover(app)" @mouseout="appNormal(app)">
-                <div class="section-manage-container-item-img" :style="'background:' +  'url(' + (app.isActive ? app.imgActive : app.img) +') no-repeat center center'">
+              <div class="section-manage-container-item col-md-4" v-for="app in subsidiary" @click="goToApplication(app.url)" :class="app.ename">
+                <div class="section-manage-container-item-img">
                 </div>
                 <div class="section-manage-container-item-title">{{app.title}}</div>
               </div>
@@ -53,15 +53,15 @@
                 },
                 applications: [],
                 subsidiary: [
-                    {title: '系统管理', url: '/management', img: '../static/img/home/sys.png', imgActive: '../static/img/home/sys-active.png', isActive: false}
+                    {title: '系统管理', url: '/management',ename: 'sys', img: '../static/img/home/sys.png', imgActive: '../static/img/home/sys-active.png', isActive: false}
                 ]
             }
         },
         created: function () {
             this.applications = [
-                {title: '智慧照明', url: 'http://localhost:8080/lamp', img: '../static/img/home/light-app.png', imgActive: '../static/img/home/light-app-active.png', isActive: false},
-                {title: '智慧照明', url: '', img: '../static/img/home/estate-app.png', imgActive: '../static/img/home/estate-app-active.png', isActive: false},
-                {title: '智慧照明', url: '', img: '../static/img/home/worker-app.png', imgActive: '../static/img/home/worker-app-active.png', isActive: false},
+                {title: '智慧照明',ename: 'light', url: '/lamp', img: '../static/img/home/light-app.png', imgActive: '../static/img/home/light-app-active.png', isActive: false},
+                {title: '智慧照明',ename: 'estate', url: '', img: '../static/img/home/estate-app.png', imgActive: '../static/img/home/estate-app-active.png', isActive: false},
+                {title: '智慧照明',ename: 'worker', url: '', img: '../static/img/home/worker-app.png', imgActive: '../static/img/home/worker-app-active.png', isActive: false},
             ];
 //            this.getApplications()
         },
@@ -102,6 +102,7 @@
         height: 60px;
         line-height: 60px;
         color: #fff;
+        background: -webkit-linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));
         background: linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));
         font-size: 24px;
         .icon {
@@ -122,7 +123,64 @@
           .section-manage-container-item {
             color: #fff;
             cursor: pointer;
+            display: inline-block;
+            text-align: center;
             &:hover {
+              color: #61b5f5;
+            }
+            &.light,
+            &.estate,
+            &.worker,
+            &.sys{
+              .section-manage-container-item-img {
+                display: inline-block;
+                width: 200px;
+                height: 200px;
+                margin-bottom: 30px;
+                border-radius: 50%;
+              }
+            }
+            &.sys {
+              .section-manage-container-item-img {
+                background-image: url("../assets/home/sys.png");
+              }
+              &:hover {
+                .section-manage-container-item-img {
+                  background-image: url("../assets/home/sys-active.png");
+                }
+              }
+            }
+            &.light {
+              .section-manage-container-item-img {
+                background-image: url("../assets/home/light-app.png");
+              }
+              &:hover {
+                .section-manage-container-item-img {
+                  background-image: url("../assets/home/light-app-active.png");
+                }
+              }
+            }
+            &.estate {
+              .section-manage-container-item-img {
+                background-image: url("../assets/home/estate-app.png");
+              }
+              &:hover {
+                .section-manage-container-item-img {
+                  background-image: url("../assets/home/estate-app-active.png");
+                }
+              }
+            }
+            &.worker {
+              .section-manage-container-item-img {
+                background-image: url("../assets/home/worker-app.png");
+              }
+              &:hover {
+                .section-manage-container-item-img {
+                  background-image: url("../assets/home/worker-app-active.png");
+                }
+              }
+            }
+            /*&:hover {
               color: #61b5f5;
               .section-manage-container-item-img {
                 box-shadow: 0px 5px 50px rgba(0,0,0,0.5);
@@ -137,7 +195,7 @@
               height: 200px;
               margin-bottom: 30px;
               border-radius: 50%;
-            }
+            }*/
           }
         }
 

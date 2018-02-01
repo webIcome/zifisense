@@ -12,6 +12,8 @@ Vue.config.productionTip = false;
 
 import components from '../../components';
 import pipes from '../../pipes';
+import VueLoading from '../../utils/loading/loading';
+Vue.use(VueLoading);
 
 initComponent(components);
 initPipe(pipes);

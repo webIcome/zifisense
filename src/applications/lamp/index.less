@@ -1,0 +1,123 @@
+.content-right {
+  box-shadow: 0 0 20px #ccc;
+  padding: 40px;
+  .search {
+    width: 100%;
+    .default-btn {
+      .quick-search-icon {
+        width: 19px;
+        height: 21px;
+        background-image: url("./assets/home/quick-search.png");
+      }
+    }
+  }
+  .pull-right {
+    .default-btn {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 18px;
+      text-align: center;
+      .search-icon {
+        width: 18px;
+        height: 18px;
+        background-image: url("../../assets/sys/search.png");
+      }
+      .add-icon {
+        width: 18px;
+        height: 18px;
+        background-image: url("../../assets/sys/add-number.png");
+      }
+    }
+  }
+  .table {
+    margin-top: 20px;
+    .td-btns {
+      white-space: nowrap;
+      .icon-item {
+        display: inline-block;
+        width: 33%;
+        vertical-align: middle;
+        .edit-icon,
+        .set-icon,
+        .delete-icon {
+          display: inline-block;
+          text-align: center;
+          vertical-align: middle;
+          cursor: pointer;
+        }
+        .edit-icon {
+          width: 23px;
+          height: 24px;
+          background-image: url("./assets/device/edit.png");
+        }
+        .set-icon {
+          width: 25px;
+          height: 24px;
+          background-image: url("./assets/device/set.png");
+        }
+        .delete-icon {
+          width: 24px;
+          height: 26px;
+          background-image: url("./assets/device/delete.png");
+        }
+      }
+    }
+  }
+  .group-lamp {
+    position: relative;
+    .group-item {
+      width: 40%;
+      text-align: center;
+      .group-delete {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        vertical-align: sub;
+        margin-left: 10px;
+        background-image: url("./assets/device/group-delete.png");
+      }
+      &:nth-child(odd) {
+        margin-right: 20%;
+      }
+    }
+    .group-add {
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -12px;
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-image: url("./assets/device/group-add.png");
+      cursor: pointer;
+    }
+  }
+  tr {
+    //cursor: pointer;
+  }
+
+  .page-title {
+    color: #333;
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .input-two {
+    display: inline-block;
+    width: 43%;
+    margin: 0 5px;
+    &.datepicker {
+      width: 42%;
+    }
+  }
+  .search-btn {
+    margin-top: 80px;
+    text-align: center;
+    .default-btn {
+      margin: 0 15%;
+      width: 150px;
+    }
+  }
+}
+
+

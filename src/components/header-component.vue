@@ -73,9 +73,7 @@
             }
         },
         created () {
-            this.getUser().then(user => {
-                if (user) this.user = user
-            });
+            this.user = this.$store.state.UserModule.user;
         },
         methods: {
             ...mapActions({

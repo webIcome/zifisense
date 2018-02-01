@@ -10,8 +10,7 @@
           <div class="aside-nav">
             <ul>
               <li v-for="nav in navs" @click="clickNav(nav)" @mouseover="navHover(nav)" @mouseout="navNormal(nav)">
-                <router-link :to="nav.url" :class="{active: nav.active || nav.hover}"><img class="nav-icon"
-                                                                                           :src="(nav.active||nav.hover? nav.imgActive:nav.img)"></img>{{nav.name}}
+                <router-link :to="nav.url" :class="nav.ename" class="nav"><div class="nav-icon"></div>{{nav.name}}
                 </router-link>
               </li>
             </ul>
@@ -44,31 +43,21 @@
                 let navs = [
                     {
                         name: '用户管理',
+                        ename: 'user',
                         url: '/management/user',
-                        active: true,
-                        hover: false,
-                        img: '../static/img/sys/user.png',
-                        imgActive: '../static/img/sys/user-active.png'
                     },
                     {
                         name: '组织管理',
+                        ename: 'organize',
                         url: '/management/organize',
-                        active: false,
-                        hover: false,
-                        img: '../static/img/sys/organize.png',
-                        imgActive: '../static/img/sys/organize-active.png'
                     },
                     {
                         name: '操作日志',
+                        ename: 'log',
                         url: '/management/log',
-                        active: false,
-                        hover: false,
-                        img: '../static/img/sys/log.png',
-                        imgActive: '../static/img/sys/log-active.png'
                     },
                 ];
                 this.navs = navs;
-                this.$router.push('/management/user')
             },
             clickNav: function (nav) {
                 this.resetNav();
@@ -87,15 +76,18 @@
                 })
             },
             initMenus: function () {
-                this.navs.forEach(nav => {
-                    if (nav.active) this.$router.push(nav.url);
-                })
+                this.initDefaultMenu();
             },
             initDefaultMenu: function () {
-
+                if (window.location.hash == '#/management') this.$router.push({name: 'user'});
             },
         },
         mounted: function () {
+        },
+        watch: {
+            '$route': function () {
+               this.initDefaultMenu()
+            }
         }
     }
 </script>
@@ -148,7 +140,8 @@
         ul {
           padding: 0;
         }
-        a {
+        a.nav {
+          position: relative;
           display: inline-block;
           width: 100%;
           height: 100px;
@@ -156,6 +149,61 @@
           text-align: center;
           color: #fff;
           font-size: 20px;
+          &.router-link-active,
+          &.nav:hover{
+            color: #66bbff;
+            background-color: #15283f;
+          }
+          &.user,
+          &.organize,
+          &.log {
+            .nav-icon {
+              position: absolute;
+              left: 70px;
+              top: 50%;
+              margin-top: -12px;
+              display: inline-block;
+            }
+          }
+          &.user {
+            .nav-icon {
+              width: 24px;
+              height: 23px;
+              background-image: url("../assets/sys/user.png");
+            }
+            &:hover,
+            &.router-link-active{
+              .nav-icon {
+                background-image: url("../assets/sys/user-active.png");
+              }
+            }
+          }
+          &.organize {
+            .nav-icon {
+              width: 24px;
+              height: 24px;
+              background-image: url("../assets/sys/organize.png");
+            }
+            &:hover,
+            &.router-link-active{
+              .nav-icon {
+                background-image: url("../assets/sys/organize-active.png");
+              }
+            }
+          }
+          &.log{
+            .nav-icon {
+              width: 24px;
+              height: 26px;
+              background-image: url("../assets/sys/log.png");
+            }
+            &:hover,
+            &.router-link-active {
+              .nav-icon {
+                background-image: url("../assets/sys/log-active.png");
+              }
+            }
+          }
         }
         .active {
           color: #66bbff;

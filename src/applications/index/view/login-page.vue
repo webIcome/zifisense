@@ -132,8 +132,8 @@
         border: none;
         border-radius: 0;
         box-shadow: none;
-        border-image: linear-gradient(right,rgba(100,100,100,0.3), rgba(100,100,100,0.6) 50%)1 1;
-        border-bottom: 1px solid #fff;
+        /*border-image: linear-gradient(right,rgba(100,100,100,0.3), rgba(100,100,100,0.6) 50%)1 1;*/
+        /*border-bottom: 1px solid #fff;*/
         font-size: 22px;
         color: rgba(254,254,254, 0.8);
         &::placeholder {
@@ -167,5 +167,14 @@
         background: url("../assets/login/show-password.png") no-repeat center center;
       }
     }
+  }
+  #username {
+   background: url("../assets/login/user-code-line.png") no-repeat bottom;
+  }
+  #password {
+    background: url("../assets/login/user-code-line.png") no-repeat bottom;
+  }
+  #verifyCode {
+    background: url("../assets/login/verify-code-line.png") no-repeat bottom;
   }
 </style>
