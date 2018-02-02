@@ -15,6 +15,9 @@ Vue.config.productionTip = false;
 import components from '../../components';
 import pipes from '../../pipes';
 
+import Plugins from '../../plugins';
+
+initPlugins(Plugins);
 initComponent(components);
 initPipe(pipes);
 function initComponent(components) {
@@ -25,6 +28,11 @@ function initComponent(components) {
 function initPipe(pipes) {
     Object.keys(pipes).forEach(key => {
         Vue.filter(key, pipes[key]);
+    })
+}
+function initPlugins(plugins) {
+    plugins.forEach(plugin => {
+        Vue.use(plugin);
     })
 }
 

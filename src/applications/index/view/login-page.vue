@@ -44,7 +44,7 @@
     import RestfulConstant from "../../../constants/restful";
     import {mapActions} from 'vuex';
     import MutationTypes from "../../../store/mutation-types";
-    import GVerify from "../../../utils/g-verify";
+    import GVerify from "../../../plugins/g-verify";
     export default {
         name: 'login',
         data() {
@@ -73,7 +73,11 @@
               this.showPassword = !this.showPassword;
             },
             getVerifyCode: function () {
-                let code = '1234';
+                this.$http.get('code').then(res => {
+
+                }).catch(err => {
+
+                });
                 this.gVerifyCode.refresh(code)
             },
             ...mapActions({
