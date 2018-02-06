@@ -59,8 +59,6 @@
                     {
                         name: '设备管理',
                         ename: 'device',
-                        img: '../static/img/sys/user.png',
-                        imgActive: '../static/img/sys/user-active.png',
                         children: [
                             {name: '灯控器', url: '/device/lamp'},
                             {name: '回路控制器', url: '/device/loop'},
@@ -71,8 +69,6 @@
                         name: '控制管理',
                         ename: 'control',
                         url: '/management/control',
-                        img: '../static/img/sys/organize.png',
-                        imgActive: '../static/img/sys/organize-active.png',
                         children: [
                             {name: '灯控器', url: '/management/device'},
                             {name: '回路控制器', url: '/management/device'}
@@ -80,6 +76,18 @@
                     },
                 ];
                 this.navs = navs;
+               /* this.$globalCache.managementMenus.then(list => {
+                    this.navs = navs.filter(nav => {
+                        let permission = false;
+                        list.forEach(item => {
+                            if (nav.modulecode == item.modulecode) {
+                                nav.name = item.modulename;
+                                permission = true;
+                            }
+                        });
+                        return permission;
+                    })
+                })*/
             },
             initMenus: function () {
                 if (window.location.hash == '#/') {

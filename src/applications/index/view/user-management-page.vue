@@ -3,18 +3,19 @@
     <div class="search">
       <form class="form-inline default-form">
         <div class="form-group">
-          <label for="enterprise">归属企业：</label>
-          <input type="text" class="form-control" id="enterprise" v-model="searchParams.enterprise"/>
+          <label>归属企业：</label>
+          <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
+          <!--<input type="text" class="form-control" id="enterprise" v-model="searchParams.enterprise"/>-->
         </div>
         <div class="form-group">
           <label for="username">用户名：</label>
-          <input type="text" class="form-control" id="username" v-model="searchParams.username"/>
+          <input type="text" class="form-control" id="username" v-model="searchParams.loginname"/>
         </div>
         <div class="form-group">
           <label for="jopName">岗位名称：</label>
-          <input type="text" class="form-control" id="jopName" v-model="searchParams.jobName"/>
+          <input type="text" class="form-control" id="jopName" v-model="searchParams.postname"/>
         </div>
-        <div class="default-btn" @click="search">筛选</div>
+        <div class="form-group default-btn" @click="search">筛选</div>
       </form>
     </div>
     <div class="pull-right">
@@ -34,12 +35,12 @@
         </thead>
         <tbody>
         <tr v-for="user in users">
-          <td>{{user}}</td>
-          <td>{{user}}</td>
-          <td>{{user}}</td>
-          <td>{{user}}</td>
-          <td>{{user}}</td>
-          <td>{{user}}</td>
+          <td>{{user.loginname}}</td>
+          <td>{{user.username}}</td>
+          <td>{{user.email}}</td>
+          <td>{{user.companyname}}</td>
+          <td>{{user.postname}}</td>
+          <td>{{user.expiretime}}</td>
           <td class="td-btns">
             <div class="edit-icon-item"><span @click="dialogEditUser(user)" class="edit-icon"></span></div>
             <div class="edit-icon-item"><span @click="dialogResetPassword(user)" class="reset-icon"></span></div>
@@ -49,12 +50,14 @@
         </tbody>
       </table>
     </div>
-    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNumber" :pages="searchParams.pages"
+    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
     <dialog-component id="reset-password">
       <div slot="body">
         <div class="dialog-title">重置密码</div>
-        <p class="text-center">您确认要重置账号：<a>{{operUser.name}}</a>的密码吗？
+        <p class="text-center">您确认要重置账号：<a>{{operUser.loginname}}</a>的密码吗？
+
+
 
         <div class="col-md-12 dialog-btn">
           <span @click="resetPassword" class="dialog-btn-icon">确认</span>
@@ -68,7 +71,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="operUser.company" class="form-control">
+              <select v-model="operUser.companyid" class="form-control">
                 <template v-for="company in companies">
                   <option>{{company.name}}</option>
                 </template>
@@ -78,7 +81,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
-              <select v-model="operUser.job" class="form-control">
+              <select v-model="operUser.postid" class="form-control">
                 <template v-for="company in companies">
                   <option>{{company.name}}</option>
                 </template>
@@ -88,26 +91,26 @@
           <div class="form-group">
             <label class="col-md-4 control-label">登录名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.loginname"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">姓名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.username"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">电子邮箱：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.email"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
               <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.validity"></vue-datepicker-local>
+                                    v-model="operUser.exiretimehigh"></vue-datepicker-local>
             </div>
           </div>
           <div class="dialog-btn">
@@ -123,7 +126,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="operUser.company" class="form-control">
+              <select v-model="operUser.companyid" class="form-control">
                 <template v-for="company in companies">
                   <option>{{company.name}}</option>
                 </template>
@@ -133,7 +136,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
-              <select v-model="operUser.job" class="form-control">
+              <select v-model="operUser.postid" class="form-control">
                 <template v-for="company in companies">
                   <option>{{company.name}}</option>
                 </template>
@@ -143,26 +146,26 @@
           <div class="form-group">
             <label class="col-md-4 control-label">登录名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.loginname"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">姓名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.username"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">电子邮箱：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.email"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
               <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.validity"></vue-datepicker-local>
+                                    v-model="operUser.expiretimehigh"></vue-datepicker-local>
             </div>
           </div>
           <div class="dialog-btn">
@@ -177,7 +180,7 @@
         <div class="text-center">
           <div class="dialog-warning"></div>
         </div>
-        <p>您确认要删除账号：<a>{{operUser.name}}</a>吗？</p>
+        <p>您确认要删除账号：<a>{{operUser.loginname}}</a>吗？</p>
         <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
         <div class="dialog-btn">
           <span @click="deleteUser" class="dialog-btn-icon">确认删除</span>
@@ -192,7 +195,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="operUser.company" class="form-control">
+              <select v-model="operUser.companyid" class="form-control">
                 <template v-for="company in companies">
                   <option>{{company.name}}</option>
                 </template>
@@ -202,7 +205,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
-              <select v-model="operUser.job" class="form-control">
+              <select v-model="operUser.postid" class="form-control">
                 <template v-for="company in companies">
                   <option>{{company.name}}</option>
                 </template>
@@ -212,33 +215,31 @@
           <div class="form-group">
             <label class="col-md-4 control-label">登录名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.loginname"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">姓名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.username"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">电子邮箱：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.name"/>
+              <input type="text" class="form-control" v-model="operUser.email"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
               <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.validity"></vue-datepicker-local>
-              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.validity"></vue-datepicker-local>
+                                    v-model="operUser.expiretimehigh"></vue-datepicker-local>
             </div>
           </div>
 
           <div class=" dialog-btn">
-            <span @click="editUser" class="dialog-btn-icon">确认修改</span>
+            <span @click="editUser" class="dialog-btn-icon">确认</span>
           </div>
         </form>
       </div>
@@ -247,50 +248,84 @@
 </template>
 
 <script>
-    import HttpClient from "../../../core/http-client";
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
+    import Service from "../services";
     export default {
         name: 'userComponent',
         data() {
             return {
                 searchParams: {
-                    username: '',
-                    enterprise: '',
-                    jobName: '',
-                    pageSize: Config.DEFAULT_PAGE_SIZE,
-                    pageNumber: 0,
-                    pages: 0,
+                    postid: '',
+                    companyid: '',
+                    loginname: '',
+                    userName: '',
+                    email: '',
+                    pageSize: '',
+                    pageNum: '',
+                    pages: '',
                 },
-                users: [{}, {}],
+                defaultPaging: {
+                    pageSize: Config.DEFAULT_PAGE_SIZE,
+                    pageNum: 1
+                },
+                users: [],
                 operUser: {},
                 companies: [],
+                posts: []
             }
         },
         created: function () {
-
+            this.initData();
         },
         methods: {
-            pagingEvent: function (pageNumber) {
-                this.searchParams.pageNumber = pageNumber
+            initData: function () {
+                this.initUsers();
+                this.initCompanies();
             },
-            getUsers: function () {
-                HttpClient.getPaging(RestfulConstant.LOGS, this.searchParams).then(res => {
-                    this.searchParams.pageNumber = res.pageNumber;
+            initUsers: function () {
+                this.getUsers(this.defaultPaging)
+            },
+            pagingEvent: function (pageNumber) {
+                this.searchParams.pageNum = pageNumber;
+                this.getUsers(this.searchParams);
+            },
+            getUsers: function (params) {
+                this.$http.post(RestfulConstant.USER + '/' + RestfulConstant.GET_LIST, params).then(res => {
+                    this.searchParams.pageNum = res.pageNum;
                     this.searchParams.pages = res.pages;
-                    this.logs = res.rows;
+                    this.pageSize = res.pageSize;
+                    this.users = res.list;
+                })
+            },
+            initCompanies: function () {
+                this.$globalCache.companies.then(companies => {
+                    this.companies = companies;
+                })
+            },
+            chooseCompany: function (companyid) {
+                this.getPosts(companyid);
+            },
+            getPosts: function (companyid) {
+                Service.getPosts(this, companyid).then(posts => {
+                    this.posts = posts;
                 })
             },
             dialogHighSearch: function () {
                 $('#high-search').modal();
             },
             search: function () {
+                this.getUsers(Object.assign(this.searchParams, this.defaultPaging));
             },
-            dialogAddUser: function () {
+            dialogAddUser: function (user) {
+                this.resetData();
+                this.operUser = user;
                 $('#add-user').modal();
             },
             addUser: function () {
-
+                this.$http.post('user/add', this.operUser).then(res => {
+                    this.initUsers();
+                })
             },
             dialogResetPassword: function (user) {
                 $('#reset-password').modal();
@@ -299,16 +334,27 @@
 
             },
             dialogEditUser: function (user) {
+                this.resetData();
+                this.operUser = user;
                 $('#edit-user').modal();
             },
             editUser: function () {
-
+                this.$http.post('user/edit', this.operUser).then(res => {
+                    this.initUsers();
+                })
             },
             dialogDeleteUser: function (user) {
+                this.resetData();
+                this.operUser = user;
                 $('#delete-user').modal();
             },
             deleteUser: function () {
-
+                this.$http.post('user/delete', {userid: this.operUser.userid}).then(res => {
+                    this.initUsers();
+                })
+            },
+            resetData: function () {
+                this.operUser = {};
             }
 
         }
@@ -381,6 +427,5 @@
         background-image: url("../assets/sys/delete.png");
       }
     }
-
   }
 </style>

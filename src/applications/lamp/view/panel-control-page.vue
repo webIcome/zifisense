@@ -317,7 +317,8 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                this.$router.push({name: 'lamp/detail', params: device})
+                let path = 'panel/' + device.sn + '/detail';
+                this.$router.push(path)
             },
             dialogAddDevice: function () {
                 this.resetData();

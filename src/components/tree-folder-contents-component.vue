@@ -1,7 +1,7 @@
 <template>
   <div class="tree-folder-children">
     <template v-for="child in children">
-      <tree-folder-component v-if="child.children" :company="child" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete"></tree-folder-component>
+      <tree-folder-component v-if="child.children" :company="child" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete" v-on:input="choose"></tree-folder-component>
     </template>
   </div>
 </template>
@@ -23,6 +23,9 @@
             },
             dialogAdd: function (company) {
                 this.$emit('add', company)
+            },
+            choose: function (company) {
+                this.$emit('input', company)
             }
         }
     }

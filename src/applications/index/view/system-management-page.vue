@@ -9,7 +9,7 @@
           </div>
           <div class="aside-nav">
             <ul>
-              <li v-for="nav in navs" @click="clickNav(nav)" @mouseover="navHover(nav)" @mouseout="navNormal(nav)">
+              <li v-for="nav in navs">
                 <router-link :to="nav.url" :class="nav.ename" class="nav"><div class="nav-icon"></div>{{nav.name}}
                 </router-link>
               </li>
@@ -25,8 +25,6 @@
 </template>
 
 <script>
-    import HttpClient from "../../../core/http-client";
-    import RestfulConstant from "../../../constants/restful";
     export default {
         name: 'systemManagementPage',
         data() {
@@ -42,37 +40,32 @@
             getSysMenus: function () {
                 let navs = [
                     {
-                        name: '用户管理',
                         ename: 'user',
                         url: '/management/user',
+                        modulecode: 'code1'
                     },
                     {
-                        name: '组织管理',
                         ename: 'organize',
                         url: '/management/organize',
+                        modulecode: 'code2'
                     },
                     {
-                        name: '操作日志',
                         ename: 'log',
                         url: '/management/log',
+                        modulecode: 'code3'
                     },
                 ];
-                this.navs = navs;
-            },
-            clickNav: function (nav) {
-                this.resetNav();
-                nav.active = true;
-            },
-            navHover: function (nav) {
-                nav.hover = true;
-
-            },
-            navNormal: function (nav) {
-                nav.hover = false;
-            },
-            resetNav: function () {
-                this.navs.forEach(nav => {
-                    nav.active = false;
+                this.$globalCache.sysMenus.then(list => {
+                    this.navs = navs.filter(nav => {
+                        let permission = false;
+                        list.forEach(item => {
+                            if (nav.modulecode == item.modulecode) {
+                                nav.name = item.modulename;
+                                permission = true;
+                            }
+                        });
+                        return permission;
+                    })
                 })
             },
             initMenus: function () {
@@ -204,14 +197,6 @@
               }
             }
           }
-        }
-        .active {
-          color: #66bbff;
-          background-color: #15283f;
-        }
-        .nav-icon {
-          margin-right: 25px;
-          vertical-align: text-top;
         }
       }
     }

@@ -6,6 +6,10 @@ const RestfulConstant = {
     LOGIN: 'login',
     LOGOUT: 'logout',
     LOGS: 'logs',
-    USERS: 'users'
+    USERS: 'users',
+    COMPANY: 'company',
+    GET_TREE_INFO: 'getTreeInfo',
+    USER: 'user',
+    GET_LIST: 'getList'
 };
 export default RestfulConstant;

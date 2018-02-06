@@ -8,7 +8,7 @@ import store from '../store';
 Vue.use(VueResource);
 Vue.http.interceptors.push(function (request, next) {
     window.vue.$loading();
-    request.headers.set('x-token', store.state.UserModule.token);
+    request.headers.set('access-token', store.state.UserModule.token);
     next(function (response) {
         window.vue.$loading.end();
         if(response.status == 401) {

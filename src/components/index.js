@@ -8,6 +8,7 @@ import datepicker from 'vue-datepicker-local';
 import treeFolderComponent from './tree-folder-component.vue';
 import treeFolderContentsComponent from './tree-folder-contents-component.vue';
 import slideBarComponent from './slide-bar-component.vue';
+import treeSelectComponent from './tree-select-component.vue';
 
 export default {
     'dialog-component': dialogComponent,
@@ -17,4 +18,5 @@ export default {
     'tree-folder-component': treeFolderComponent,
     'tree-folder-contents-component': treeFolderContentsComponent,
     'slide-bar-component': slideBarComponent,
+    'tree-select-component': treeSelectComponent,
 }

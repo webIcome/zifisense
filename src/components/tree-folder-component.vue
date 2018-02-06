@@ -2,14 +2,14 @@
   <div class="tree-folder-items" v-if="company">
     <!--<div class="tree-folder-branch"></div>-->
     <div class="tree-folder-header-branch"></div>
-    <div class="tree-folder-item">
+    <div @click="choose(company)" class="tree-folder-item" :class="{active: (value.name == company.name)}">
       <div class="tree-folder-item-name">{{company.name}}</div>
-      <div @click="dialogEdit(company)" class="tree-folder-item-edit"></div>
-      <div @click="dialogDelete(company)" class="tree-folder-item-delete"></div>
-      <div @click="dialogAdd(company)" class="tree-folder-item-add"></div>
+      <div @click.self="dialogEdit(company)" class="tree-folder-item-edit"></div>
+      <div @click.self="dialogDelete(company)" class="tree-folder-item-delete"></div>
+      <div @click.self="dialogAdd(company)" class="tree-folder-item-add"></div>
     </div>
     <div v-if="company.children.length" class="tree-folder-end-branch"></div>
-    <tree-folder-contents-component :children="company.children" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete"></tree-folder-contents-component>
+    <tree-folder-contents-component :children="company.children" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete" v-on:input="choose"></tree-folder-contents-component>
   </div>
 </template>
 
@@ -19,6 +19,10 @@
             company: {
                 type: Object,
                 default: ''
+            },
+            value: {
+                type: Object,
+                default: {}
             }
         },
         methods: {
@@ -30,6 +34,9 @@
             },
             dialogAdd: function (company) {
                 this.$emit('add', company)
+            },
+            choose: function (company) {
+                this.$emit('input', company)
             }
         }
     }
@@ -57,6 +64,13 @@
     background-color: #efefef;
     text-align: center;
     font-size: 16px;
+    cursor: pointer;
+    &:hover {
+      background: #ccc;
+    }
+    &.active {
+      background: #ccc;
+    }
     .tree-folder-item-name {
       margin-bottom: 15px;
     }

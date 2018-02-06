@@ -4,7 +4,11 @@
  */
 import Loading from './loading/loading';
 import SlideBar from './slide-bar';
+import GlobalCache from './global-cache';
+import Common from './common';
 export default [
     Loading,
-    SlideBar
+    SlideBar,
+    GlobalCache,
+    Common
 ]

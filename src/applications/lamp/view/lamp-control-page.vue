@@ -5,49 +5,44 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <input type="text" class="form-control" v-model="searchParams.phone" placeholder="输入设备名称"/>
+            <input type="text" class="form-control" v-model="searchParams.devicename" placeholder="输入设备名称"/>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <input type="text" class="form-control" v-model="searchParams.phone" placeholder="输入设备ID"/>
+            <input type="text" class="form-control" v-model="searchParams.sn" placeholder="输入设备ID"/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
-            <select v-model="searchParams.type" class="form-control">
-              <option value="">--选择归属企业--</option>
-              <template v-for="company in logs">
-                <option>{{company.name}}</option>
-              </template>
-            </select>
+            <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
           </div>
           <div class="form-group">
             <label class="sr-only">选择开关状态：</label>
-            <select v-model="searchParams.type" class="form-control">
-              <option value="" selected>--选择开关状态--</option>
-              <template v-for="company in logs">
-                <option>{{company.name}}</option>
+            <select class="form-control" v-model="searchParams.switchstate">
+              <option value="">--选择开关状态--</option>
+              <template v-for="status in switchStatus">
+                <option :value="status.value">{{status.text}}</option>
               </template>
             </select>
           </div>
           <div class="form-group">
             <label class="sr-only">灯控器类型：</label>
-            <select v-model="searchParams.type" class="form-control">
+            <select v-model="searchParams.lightcontrollerType" class="form-control">
               <option value="">--选择灯控器类型--</option>
-              <template v-for="company in logs">
-                <option>{{company.name}}</option>
+              <template v-for="type in lightControllerType">
+                <option :value="type.value">{{type.text}}</option>
               </template>
             </select>
           </div>
           <div class="form-group">
             <label class="sr-only">传感器类型：</label>
-            <select v-model="searchParams.type" class="form-control">
+            <select class="form-control" v-model="searchParams.sensortype">
               <option value="">--选择传感器类型--</option>
-              <template v-for="company in logs">
-                <option>{{company.name}}</option>
+              <template v-for="type in sensorType">
+                <option :value="type.value">{{type.text}}</option>
               </template>
             </select>
           </div>
-          <div class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
+          <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
             <div @click="dialogHighSearch" class="default-btn"><span class="search-icon default-icon"></span>高级搜索</div>
             <div data-toggle="modal" data-target="#add-device" class="default-btn"><span
@@ -73,27 +68,28 @@
         <th>操作</th>
         </thead>
         <tbody>
-        <tr v-for="log in logs" @click="showDetail($event, log)">
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
-          <td>{{log}}</td>
+        <tr v-for="item in list" @click="showDetail($event, item)">
+          <td>{{item.devicename}}</td>
+          <td>{{item.sn}}</td>
+          <td>{{item.runnintstate}}</td>
+          <td>{{item.position}}</td>
+          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
+          <td>{{item.brightness}}</td>
+          <td>{{item.voltagelow}}</td>
+          <td>{{item.current}}</td>
+          <td>{{item.activepower}}</td>
           <td class="td-btns">
             <!--<div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogSetDevice" class="set-icon"></span></div>-->
-            <div class="icon-item"><span data-toggle="modal" data-target="#edit-device" @click="dialogEditDevice({name: 11})" class="edit-icon"></span></div>
-            <div class="icon-item"><span data-toggle="modal" data-target="#delete-device" @click="dialogDeleteDevice"
+            <div class="icon-item"><span data-toggle="modal" data-target="#edit-device"
+                                         @click="dialogEditDevice(item)" class="edit-icon"></span></div>
+            <div class="icon-item"><span data-toggle="modal" data-target="#delete-device" @click="dialogDeleteDevice(item)"
                                          class="delete-icon"></span></div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <paging-component v-if="pages" :pageNumber="pageNumber" :pages="pages"
+    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
     <dialog-component id="add-device">
@@ -101,15 +97,15 @@
         <div class="dialog-title">创建灯控器</div>
         <form class="form-horizontal default-form">
           <div class="form-group">
-            <label class="col-md-4 control-label">设备详情：</label>
+            <label class="col-md-4 control-label">设备名称：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="addDeviceData.company"/>
+              <input type="text" class="form-control" v-model="operData.devicename"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">设备ID：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="addDeviceData.company"/>
+              <input type="text" class="form-control" v-model="operData.sn"/>
             </div>
           </div>
           <div class="form-group">
@@ -124,10 +120,10 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属回路控制器：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
+              <select v-model="operData.loopcontrollerSn" class="form-control">
                 <option value="">--选择回路控制器--</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
+                <template >
+                  <option>{{}}</option>
                 </template>
               </select>
             </div>
@@ -135,10 +131,10 @@
           <div class="form-group">
             <label class="col-md-4 control-label">灯控器类型：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">--选择灯控器--</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
+              <select class="form-control" v-model="operData.lightcontrollerType">
+                <option value="">--选择灯控器类型--</option>
+                <template v-for="type in lightControllerType">
+                  <option :value="type.value">{{type.text}}</option>
                 </template>
               </select>
             </div>
@@ -146,10 +142,10 @@
           <div class="form-group">
             <label class="col-md-4 control-label">传感器类型：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">无</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
+              <select class="form-control" v-model="operData.sensortype">
+                <option value="">--选择传感器类型--</option>
+                <template v-for="type in sensorType">
+                  <option :value="type.value">{{type.text}}</option>
                 </template>
               </select>
             </div>
@@ -157,18 +153,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">地理位置：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="addDeviceData.company" placeholder="请输入地理位置"/>
+              <input type="text" class="form-control" v-model="operData.position" placeholder="请输入地理位置"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">无</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
-                </template>
-              </select>
+              <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
             </div>
           </div>
           <div class="dialog-btn">
@@ -179,18 +170,18 @@
     </dialog-component>
     <dialog-component id="edit-device">
       <div slot="body">
-        <div class="dialog-title">创建灯控器</div>
+        <div class="dialog-title">编辑灯控器</div>
         <form class="form-horizontal default-form">
           <div class="form-group">
             <label class="col-md-4 control-label">设备名称：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.name"/>
+              <input type="text" class="form-control" v-model="operData.devicename"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">设备ID：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="addDeviceData.company"/>
+              <input type="text" class="form-control" v-model="operData.sn"/>
             </div>
           </div>
           <div class="form-group">
@@ -205,10 +196,9 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属回路控制器：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">--选择回路控制器--</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
+              <select v-model="operData.loopcontrollerSn" class="form-control">
+                <template >
+                  <option>{{}}</option>
                 </template>
               </select>
             </div>
@@ -216,10 +206,9 @@
           <div class="form-group">
             <label class="col-md-4 control-label">灯控器类型：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">--选择灯控器--</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
+              <select class="form-control" v-model="operData.lightcontrollerType">
+                <template v-for="type in lightControllerType">
+                  <option :value="type.value">{{type.text}}</option>
                 </template>
               </select>
             </div>
@@ -227,10 +216,9 @@
           <div class="form-group">
             <label class="col-md-4 control-label">传感器类型：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">无</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
+              <select class="form-control" v-model="operData.sensortype">
+                <template v-for="type in sensorType">
+                  <option :value="type.value">{{type.text}}</option>
                 </template>
               </select>
             </div>
@@ -238,18 +226,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">地理位置：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="addDeviceData.company" placeholder="请输入地理位置"/>
+              <input type="text" class="form-control" v-model="operData.position" placeholder="请输入地理位置"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="addDeviceData.company" class="form-control">
-                <option value="">无</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
-                </template>
-              </select>
+              <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
             </div>
           </div>
           <div class="dialog-btn">
@@ -261,7 +244,7 @@
 
     <dialog-component id="delete-device">
       <div slot="body">
-        <div class="dialog-title">删除等控器</div>
+        <div class="dialog-title">删除灯控器</div>
         <div class="text-center">
           <div class="dialog-warning"></div>
         </div>
@@ -273,76 +256,78 @@
       </div>
     </dialog-component>
 
-   <!-- <dialog-component id="set-device">
-      <div slot="body">
-        <div class="dialog-title">控制灯控器</div>
-        <form class="form-horizontal default-form-radio">
-          <div class="form-group">
-            <label class="col-md-4 control-label">开关：</label>
-            <div class="col-md-8">
-              <div class="col-md-6"><input type="radio"  name="switch"/> 开</div>
-              <div class="col-md-6"><input type="radio"  name="switch"/> 关</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">亮度：</label>
-            <div class="col-md-8">
-              <input type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label"></label>
-            <div class="col-md-8">
-              <input type="checkbox" /> 状态读取
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">所在时区：</label>
-            <div class="col-md-8">
-              <select  class="form-control">
-                <option value="">无</option>
-                <template v-for="company in logs">
-                  <option>{{company.name}}</option>
-                </template>
-              </select>
-            </div>
-          </div>
-          <div class="dialog-btn">
-            <span @click="deleteDevice" class="dialog-btn-icon">确认</span>
-          </div>
-        </form>
-      </div>
-    </dialog-component>-->
+    <!-- <dialog-component id="set-device">
+       <div slot="body">
+         <div class="dialog-title">控制灯控器</div>
+         <form class="form-horizontal default-form-radio">
+           <div class="form-group">
+             <label class="col-md-4 control-label">开关：</label>
+             <div class="col-md-8">
+               <div class="col-md-6"><input type="radio"  name="switch"/> 开</div>
+               <div class="col-md-6"><input type="radio"  name="switch"/> 关</div>
+             </div>
+           </div>
+           <div class="form-group">
+             <label class="col-md-4 control-label">亮度：</label>
+             <div class="col-md-8">
+               <input type="text" class="form-control" />
+             </div>
+           </div>
+           <div class="form-group">
+             <label class="col-md-4 control-label"></label>
+             <div class="col-md-8">
+               <input type="checkbox" /> 状态读取
+             </div>
+           </div>
+           <div class="form-group">
+             <label class="col-md-4 control-label">所在时区：</label>
+             <div class="col-md-8">
+               <select  class="form-control">
+                 <option value="">无</option>
+                 <template v-for="company in logs">
+                   <option>{{company.name}}</option>
+                 </template>
+               </select>
+             </div>
+           </div>
+           <div class="dialog-btn">
+             <span @click="deleteDevice" class="dialog-btn-icon">确认</span>
+           </div>
+         </form>
+       </div>
+     </dialog-component>-->
   </div>
 
   <div v-else class="content-right">
     <div class="page-title">灯控器高级搜索</div>
     <form class="form-horizontal default-form">
       <div class="form-group">
-        <label class="col-md-3 control-label">设备详情：</label>
+        <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control"/>
+          <input type="text" class="form-control" v-model="advancedSearchParams.devicename"/>
         </div>
         <label class="col-md-3 control-label">电压：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two"/>到<input type="text" class="form-control input-two"/>
+          <input type="text" class="form-control input-two" v-model="advancedSearchParams.voltagelow"/>到<input
+            type="text" class="form-control input-two" v-model="advancedSearchParams.voltagehigh"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control"/>
+          <input type="text" class="form-control" v-model="advancedSearchParams.sn"/>
         </div>
         <label class="col-md-3 control-label">电流：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two"/>到<input type="text" class="form-control input-two"/>
+          <input type="text" class="form-control input-two" v-model="advancedSearchParams.currrentlow"/>到<input
+            v-model="advancedSearchParams.currenthigh" type="text" class="form-control input-two"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="">--选择回路控制器--</option>
+          <select class="form-control" v-model="advancedSearchParams.groupid">
+            <option value="">--选择归属组--</option>
             <template>
               <option></option>
             </template>
@@ -350,14 +335,15 @@
         </div>
         <label class="col-md-3 control-label">有功电能：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two"/>到<input type="text" class="form-control input-two"/>
+          <input type="text" class="form-control input-two" v-model="advancedSearchParams.activepowerlow"/>到<input
+            type="text" class="form-control input-two" v-model="advancedSearchParams.activepowerhigh"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属回路控制器：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="">--选择回路控制器--</option>
+          <select class="form-control" v-model="advancedSearchParams.loopcontrollerSn">
+            <option value="">--选择归属回路控制器--</option>
             <template>
               <option></option>
             </template>
@@ -365,61 +351,58 @@
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control"/>
+          <input type="text" class="form-control" v-model="advancedSearchParams.position"/>
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">灯控类型：</label>
+        <label class="col-md-3 control-label">灯控器类型：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="">--选择灯控类型--</option>
-            <template>
-              <option></option>
+          <select class="form-control" v-model="advancedSearchParams.lightcontrollerType">
+            <option value="">--选择灯控器类型--</option>
+            <template v-for="type in lightControllerType">
+              <option :value="type.value">{{type.text}}</option>
             </template>
           </select>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"></vue-datepicker-local>到
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"></vue-datepicker-local>
+          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"
+                                v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>到
+          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"
+                                v-model="advancedSearchParams.regtimeend"></vue-datepicker-local>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">传感器类型：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="">--选择传感器--</option>
-            <template>
-              <option></option>
+          <select class="form-control" v-model="advancedSearchParams.sensortype">
+            <option value="">--选择传感器类型--</option>
+            <template v-for="type in sensorType">
+              <option :value="type.value">{{type.text}}</option>
             </template>
           </select>
         </div>
         <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="">无</option>
-            <template>
-              <option></option>
-            </template>
-          </select>
+          <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">开关状态：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="">无</option>
-            <template>
-              <option></option>
+          <select class="form-control" v-model="advancedSearchParams.switchstate">
+            <option value="">--选择开关状态--</option>
+            <template v-for="status in switchStatus">
+              <option :value="status.value">{{status.text}}</option>
             </template>
           </select>
         </div>
         <label class="col-md-3 control-label">运行状态：</label>
         <div class="col-md-3">
-          <select  class="form-control">
-            <option value="" selected>--选择运行状态--</option>
-            <template>
-              <option></option>
+          <select class="form-control" v-model="advancedSearchParams.runningstate">
+            <option value="">--选择运行状态--</option>
+            <template v-for="status in runningStatus">
+              <option :value="status.value">{{status.text}}</option>
             </template>
           </select>
         </div>
@@ -427,7 +410,8 @@
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two"/>到<input type="text" class="form-control input-two"/>
+          <input type="text" class="form-control input-two" v-model="advancedSearchParams.brightnesslow"/>到<input
+            type="text" class="form-control input-two" v-model="advancedSearchParams.brightnesshigh"/>
         </div>
       </div>
       <div class="search-btn">
@@ -440,38 +424,108 @@
 </template>
 
 <script>
-    import HttpClient from "../../../core/http-client";
     import RestfulConstant from "../../../constants/restful";
+    import Config from "../../../config";
+    import {ContentLamp} from '../models'
     export default {
         name: 'lampControlPage',
         data() {
             return {
                 searchParams: {
-                    deviceName: '',
-                    deviceId: '',
-                    company: '',
-                    switchStatus: '',
-                    type: '',
-                    sensorType: ''
+                    devicename: '',
+                    sn: '',
+                    companyid: '',
+                    switchstate: '',
+                    lightcontrollerType: '',
+                    sensortype: ''
                 },
-                advancedSearchParams: {},
+                advancedSearchParams: {
+                    devicename: '',
+                    sn: '',
+                    groupid: '',
+                    loopcontrollerSn: '',
+                    lightcontrollerType: '',
+                    sensortype: '',
+                    switchstate: '',
+                    brightnesslow: '',
+                    brightnesshigh: '',
+                    voltagelow: '',
+                    voltagehigh: '',
+                    currentlow: '',
+                    currenthigh: '',
+                    activepowerlow: '',
+                    activepowerhigh: '',
+                    position: '',
+                    regtimestart: '',
+                    regtimeend: '',
+                    companyid: '',
+                    runningstate: '',
+                },
                 operData: {},
-                addDeviceData: {},
-                groups: [{name: '分组1'},{name: '分组2'}],
-                pageNumber: 1,
-                pages: 6,
-                logs: [{}, {}],
-                isSearchPage: false
+                groups: [{name: '分组1'}, {name: '分组2'}],
+                isSearchPage: false,
+                list: [{}],
+                companies: [],
+                lightControllerType: [
+                    {value: 1, text: '电源蓝牙'},
+                    {value: 2, text: '电源ZETA'},
+                    {value: 3, text: '电源蓝牙+ZETA'},
+                    {value: 4, text: '外挂式蓝牙'},
+                    {value: 5, text: '外挂式ZETA'},
+                    {value: 6, text: '外挂式蓝牙+ZETA'},
+                ],
+                switchStatus: [
+                    {value: 1, text: '开'},
+                    {value: 2, text: '关'},
+                ],
+                sensorType: [
+                    {value: 1, text: '无'},
+                    {value: 2, text: '光感'},
+                    {value: 3, text: '微波'},
+                ],
+                runningStatus: [
+                    {value: 1, text: '正常'},
+                    {value: 2, text: '欠流'},
+                    {value: 3, text: '过流'},
+                    {value: 4, text: '欠压'},
+                    {value: 5, text: '过压'},
+                ],
+                defaultPaging: {
+                    pageSize: Config.DEFAULT_PAGE_SIZE,
+                    pageNum: 1
+                },
             }
         },
         created: function () {
-
+            this.initData()
         },
         methods: {
-            pagingEvent: function (pageNumber) {
-                this.pageNumber = pageNumber;
+            initData: function () {
+                this.initLamp();
+                this.initCompanies();
+                this.initOperData();
             },
-            getList: function (searchParams) {
+            initLamp: function () {
+                this.findList(this.defaultPaging)
+            },
+            initCompanies: function () {
+                this.$globalCache.companies.then(companies => {
+                    this.companies = companies;
+                })
+            },
+            initOperData: function () {
+              this.operData = this.$common.copyObj(ContentLamp);
+            },
+            pagingEvent: function (pageNumber) {
+                this.searchParams.pageNum = pageNumber;
+                this.findList(this.searchParams);
+            },
+            findList: function (params) {
+                this.$http.post('lightController/getList', params).then(res => {
+                    this.searchParams.pageNum = res.pageNum;
+                    this.searchParams.pages = res.pages;
+                    this.list = res.list;
+                })
             },
             addGroup: function () {
 
@@ -479,8 +533,11 @@
             dialogHighSearch: function () {
                 this.isSearchPage = true
             },
+            search: function () {
+                this.findList(Object.assign(this.searchParams, this.defaultPaging));
+            },
             highSearch: function () {
-                this.getList(this.advancedSearchParams);
+                this.findList(Object.assign(this.advancedSearchParams, this.defaultPaging));
                 this.goBack();
             },
             goBack: function () {
@@ -488,10 +545,10 @@
             },
             showDetail: function (event, device) {
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
-                  return;
+                    return;
                 }
-                device = {id: 1, name: 222}
-                this.$router.push({name: 'lamp/detail', params: device})
+                let path = 'lamp/' + device.sn + '/detail';
+                this.$router.push(path)
             },
             dialogAddDevice: function () {
                 this.resetData();
@@ -500,22 +557,30 @@
                 this.resetData();
                 this.operData = device;
             },
-            dialogDeleteDevice: function () {
+            dialogDeleteDevice: function (device) {
+                this.resetData();
+                this.operData = device;
             },
             deleteDevice: function () {
-                this.hideModal();
+                this.$http.post('lightController/delete', this.operData).then(res => {
+                    this.hideModal();
+                });
             },
             editDevice: function () {
-                this.hideModal();
+                this.$http.post('lightController/edit', this.operData).then(res => {
+                    this.hideModal();
+                });
             },
             addDevice: function () {
-                this.hideModal();
+                this.$http.post('lightController/add', this.operData).then(res => {
+                    this.hideModal();
+                });
             },
             hideModal: function () {
                 $('.modal').modal('hide')
             },
             resetData: function () {
-                this.operData = {};
+                this.operData = this.$common.copyObj(ContentLamp);
             }
 
         }

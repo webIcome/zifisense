@@ -14,8 +14,12 @@ Vue.config.productionTip = false;
 
 import components from '../../components';
 import pipes from '../../pipes';
-
 import Plugins from '../../plugins';
+import HttpClient from '../../core/http-vue';
+import Config from "../../config";
+
+HttpClient.options.root = Config.LAMP_URL_API;
+
 
 initPlugins(Plugins);
 initComponent(components);
