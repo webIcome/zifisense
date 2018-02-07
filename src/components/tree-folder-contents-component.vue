@@ -1,7 +1,7 @@
 <template>
   <div class="tree-folder-children">
     <template v-for="child in children">
-      <tree-folder-component v-if="child.children" :company="child" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete" v-on:input="choose"></tree-folder-component>
+      <tree-folder-component :value="value" v-if="child.children" :company="child" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete" v-on:input="choose"></tree-folder-component>
     </template>
   </div>
 </template>
@@ -12,6 +12,10 @@
             children: {
                 type: Array,
                 default: []
+            },
+            value: {
+                type: Object,
+                default: {}
             }
         },
         methods: {

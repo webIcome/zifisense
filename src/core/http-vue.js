@@ -7,10 +7,10 @@ import VueResource from 'vue-resource';
 import store from '../store';
 Vue.use(VueResource);
 Vue.http.interceptors.push(function (request, next) {
-    window.vue.$loading();
+    Vue.Loading();
     request.headers.set('access-token', store.state.UserModule.token);
     next(function (response) {
-        window.vue.$loading.end();
+        Vue.Loading.end();
         if(response.status == 401) {
             window.vue.$router.push('/login');
             return;

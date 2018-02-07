@@ -18,14 +18,16 @@ class GlobalCache {
             this._companies = new Promise(function (resolve) {
                 resolve([{
                     name: '厦门纵行科技',
+                    id: 1,
                     children: [{
+                        id: 2,
                         name: '厦门纵行科技1',
-                        children: [{name: '厦门纵行科技2', children: []}, {
-                            name: '厦门纵行科技',
+                        children: [{name: '厦门纵行科技2', id: 4, children: []}, {
+                            name: '厦门纵行科技',id:5,
                             children: []
                         }]
-                    }, {name: '厦门纵行科技3', children: []}]
-                },{name: '厦门纵行科技3', children: []}])
+                    }, {name: '厦门纵行科技3',id: 6, children: []}]
+                },{name: '厦门纵行科技3',id:7, children: []}])
             })
         }
         return this._companies;

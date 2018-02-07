@@ -4,3 +4,4 @@
  */
 export {Lamp as ContentLamp} from './content-lamp';
 export {Loop as ContentLoop} from './content-loop';
+export {Panel as ContentPanel} from './content-panel'

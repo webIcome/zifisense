@@ -58,11 +58,14 @@
         data() {
             return {
                 device: {},
-                id: ''
             }
         },
+        props: {
+            id: '',
+            pages: {}
+        },
         created: function () {
-            this.id = this.$route.params.id
+            this.getDetail(this.id);
         },
         methods: {
             getDetail: function (id) {
@@ -71,13 +74,8 @@
                 })
             },
             goBack: function () {
-                this.$router.back();
+                this.$emit('page', this.pages.home);
             },
-        },
-        watch: {
-            id: function (val) {
-                this.getDetail(val);
-            }
         }
     }
 </script>

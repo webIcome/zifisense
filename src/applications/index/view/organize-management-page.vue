@@ -23,10 +23,10 @@
       </div>
       <div class="job-content">
         <template v-for="post in posts">
-          <div class="job-content-item">
+          <div @click="choosePost(post)" class="job-content-item" :class="{active: post.postid==currentPost.postid}">
             <div class="job-content-item-name">{{post.postname}}</div>
-            <span @click="dialogEditPost(post)" class="job-content-item-edit"></span>
-            <span @click="dialogDeletePost(post)" class="job-content-item-delete"></span>
+            <span @click.self="dialogEditPost(post)" class="job-content-item-edit"></span>
+            <span @click.self="dialogDeletePost(post)" class="job-content-item-delete"></span>
           </div>
         </template>
       </div>
@@ -42,7 +42,7 @@
             <div class="limit-content-items">
               <template v-for="item in limit.items">
                 <div class="limit-content-item"><input v-if="isEditLimit" class="limit-content-checkbox" type="checkbox"
-                                                       name="limit" value="item.id" checked="item.checked">{{item.modulename}}
+                                                       name="limit" v-model="item.checked" checked="item.checked">{{item.modulename}}
                 </div>
               </template>
             </div>
@@ -204,7 +204,6 @@
     import HttpClient from "../../../core/http-client";
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
-    import treeFolderComponent from "../../../components/tree-folder-component.vue";
     import moment from 'moment';
     import Service from '../services';
     export default {
@@ -214,7 +213,7 @@
                 companies: [],
                 currentCompany: {},
                 currentPost: {},
-                posts: [{name: '岗位'}],
+                posts: [{postname: '岗位',postid: 1},{postname: '岗位',postid: 2}],
                 limits: [{title: '系统权限', items: [{title: '组织管理'}, {title: '组织管理'}]}, {
                     title: '管理权限',
                     items: [{title: '组织管理'}]
@@ -248,28 +247,26 @@
         },
         methods: {
             initData: function () {
-                this.initLimit();
                 this.initCompanies();
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {
                     this.companies = companies;
-                    this.chooseCompany(companies[0]);
-                })
-            },
-            initLimit: function () {
-                Promise.all([this.$globalCache.sysMenus, this.$globalCache.managementMenus]).then(([sysMenus, managementMenus]) => {
-                    this.limits[0].items = sysMenus;
-                    this.limits[1].items = managementMenus;
+                    this.chooseCompany(this.companies[0]);
                 })
             },
             chooseCompany: function (company) {
                 this.currentCompany = company;
-                this.getPosts(company.id)
             },
-            getPosts: function (companyid) {
-                Service.getPosts(this, companyid).then(posts => {
-                    this.posts = posts;
+            getPosts: function () {
+                this.$http.post('post/getListByCompanyid', this.currentCompany).then(res => {
+                    this.posts = res.data.list;
+                    this.choosePost(this.posts[0]);
+                });
+            },
+            getPostsPermission: function () {
+                this.$http.post('permission/getModuleListByPostid', this.currentPost).then(res => {
+                    this.limits = res.data.list;
                 })
             },
             choosePost: function (post) {
@@ -338,15 +335,29 @@
                 this.isEditLimit = true;
             },
             confirmLimit: function () {
-                this.$http.post('permission/changeForPost', );
-                this.isEditLimit = false;
+                let ids = [];
+                this.limits.forEach(item => {
+                    item.items.forEach(permission => {
+                        if (permission.checked) {
+                            ids.push(permission.id)
+                        }
+                    })
+                });
+                this.$http.post('permission/changeForPost', {postid: this.currentPost.id, permissionlist: ids}).then(res => {
+                    this.isEditLimit = false;
+                });
             },
             resetData: function () {
                 this.operCompany = {};
             }
         },
-        components: {
-            'tree-folder': treeFolderComponent,
+        watch: {
+            currentCompany: function () {
+                this.getPosts()
+            },
+            currentPost: function () {
+                this.getPostsPermission()
+            }
         }
     }
 </script>
@@ -456,6 +467,11 @@
       border-radius: 2px;
       background-color: #efefef;
       font-size: 18px;
+      cursor: pointer;
+      &.active,
+      &:hover{
+        background-color: #ccc;
+      }
       .job-content-item-name {
         padding: 18px 0;
       }

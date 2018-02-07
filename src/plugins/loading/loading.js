@@ -52,6 +52,6 @@ export default {
             })
         }
 
-        Vue.loading = Vue.prototype.$loading = $loading
+        Vue.Loading = Vue.prototype.$loading = $loading
     },
 }

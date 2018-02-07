@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isSearchPage" class="content-right">
+  <div v-if="currentPage == pages.home" class="content-right">
     <div class="clearfix">
       <div class="search pull-left">
         <form class="form-inline default-form">
@@ -298,7 +298,7 @@
      </dialog-component>-->
   </div>
 
-  <div v-else class="content-right">
+  <div v-else-if="currentPage == pages.search" class="content-right">
     <div class="page-title">灯控器高级搜索</div>
     <form class="form-horizontal default-form">
       <div class="form-group">
@@ -419,14 +419,15 @@
         <div @click="goBack" class="default-btn">返回</div>
       </div>
     </form>
-
   </div>
+  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :id="detailDeviceId" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
-    import {ContentLamp} from '../models'
+    import {ContentLamp} from '../models';
+    import detailLampControlPage from './detail-lamp-control-page.vue'
     export default {
         name: 'lampControlPage',
         data() {
@@ -494,7 +495,17 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
+                detailDeviceId: '',
+                pages: {
+                    home: 1,
+                    search: 2,
+                    detail: 3
+                },
+                currentPage: 1
             }
+        },
+        components: {
+            detailLampControlPage
         },
         created: function () {
             this.initData()
@@ -531,7 +542,7 @@
 
             },
             dialogHighSearch: function () {
-                this.isSearchPage = true
+                this.showPage(this.pages.search)
             },
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
@@ -541,14 +552,17 @@
                 this.goBack();
             },
             goBack: function () {
-                this.isSearchPage = false
+                this.showPage(this.pages.home)
             },
-            showDetail: function (event, device) {
+            showDetail: function (event,device) {
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                let path = 'lamp/' + device.sn + '/detail';
-                this.$router.push(path)
+                this.detailDeviceId = device.sn;
+                this.showPage(this.pages.detail)
+            },
+            showPage:function (page) {
+                this.currentPage = page;
             },
             dialogAddDevice: function () {
                 this.resetData();
