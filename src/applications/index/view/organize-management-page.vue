@@ -41,7 +41,7 @@
             <div class="limit-content-title">{{limit.title}}：</div>
             <div class="limit-content-items">
               <template v-for="item in limit.items">
-                <div class="limit-content-item"><input v-if="isEditLimit" class="limit-content-checkbox" type="checkbox"
+                <div class="limit-content-item" v-if="showLimit(item)"><input v-if="isEditLimit" class="limit-content-checkbox" type="checkbox"
                                                        name="limit" v-model="item.checked" checked="item.checked">{{item.modulename}}
                 </div>
               </template>
@@ -214,9 +214,9 @@
                 currentCompany: {},
                 currentPost: {},
                 posts: [{postname: '岗位',postid: 1},{postname: '岗位',postid: 2}],
-                limits: [{title: '系统权限', items: [{title: '组织管理'}, {title: '组织管理'}]}, {
+                limits: [{title: '系统权限', items: [{modulename: '组织管理'}, {modulename: '组织管理'}]}, {
                     title: '管理权限',
-                    items: [{title: '组织管理'}]
+                    items: [{modulename: '组织管理'}]
                 }],
                 operPost: {
                     postid: '',
@@ -239,7 +239,7 @@
                     companyname: '',
                 },
 
-                isEditLimit: true
+                isEditLimit: false
             }
         },
         created: function () {
@@ -254,6 +254,13 @@
                     this.companies = companies;
                     this.chooseCompany(this.companies[0]);
                 })
+            },
+            showLimit: function (limit) {
+                if (this.isEditLimit) {
+                    return true;
+                } else {
+                    return limit.checked;
+                }
             },
             chooseCompany: function (company) {
                 this.currentCompany = company;
@@ -346,6 +353,7 @@
                 this.$http.post('permission/changeForPost', {postid: this.currentPost.id, permissionlist: ids}).then(res => {
                     this.isEditLimit = false;
                 });
+                this.isEditLimit = false;
             },
             resetData: function () {
                 this.operCompany = {};

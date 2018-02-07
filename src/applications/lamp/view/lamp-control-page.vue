@@ -76,7 +76,7 @@
           <td>{{(item.switchstate == 1)? '开':'关'}}</td>
           <td>{{item.brightness}}</td>
           <td>{{item.voltagelow}}</td>
-          <td>{{item.current}}</td>
+          <td>{{item.oldpwd}}</td>
           <td>{{item.activepower}}</td>
           <td class="td-btns">
             <!--<div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogSetDevice" class="set-icon"></span></div>-->

@@ -12,7 +12,7 @@
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">{{device.sn}}</div>
         <label class="col-md-3 control-label">电流：</label>
-        <div class="col-md-3">{{device.current}}</div>
+        <div class="col-md-3">{{device.oldpwd}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>

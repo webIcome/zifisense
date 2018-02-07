@@ -11,7 +11,8 @@ export default {
         }
     },
     setItem(key, val) {
-        ls.setItem(key, JSON.stringify(val))
+        if (val) val = JSON.stringify(val)
+        ls.setItem(key, val)
     },
     clear() {
         ls.clear()

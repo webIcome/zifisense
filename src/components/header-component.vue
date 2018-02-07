@@ -4,7 +4,7 @@
       <h1 class="sr-only">纵行科技</h1>
     </div>
     <div class="personal">
-      <span class="personal-describe">您好，{{user.userName}}</span>
+      <span class="personal-describe">您好，{{user.username}}</span>
       <div class="dropdown">
         <div @click="dropdown" class="personal-center" data-toggle="dropdown" aria-expanded="false"><i class="personal-center-icon"></i>个人中心
         </div>
@@ -23,26 +23,24 @@
           <div class="form-group">
             <label class="col-md-4 control-label" for="currentPassword">当前密码：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" id="currentPassword" v-model="password.current"/>
+              <input type="text" class="form-control" id="currentPassword" v-model="password.oldpwd"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label" for="new">新密码：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" id="new" v-model="password.new"/>
+              <input type="password" class="form-control" id="new" v-model="password.newpwd"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label" for="second-new">确认新密码：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" id="second-new" v-model="password.secondNew"/>
+              <input type="password" class="form-control" id="second-new" v-model="password.secondNew"/>
             </div>
           </div>
-          <div class="form-group">
-            <div class="col-md-12 dialog-btn">
+            <div class="dialog-btn">
               <span @click="changePassword" class="dialog-btn-icon">确认</span>
             </div>
-          </div>
         </form>
       </div>
     </dialog-component>
@@ -60,8 +58,8 @@
             return {
                 user: {},
                 password: {
-                    current: '',
-                    new: '',
+                    oldpwd: '',
+                    newpwd: '',
                     secondNew: ''
                 }
             }
@@ -80,17 +78,26 @@
                 getUser: MutationTypes.GET_USER_LOCAL
             }),
             goToHome: function () {
-//                this.$router.push('/');
                 window.location.replace('/')
             },
             changePassword: function () {
+                if (this.password.newpwd != this.password.secondNew) {
+                    return;
+                }
+                this.$http.post('user/changePassword', this.password).then(res => {
+                    if (res.body.code != 0) {
 
+                    } else {
+                        this.$tips.success();
+                        $('#changePassword').modal('hide')
+                    }
+                })
             },
             dialogChangePassword: function () {
                 $('#changePassword').modal()
             },
             logout: function () {
-
+                this.goToHome();
             },
             dropdown: function () {
                 $('.personal-center').dropdown()

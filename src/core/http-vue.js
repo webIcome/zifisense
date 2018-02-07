@@ -18,7 +18,15 @@ Vue.http.interceptors.push(function (request, next) {
         if(response.data && response.data.code !='200') {
 
         }
-        return response
+        if (response.status != 200 || response.status != 304) {
+            Vue.Tips.fail(response.body.msg)
+        }
+        // Vue.RequestFail.hide()
+        let res = {
+            body: response.body,
+            headers: response.headers
+        };
+        return res
     })});
 Vue.http.options = {
   root: Config.URL_API

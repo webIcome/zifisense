@@ -34,9 +34,16 @@ class GlobalCache {
     }
     get apps() {
         if (!this._apps) {
-            this._apps = HttpClient.get('permission/getAppList').then(res => {
+           /* this._apps = HttpClient.get('permission/getAppList').then(res => {
                 return res.data.list;
-            })
+            })*/
+           this._apps = new Promise(function (resolve) {
+               resolve([
+                   {appname: '路灯', appcode: 'code1'},
+                   {appname: '建筑大脑-智慧照明', appcode: 'code2'},
+                   {appname: 'JLL-智慧物业', appcode: 'code3'},
+               ])
+           })
         }
         return this._apps;
     }

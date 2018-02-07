@@ -15,7 +15,7 @@
                 <a class="section-manage-container-item col-md-4" :href="app.url" :class="app.ename">
                   <div class="section-manage-container-item-img">
                   </div>
-                  <div class="section-manage-container-item-title">{{app.title}}</div>
+                  <div class="section-manage-container-item-title">{{app.appname}}</div>
                 </a>
               </template>
             </div>
@@ -42,8 +42,6 @@
 </template>
 
 <script>
-    import HttpClient from "../../../core/http-client";
-    import RestfulConstant from "../../../constants/restful";
     export default {
         data() {
             return {
@@ -53,35 +51,35 @@
                 },
                 applications: [],
                 subsidiary: [
-                    {title: '系统管理', url: '/management',ename: 'sys', img: '../static/img/home/sys.png', imgActive: '../static/img/home/sys-active.png', isActive: false}
+                    {title: '系统管理', url: '/management',ename: 'sys'}
+                ],
+                apps: [
+                    {appname: '路灯',ename: 'light', appcode: 'code1'},
+                    {appname: '建筑大脑-智慧照明',ename: 'estate', appcode: 'code2'},
+                    {appname: 'JLL-智慧物业',ename: 'worker', appcode: 'code3'},
                 ]
             }
         },
         created: function () {
-            this.applications = [
-                {title: '智慧照明',ename: 'light', url: '/lamp', img: '../static/img/home/light-app.png', imgActive: '../static/img/home/light-app-active.png', isActive: false},
-                {title: '智慧照明',ename: 'estate', url: '', img: '../static/img/home/estate-app.png', imgActive: '../static/img/home/estate-app-active.png', isActive: false},
-                {title: '智慧照明',ename: 'worker', url: '', img: '../static/img/home/worker-app.png', imgActive: '../static/img/home/worker-app-active.png', isActive: false},
-            ];
-//            this.getApplications()
+            this.getApplications()
         },
         methods: {
             getApplications: function () {
-                HttpClient.getPaging('management/apply1').then(res => {
-                    console.log('res' + res)
-                }).catch(err => {
-                    console.log('err'+err)
-                })
+               this.$globalCache.apps.then(apps => {
+                   apps.map(app => {
+                       this.apps.forEach(item => {
+                           if (item.appcode == app.appcode) {
+                               app.ename = item.ename;
+                           }
+                       })
+                       return app
+                   });
+                   this.applications = apps
+               })
             },
             goToApplication: function (url) {
                 this.$router.push(url)
             },
-            appHover: function (app) {
-                app.isActive = true;
-            },
-            appNormal: function (app) {
-                app.isActive = false;
-            }
         }
     }
 </script>
@@ -180,22 +178,6 @@
                 }
               }
             }
-            /*&:hover {
-              color: #61b5f5;
-              .section-manage-container-item-img {
-                box-shadow: 0px 5px 50px rgba(0,0,0,0.5);
-                background-image: url("../assets/home/app-bg-active.png");
-              }
-            }
-            display: inline-block;
-            text-align: center;
-            .section-manage-container-item-img {
-              display: inline-block;
-              width: 200px;
-              height: 200px;
-              margin-bottom: 30px;
-              border-radius: 50%;
-            }*/
           }
         }
 
