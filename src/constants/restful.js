@@ -3,7 +3,7 @@
  */
 const RestfulConstant = {
     CHECK_LOGIN: 'check_login',
-    LOGIN: 'login',
+    LOGIN: 'accounts/login',
     LOGOUT: 'logout',
     LOGS: 'logs',
     USERS: 'users',

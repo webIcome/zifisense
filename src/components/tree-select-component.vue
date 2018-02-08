@@ -1,6 +1,6 @@
 <template>
   <div class="tree-select">
-    <input @click.self="dropdown" readonly class="form-control" :value="value" :placeholder="placeholder"/>
+    <input @click.self="dropdown" readonly class="form-control" :value="text" :placeholder="placeholder"/>
     <div class="tree-select-clear" @click.self="clear">&times;</div>
     <div class="tree-select-content" v-if="isShow">
       <tree-select-contents :items="items" v-on:input="chooseItem"></tree-select-contents>
@@ -13,7 +13,6 @@
         data () {
             return {
                 isShow: false,
-                value: ''
             }
         },
         props: {
@@ -25,7 +24,8 @@
             placeholder: {
                 type: String,
                 default: '--选择归属企业--'
-            }
+            },
+            value: ''
         },
         components: {
             'tree-select-contents': {
@@ -69,6 +69,24 @@
         computed: {
             items: function () {
                 return this.getItems()
+            },
+            text: function () {
+                let text = ''
+                let that = this;
+                this.list.forEach(function exc(item) {
+                    if (item.id == that.value) {
+                        text = item.name;
+                        return;
+                    }
+                    if (item.children.length <= 0) {
+                        return ;
+                    } else {
+                        item.children.forEach(item => {
+                            exc(item)
+                        })
+                    }
+                })
+                return text;
             }
         },
         methods: {
@@ -91,7 +109,6 @@
             },
             chooseItem: function (item) {
                 this.$emit('input', item.id);
-                this.value = item.name;
                 this.isShow = false
             },
             dropdown: function () {
@@ -109,9 +126,11 @@
 
 <style lang="less">
   @size: 6px;
+  .form-inline .tree-select {
+    display: inline-block;
+  }
   .tree-select {
     position: relative;
-    display: inline-block;
     width: auto;
     vertical-align: middle;
     .tree-select-clear {

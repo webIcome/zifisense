@@ -12,20 +12,20 @@
         <div class="form-group">
           <label for="username" class="sr-only">用户名</label>
           <div class="col-md-12">
-            <input type="text" class="form-control" id="username" name="username" v-model="username" placeholder="用户"/>
+            <input type="text" class="form-control" id="username" name="username" v-model="loginname" placeholder="用户" v-validate="'required'"/>
           </div>
         </div>
         <div class="form-group">
           <label for="password" class="sr-only">密码</label>
           <div class="col-md-12">
-            <input :type="showPassword? 'text': 'password'" class="form-control" id="password" name="password" v-model="password" placeholder="密码">
+            <input :type="showPassword? 'text': 'password'" class="form-control" id="password" name="password" v-model="password" placeholder="密码" v-validate="'required'">
           </div>
           <span @click="toggleShowPassword" :class="showPassword? 'show-password':'not-show-password'"></span>
         </div>
         <div class="form-group">
           <label for="verifyCode" class="sr-only">验证码</label>
           <div class="col-md-8 col-xs-8">
-            <input type="text" class="form-control verify-code" id="verifyCode" name="verifyCode" v-model="verifyCode" placeholder="验证码输入">
+            <input type="text" class="form-control verify-code" id="verifyCode" name="verifyCode" v-model="verifyCode" placeholder="验证码输入" v-validate="'required'">
           </div>
           <div @click="getVerifyCode" class="verify-code-img pull-left" id="code"></div>
         </div>
@@ -49,36 +49,55 @@
         name: 'login',
         data() {
             return {
-                username: '',
+                loginname: '',
                 password: '',
                 verifyCode: '',
+                code: '',
                 showPassword: false,
                 gVerifyCode: null,
             }
         },
         mounted: function () {
-            this.gVerifyCode = new GVerify({id: 'code'})
+            this.gVerifyCode = new GVerify({id: 'code'});
+            this.getVerifyCode();
         },
         methods: {
             login: function () {
-                let access = {username: this.username, password: this.password};
-                if (this.verifyCode) access.code = this.verifyCode;
-                this.getUser(access).then(() => {
-                    this.$router.push('/')
-                }).catch(err => {
-
+                this.$validator.validateAll().then(result => {
+                    if (result) {
+                        let access = {loginname: this.loginname, password: this.password};
+                        if (this.verifyCode) access.code = this.verifyCode;
+                        if (this.code != this.verifyCode) return;
+                        this.getUser(access).then((user) => {
+                            this.$router.push('/')
+                        }).catch(err => {
+                            this.$tips.fail(err.msg)
+                        })
+                    } else {
+                        this.$tips.fail('表单验证失败');
+                    }
                 })
             },
             toggleShowPassword: function () {
               this.showPassword = !this.showPassword;
             },
+            generateCode: function () {
+                this.code = '';
+                for (let i = 0; i < 4; i++) {
+                    this.code +=this.random();
+                }
+            },
+            random: function () {
+                return Math.floor(Math.random()*9);
+            },
             getVerifyCode: function () {
-                this.$http.get('code').then(res => {
+                /*this.$http.get('code').then(res => {
 
                 }).catch(err => {
 
-                });
-                this.gVerifyCode.refresh(code)
+                });*/
+                this.generateCode();
+                this.gVerifyCode.refresh(this.code)
             },
             ...mapActions({
                 getUser: MutationTypes.GET_USER

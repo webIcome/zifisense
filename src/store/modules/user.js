@@ -9,7 +9,9 @@ import LocalStorage from  '../local-storage';
 export default {
     state: {
         get user(){
-            return LocalStorage.getItem(MutationTypes.GET_USER);
+            let user =  LocalStorage.getItem(MutationTypes.GET_USER);
+            if (!user) user = {};
+            return user;
         },
         set user(value){
             LocalStorage.setItem(MutationTypes.GET_USER, value);
@@ -27,14 +29,14 @@ export default {
     },
     mutations: {
         [MutationTypes.GET_USER] (state, user) {
-            state.user = JSON.stringify(user);
+            state.user = user;
         },
     },
     actions: {
         [MutationTypes.GET_USER] (context, access) {
             return HttpClient.post(RestfulConstant.LOGIN, access).then(res => {
                 context.commit(MutationTypes.GET_USER, res.body.data);
-                return res.user;
+                return res.body.data;
             })
         }
     },

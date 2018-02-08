@@ -39,7 +39,7 @@
             </div>
           </div>
             <div class="dialog-btn">
-              <span @click="changePassword" class="dialog-btn-icon">确认</span>
+              <button type="button" @click="changePassword" class="dialog-btn-icon">确认</button>
             </div>
         </form>
       </div>
@@ -97,7 +97,9 @@
                 $('#changePassword').modal()
             },
             logout: function () {
-                this.goToHome();
+                this.$http.get('accounts/logout').then(res => {
+                    this.goToHome();
+                })
             },
             dropdown: function () {
                 $('.personal-center').dropdown()

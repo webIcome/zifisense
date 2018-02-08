@@ -11,7 +11,7 @@ export default {
         }
     },
     setItem(key, val) {
-        if (val) val = JSON.stringify(val)
+        if (val && typeof(val) != 'string') val = JSON.stringify(val)
         ls.setItem(key, val)
     },
     clear() {

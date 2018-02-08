@@ -83,6 +83,13 @@
       margin-top: 50px;
       margin-bottom: 40px;
       cursor: pointer;
+      border: none;
+      &[disabled] {
+        cursor: not-allowed;
+        filter: alpha(opacity=65);
+        box-shadow: none;
+        opacity: .65;
+      }
       &:hover {
         background-image: url("./imgs/btn-active.png");
       }

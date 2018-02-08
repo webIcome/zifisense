@@ -5,7 +5,6 @@
         <div class="form-group">
           <label>归属企业：</label>
           <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
-          <!--<input type="text" class="form-control" id="enterprise" v-model="searchParams.enterprise"/>-->
         </div>
         <div class="form-group">
           <label for="username">用户名：</label>
@@ -40,7 +39,7 @@
           <td>{{user.email}}</td>
           <td>{{user.companyname}}</td>
           <td>{{user.postname}}</td>
-          <td>{{user.expiretime}}</td>
+          <td>{{user.expiretime | formDate}}</td>
           <td class="td-btns">
             <div class="edit-icon-item"><span @click="dialogEditUser(user)" class="edit-icon"></span></div>
             <div class="edit-icon-item"><span @click="dialogResetPassword(user)" class="reset-icon"></span></div>
@@ -67,24 +66,18 @@
     <dialog-component id="add-user">
       <div slot="body">
         <div class="dialog-title">创建账号</div>
-        <form class="form-horizontal default-form">
+        <form class="form-horizontal default-form"  @submit.prevent="addUser">
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="operUser.companyid" class="form-control">
-                <template v-for="company in companies">
-                  <option>{{company.name}}</option>
-                </template>
-              </select>
+              <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
               <select v-model="operUser.postid" class="form-control">
-                <template v-for="company in companies">
-                  <option>{{company.name}}</option>
-                </template>
+                <option value="1">11111</option>
               </select>
             </div>
           </div>
@@ -110,11 +103,11 @@
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
               <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.exiretimehigh"></vue-datepicker-local>
+                                    v-model="operUser.expiretime"></vue-datepicker-local>
             </div>
           </div>
           <div class="dialog-btn">
-            <span @click="addUser" class="dialog-btn-icon">创建账号</span>
+            <button type="submit" class="dialog-btn-icon">创建账号</button>
           </div>
         </form>
       </div>
@@ -126,11 +119,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="operUser.companyid" class="form-control">
-                <template v-for="company in companies">
-                  <option>{{company.name}}</option>
-                </template>
-              </select>
+              <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
             </div>
           </div>
           <div class="form-group">
@@ -164,8 +153,8 @@
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
-              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.expiretimehigh"></vue-datepicker-local>
+              <vue-datepicker-local clearable :inputClass="'form-control default-input'" :value="operUser.expiretime | formDate" @input="operUser.expiretime=arguments[0]"></vue-datepicker-local>
+
             </div>
           </div>
           <div class="dialog-btn">
@@ -195,51 +184,56 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属企业：</label>
             <div class="col-md-8">
-              <select v-model="operUser.companyid" class="form-control">
-                <template v-for="company in companies">
-                  <option>{{company.name}}</option>
-                </template>
-              </select>
+              <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
-              <select v-model="operUser.postid" class="form-control">
-                <template v-for="company in companies">
+              <select v-model="advancedSearchParams.postid" class="form-control">
+
+                <option value="1">11111</option>
+               <!-- <template v-for="company in companies">
                   <option>{{company.name}}</option>
-                </template>
+                </template>-->
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">登录名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.loginname"/>
+              <input type="text" class="form-control" v-model="advancedSearchParams.loginname"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">姓名：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.username"/>
+              <input type="text" class="form-control" v-model="advancedSearchParams.username"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">电子邮箱：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.email"/>
+              <input type="text" class="form-control" v-model="advancedSearchParams.email"/>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-4 control-label">有效期至：</label>
+            <label class="col-md-4 control-label">有效期：</label>
             <div class="col-md-8">
-              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.expiretimehigh"></vue-datepicker-local>
+              <vue-datepicker-local clearable :inputClass="'form-control'"
+                                    v-model="advancedSearchParams.expiretimelow"></vue-datepicker-local>
             </div>
+          </div>
+            <div class="form-group">
+              <label class="col-md-4 control-label">到：</label>
+              <div class="col-md-8">
+              <vue-datepicker-local clearable :inputClass="'form-control'"
+                                    v-model="advancedSearchParams.expiretimehigh"></vue-datepicker-local>
+              </div>
           </div>
 
           <div class=" dialog-btn">
-            <span @click="editUser" class="dialog-btn-icon">确认</span>
+            <span @click="highSearch" class="dialog-btn-icon">确认</span>
           </div>
         </form>
       </div>
@@ -251,6 +245,7 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Service from "../services";
+    import {ContentUser} from '../models'
     export default {
         name: 'userComponent',
         data() {
@@ -261,16 +256,24 @@
                     loginname: '',
                     userName: '',
                     email: '',
-                    pageSize: '',
-                    pageNum: '',
-                    pages: '',
+                },
+                advancedSearchParams: {
+                    postid: '',
+                    companyid: '',
+                    loginname: '',
+                    userName: '',
+                    email: '',
+                    expiretimelow: '',
+                    expiretimehigh: '',
                 },
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
                 users: [],
-                operUser: {},
+                operUser: {
+
+                },
                 companies: [],
                 posts: []
             }
@@ -292,15 +295,21 @@
             },
             getUsers: function (params) {
                 this.$http.post(RestfulConstant.USER + '/' + RestfulConstant.GET_LIST, params).then(res => {
-                    this.searchParams.pageNum = res.pageNum;
-                    this.searchParams.pages = res.pages;
-                    this.pageSize = res.pageSize;
-                    this.users = res.list;
+                    this.searchParams.pageNum = res.body.data.pageNum;
+                    this.searchParams.pages = res.body.data.pages;
+                    this.searchParams.pageSize = res.body.data.pageSize;
+                    this.users = this.transformTime(res.body.data.list);
                 })
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {
                     this.companies = companies;
+                })
+            },
+            transformTime: function (list) {
+                return list.map(item => {
+                    item.expiretime = this.$common.getFormDate(item.expiretime);
+                    return item;
                 })
             },
             chooseCompany: function (companyid) {
@@ -317,21 +326,28 @@
             search: function () {
                 this.getUsers(Object.assign(this.searchParams, this.defaultPaging));
             },
-            dialogAddUser: function (user) {
+            highSearch: function () {
+                this.getUsers(Object.assign(this.advancedSearchParams, this.defaultPaging));
+            },
+            dialogAddUser: function () {
                 this.resetData();
-                this.operUser = user;
                 $('#add-user').modal();
             },
             addUser: function () {
                 this.$http.post('user/add', this.operUser).then(res => {
                     this.initUsers();
+                    this.closeMode()
                 })
             },
             dialogResetPassword: function (user) {
+                this.resetData();
+                this.operUser = user;
                 $('#reset-password').modal();
             },
             resetPassword: function () {
-
+                this.$http.post('user/resetPassword', this.operUser).then(res => {
+                    this.closeMode();
+                })
             },
             dialogEditUser: function (user) {
                 this.resetData();
@@ -341,6 +357,7 @@
             editUser: function () {
                 this.$http.post('user/edit', this.operUser).then(res => {
                     this.initUsers();
+                    this.closeMode();
                 })
             },
             dialogDeleteUser: function (user) {
@@ -351,10 +368,14 @@
             deleteUser: function () {
                 this.$http.post('user/delete', {userid: this.operUser.userid}).then(res => {
                     this.initUsers();
+                    this.closeMode()
                 })
             },
+            closeMode: function () {
+                $('.modal').modal('hide')
+            },
             resetData: function () {
-                this.operUser = {};
+               this.operUser = this.$common.copyObj(ContentUser);
             }
 
         }

@@ -1,6 +1,7 @@
 /**
  * Created by spring on 2018/2/6.
  */
+import moment from 'moment';
 class common {
     static copyObj(obj) {
         let newobj = {};
@@ -9,6 +10,16 @@ class common {
         }
         return newobj;
     }
+    static clearObjValue(obj) {
+        if (!obj) return;
+        Object.keys(obj).forEach(key => {
+            obj[key] = '';
+        })
+    }
+    static getFormDate(date, pattern) {
+    if (!pattern) pattern = 'YYYY-MM-DD';
+     return moment(date).format(pattern);
+}
 }
 export default {
     install(Vue, pluginOptions = {}) {

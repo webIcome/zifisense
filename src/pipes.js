@@ -6,5 +6,6 @@ export default {
     formDate: _formDate
 }
 function _formDate(date, pattern) {
+    if (!pattern) pattern = 'YYYY-MM-DD HH:mm:ss';
     return moment(date).format(pattern);
 }

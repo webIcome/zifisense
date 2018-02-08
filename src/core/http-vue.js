@@ -8,27 +8,27 @@ import store from '../store';
 Vue.use(VueResource);
 Vue.http.interceptors.push(function (request, next) {
     Vue.Loading();
-    request.headers.set('access-token', store.state.UserModule.token);
+    let method = request.method;
+    request.headers.set('access_token', store.state.UserModule.token);
+    request.headers.set('user_name', store.state.UserModule.user.loginname);
+    request.headers.set('user_id', store.state.UserModule.user.objectid.toString());
+    request.headers.set('company_id', store.state.UserModule.user.companyid.toString());
     next(function (response) {
         Vue.Loading.end();
-        if(response.status == 401) {
+        if (response.body.code == 3) {
             window.vue.$router.push('/login');
             return;
         }
-        if(response.data && response.data.code !='200') {
-
-        }
-        if (response.status != 200 || response.status != 304) {
+        if (!(response.status == 200 || response.status == 304)) {
             Vue.Tips.fail(response.body.msg)
+        } else if (method != 'GET' ) {
+            Vue.Tips.success(response.body.msg)
         }
-        // Vue.RequestFail.hide()
-        let res = {
-            body: response.body,
-            headers: response.headers
-        };
-        return res
-    })});
+        return response
+    })
+});
 Vue.http.options = {
-  root: Config.URL_API
+    root: Config.URL_API,
+    emulateJSON: false
 };
 export default Vue.http;
