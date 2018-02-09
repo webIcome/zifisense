@@ -4,38 +4,25 @@
 
     <div class="section">
       <div class="section-manage">
-        <div class="section-manage-app">
-          <div class="section-manage-header" data-toggle="collapse" data-target="#applications" aria-expanded="true">
-            <span class="icon"></span>
-            <span class="section-manage-header-title">应用管理</span>
-          </div>
-          <div class="section-manage-container collapse in" id="applications">
-            <div class="section-manage-container-items clearfix">
-              <template v-for="app in applications">
-                <a class="section-manage-container-item col-md-4" :href="app.url" :class="app.ename">
-                  <div class="section-manage-container-item-img">
-                  </div>
-                  <div class="section-manage-container-item-title">{{app.appname}}</div>
-                </a>
-              </template>
+        <template v-for="app in applications">
+          <div class="section-manage-app" :class="app.appcode">
+            <div class="section-manage-header" data-toggle="collapse" :data-target="'#' + app.appcode" aria-expanded="true">
+              <span class="icon"></span>
+              <span class="section-manage-header-title">{{app.appname}}</span>
             </div>
-          </div>
-        </div>
-        <div class="section-manage-subsidiary">
-          <div class="section-manage-header" data-toggle="collapse" data-target="#subsidiary" aria-expanded="true">
-            <span class="icon"></span>
-            <span class="section-manage-header-title">管理辅助</span>
-          </div>
-          <div class="section-manage-container collapse in" id="subsidiary">
-            <div class="section-manage-container-items clearfix">
-              <div class="section-manage-container-item col-md-4" v-for="app in subsidiary" @click="goToApplication(app.url)" :class="app.ename">
-                <div class="section-manage-container-item-img">
-                </div>
-                <div class="section-manage-container-item-title">{{app.title}}</div>
+            <div class="section-manage-container collapse in" :id="app.appcode">
+              <div class="section-manage-container-items clearfix">
+                <template v-for="child in app.children">
+                  <a class="section-manage-container-item col-md-4" @click.prevent="goToApplication(child.url, child.appcode)" :class="child.appcode">
+                    <div class="section-manage-container-item-img">
+                    </div>
+                    <div class="section-manage-container-item-title">{{child.appname}}</div>
+                  </a>
+                </template>
               </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
   </div>
@@ -54,33 +41,35 @@
                     {title: '系统管理', url: '/management',ename: 'sys'}
                 ],
                 apps: [
-                    {appname: '路灯',ename: 'light', appcode: 'code1'},
-                    {appname: '建筑大脑-智慧照明',ename: 'estate', appcode: 'code2'},
-                    {appname: 'JLL-智慧物业',ename: 'worker', appcode: 'code3'},
+                    {appname: '应用管理', appcode: 'YYGL', children: [
+                        {appname: '路灯',ename: 'light', appcode: 'LAMP', url: '/lamp'},
+                        {appname: '建筑大脑-智慧照明',ename: 'estate', appcode: 'INTELLIGENTLIGHTING', url: '/lamp'},
+                        {appname: 'JLL-智慧物业',ename: 'worker', appcode: 'JLLPROPERTY'},
+                    ]},
+                    {appname: '管理辅助', appcode: 'GLFZ', children: [
+                        {appname: '系统管理',appcode: 'XTQX', url: 'sys',ename: 'sys'}
+                    ]},
                 ]
             }
         },
         created: function () {
-            this.getApplications()
+            this.getApplications();
         },
         methods: {
             getApplications: function () {
                this.$globalCache.apps.then(apps => {
-                   apps.map(app => {
-                       this.apps.forEach(item => {
-                           if (item.appcode == app.appcode) {
-                               app.ename = item.ename;
-                           }
-                       })
-                       return app
-                   });
                    this.applications = apps
                })
             },
-            goToApplication: function (url) {
-                this.$router.push(url)
+            goToApplication: function (url, appcode) {
+                if (appcode == 'XTQX') {
+                    this.$router.push(url)
+                } else {
+                    window.location.replace(url)
+                }
+
             },
-        }
+        },
     }
 </script>
 
@@ -126,10 +115,10 @@
             &:hover {
               color: #61b5f5;
             }
-            &.light,
-            &.estate,
-            &.worker,
-            &.sys{
+            &.LAMP,
+            &.INTELLIGENTLIGHTING,
+            &.JLLPROPERTY,
+            &.XTQX{
               .section-manage-container-item-img {
                 display: inline-block;
                 width: 200px;
@@ -138,7 +127,7 @@
                 border-radius: 50%;
               }
             }
-            &.sys {
+            &.XTQX {
               .section-manage-container-item-img {
                 background-image: url("../assets/home/sys.png");
               }
@@ -148,7 +137,7 @@
                 }
               }
             }
-            &.light {
+            &.LAMP {
               .section-manage-container-item-img {
                 background-image: url("../assets/home/light-app.png");
               }
@@ -158,7 +147,7 @@
                 }
               }
             }
-            &.estate {
+            &.INTELLIGENTLIGHTING {
               .section-manage-container-item-img {
                 background-image: url("../assets/home/estate-app.png");
               }
@@ -168,7 +157,7 @@
                 }
               }
             }
-            &.worker {
+            &.JLLPROPERTY {
               .section-manage-container-item-img {
                 background-image: url("../assets/home/worker-app.png");
               }
@@ -183,6 +172,18 @@
 
       }
       .section-manage-app {
+        &.YYGL {
+          .icon {
+            background-image: url("../assets/home/management-app-icon.png");
+          }
+        }
+        &.GLFZ {
+          .icon {
+            width: 28px;
+            height: 28px;
+            background-image: url("../assets/home/management-subsidiary-icon.png");
+          }
+        }
         .icon {
           background-image: url("../assets/home/management-app-icon.png");
         }

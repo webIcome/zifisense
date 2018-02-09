@@ -2,11 +2,11 @@
   <div class="tree-folder-items" v-if="company">
     <!--<div class="tree-folder-branch"></div>-->
     <div class="tree-folder-header-branch"></div>
-    <div @click="choose(company)" class="tree-folder-item" :class="{active: (value.id == company.id)}">
-      <div class="tree-folder-item-name">{{company.name}}</div>
-      <div @click.self="dialogEdit(company)" class="tree-folder-item-edit"></div>
-      <div @click.self="dialogDelete(company)" class="tree-folder-item-delete"></div>
-      <div @click.self="dialogAdd(company)" class="tree-folder-item-add"></div>
+    <div @click.prevent="choose(company)" class="tree-folder-item" :class="{active: (value.objectid == company.objectid)}">
+      <div class="tree-folder-item-name">{{company.companyname}}</div>
+      <div @click.stop="dialogEdit(company)" class="tree-folder-item-edit"></div>
+      <div @click.stop="dialogDelete(company)" class="tree-folder-item-delete"></div>
+      <div @click.stop="dialogAdd(company)" class="tree-folder-item-add"></div>
     </div>
     <div v-if="company.children.length" class="tree-folder-end-branch"></div>
     <tree-folder-contents-component :value="value" :children="company.children" v-on:edit="dialogEdit" v-on:add="dialogAdd" v-on:delete="dialogDelete" v-on:input="choose"></tree-folder-contents-component>

@@ -35,9 +35,13 @@ export default {
     actions: {
         [MutationTypes.GET_USER] (context, access) {
             return HttpClient.post(RestfulConstant.LOGIN, access).then(res => {
-                context.commit(MutationTypes.GET_USER, res.body.data);
-                return res.body.data;
-            })
+                if (res.body.data) {
+                    context.commit(MutationTypes.GET_USER, res.body.data);
+                    return res.body.data;
+                } else {
+                    throw new Error(res.body.msg)
+                }
+            }).catch(err => Promise.reject(err))
         }
     },
 

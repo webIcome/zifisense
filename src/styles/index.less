@@ -128,10 +128,20 @@ td {
   &:before {
     content: '';
     position: absolute;
-    height: 50%;
+    height: 100%;
     width: @lineHeight;
     bottom: 0;
     background-color: @lineColor;
+  }
+  &:first-child {
+    &:before {
+      content: '';
+      position: absolute;
+      height: 50%;
+      width: @lineHeight;
+      bottom: 0;
+      background-color: @lineColor;
+    }
   }
   &:last-child {
     &:before {
@@ -141,6 +151,13 @@ td {
       width: @lineHeight;
       top: 0;
       background-color: @lineColor;
+    }
+  }
+  &:last-child {
+    &:first-child {
+      &:before {
+        background-color: transparent;
+      }
     }
   }
 }

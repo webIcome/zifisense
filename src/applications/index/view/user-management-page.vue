@@ -77,7 +77,10 @@
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
               <select v-model="operUser.postid" class="form-control">
-                <option value="1">11111</option>
+                <option value="">--选择岗位--</option>
+                <template v-for="post in posts">
+                  <option :value="post.objectid">{{post.postname}}</option>
+                </template>
               </select>
             </div>
           </div>
@@ -126,8 +129,9 @@
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
               <select v-model="operUser.postid" class="form-control">
-                <template v-for="company in companies">
-                  <option>{{company.name}}</option>
+                <option value="">--选择岗位--</option>
+                <template v-for="post in posts">
+                  <option :value="post.objectid">{{post.postname}}</option>
                 </template>
               </select>
             </div>
@@ -191,11 +195,10 @@
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
               <select v-model="advancedSearchParams.postid" class="form-control">
-
-                <option value="1">11111</option>
-               <!-- <template v-for="company in companies">
-                  <option>{{company.name}}</option>
-                </template>-->
+                <option value="">--选择岗位--</option>
+                <template v-for="post in posts">
+                  <option :value="post.objectid">{{post.postname}}</option>
+                </template>
               </select>
             </div>
           </div>
@@ -254,14 +257,14 @@
                     postid: '',
                     companyid: '',
                     loginname: '',
-                    userName: '',
+                    username: '',
                     email: '',
                 },
                 advancedSearchParams: {
                     postid: '',
                     companyid: '',
                     loginname: '',
-                    userName: '',
+                    username: '',
                     email: '',
                     expiretimelow: '',
                     expiretimehigh: '',
@@ -294,12 +297,17 @@
                 this.getUsers(this.searchParams);
             },
             getUsers: function (params) {
-                this.$http.post(RestfulConstant.USER + '/' + RestfulConstant.GET_LIST, params).then(res => {
+                this.$http.get(RestfulConstant.USER + '/' + RestfulConstant.GET_LIST, {params: params}).then(res => {
                     this.searchParams.pageNum = res.body.data.pageNum;
                     this.searchParams.pages = res.body.data.pages;
                     this.searchParams.pageSize = res.body.data.pageSize;
                     this.users = this.transformTime(res.body.data.list);
                 })
+            },
+            getPosts: function (companyid) {
+                this.$http.get('post/getListByCompanyid', {params: {companyid: companyid}}).then(res => {
+                    this.posts = res.body.data.list;
+                });
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {
@@ -312,14 +320,6 @@
                     return item;
                 })
             },
-            chooseCompany: function (companyid) {
-                this.getPosts(companyid);
-            },
-            getPosts: function (companyid) {
-                Service.getPosts(this, companyid).then(posts => {
-                    this.posts = posts;
-                })
-            },
             dialogHighSearch: function () {
                 $('#high-search').modal();
             },
@@ -328,6 +328,7 @@
             },
             highSearch: function () {
                 this.getUsers(Object.assign(this.advancedSearchParams, this.defaultPaging));
+                this.closeMode()
             },
             dialogAddUser: function () {
                 this.resetData();
@@ -345,7 +346,7 @@
                 $('#reset-password').modal();
             },
             resetPassword: function () {
-                this.$http.post('user/resetPassword', this.operUser).then(res => {
+                this.$http.post('user/resetPassword', {objectid: this.operUser.objectid}).then(res => {
                     this.closeMode();
                 })
             },
@@ -366,7 +367,7 @@
                 $('#delete-user').modal();
             },
             deleteUser: function () {
-                this.$http.post('user/delete', {userid: this.operUser.userid}).then(res => {
+                this.$http.post('user/delete', {objectid: this.operUser.objectid}).then(res => {
                     this.initUsers();
                     this.closeMode()
                 })
@@ -377,7 +378,23 @@
             resetData: function () {
                this.operUser = this.$common.copyObj(ContentUser);
             }
-
+        },
+        computed: {
+            currentCompanyid: function () {
+                return this.operUser.companyid;
+            }
+        },
+        watch: {
+            /*operUser: {
+                handler(curVal, oldVal){this.getPosts(curVal.companyid)},
+                deep:true
+            },*/
+            currentCompanyid: function () {
+                this.getPosts(this.currentCompanyid)
+            },
+            ['advancedSearchParams.companyid']: function () {
+                this.getPosts(this.advancedSearchParams.companyid)
+            }
         }
     }
 </script>

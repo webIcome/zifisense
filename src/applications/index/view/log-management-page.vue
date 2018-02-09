@@ -31,7 +31,7 @@
         </thead>
         <tbody>
         <tr v-for="log in logs">
-          <td>{{log.operationtime}}</td>
+          <td>{{log.createtime | formDate}}</td>
           <td>{{log.loginname}}</td>
           <td>{{log.username}}</td>
           <td>{{log.operation}}</td>
@@ -39,7 +39,7 @@
         </tbody>
       </table>
     </div>
-    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNumber" :pages="searchParams.pages" @pagingEvent='pagingEvent'></paging-component>
+    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages" @pagingEvent='pagingEvent'></paging-component>
   </div>
 </template>
 
@@ -48,7 +48,7 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     export default {
-        name: 'userComponent',
+        name: 'logPage',
         data() {
             return {
                 searchParams: {
@@ -76,11 +76,14 @@
                 this.findLogs(this.searchParams);
             },
             findLogs: function (params) {
-                this.$http.post('operationlog/getListByLoginname', params).then(res => {
-                    this.searchParams.pageNum = res.pageNum;
-                    this.searchParams.pages = res.pages;
-                    this.pageSize = res.pageSize;
-                    this.logs = res.data.list;
+                Object.keys(params).forEach(key => {
+                    if (params[key] instanceof Date) params[key] = this.$common.getFormDate(params[key])
+                });
+                this.$http.get('user/getList', {params: params}).then(res => {
+                    this.searchParams.pageNum = res.body.data.pageNum;
+                    this.searchParams.pages = res.body.data.pages;
+                    this.searchParams.pageSize = res.body.data.pageSize;
+                    this.logs = res.body.data.list;
                 })
             },
             search: function () {

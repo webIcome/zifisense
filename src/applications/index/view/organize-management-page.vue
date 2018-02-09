@@ -9,7 +9,8 @@
         <div class="company-content">
           <template v-for="company in companies">
             <div class="company-conent-items">
-              <tree-folder-component v-model="currentCompany" :company="company" v-on:edit="dialogEditCompany" v-on:add="dialogAddCompany"
+              <tree-folder-component v-model="currentCompany" :company="company" v-on:edit="dialogEditCompany"
+                                     v-on:add="dialogAddCompany"
                                      v-on:delete="dialogDeleteCompany"></tree-folder-component>
             </div>
           </template>
@@ -23,7 +24,8 @@
       </div>
       <div class="job-content">
         <template v-for="post in posts">
-          <div @click="choosePost(post)" class="job-content-item" :class="{active: post.postid==currentPost.postid}">
+          <div @click="choosePost(post)" class="job-content-item"
+               :class="{active: post.objectid==currentPost.objectid}">
             <div class="job-content-item-name">{{post.postname}}</div>
             <span @click.self="dialogEditPost(post)" class="job-content-item-edit"></span>
             <span @click.self="dialogDeletePost(post)" class="job-content-item-delete"></span>
@@ -38,14 +40,26 @@
       <div class="limit-content">
         <form>
           <template v-for="limit in limits">
-            <div class="limit-content-title">{{limit.title}}：</div>
-            <div class="limit-content-items">
-              <template v-for="item in limit.items">
-                <div class="limit-content-item" v-if="showLimit(item)"><input v-if="isEditLimit" class="limit-content-checkbox" type="checkbox"
-                                                       name="limit" v-model="item.checked" checked="item.checked">{{item.modulename}}
+            <div class="limit-content-title-items">
+              <div class="limit-content-title" v-if="limit.checked || isEditLimit">
+                <input v-if="isEditLimit"
+                       class="limit-content-checkbox"
+                       type="checkbox"
+                       name="limit" v-model="limit.checked"
+                       checked="item.checked">{{limit.modulename}}：</div>
+              <div class="limit-content-items" v-if="limit.checked">
+                <template v-for="item in limit.children">
+                  <div class="limit-content-item" v-if="showLimit(item)"><input v-if="isEditLimit"
+                                                                                class="limit-content-checkbox"
+                                                                                type="checkbox"
+                                                                                name="limit" v-model="item.checked"
+                                                                                checked="item.checked">{{item.modulename}}
+
                 </div>
-              </template>
+                </template>
+              </div>
             </div>
+
           </template>
           <div @click="editLimit" v-if="!isEditLimit" class="limit-btn">修改</div>
           <div @click="confirmLimit" v-else class="limit-btn">确认</div>
@@ -64,7 +78,7 @@
             </div>
           </div>
           <div class="form-group" v-if="firstClassEnterprise.timeZone">
-            <label class="col-md-4 control-label" >时区：</label>
+            <label class="col-md-4 control-label">时区：</label>
             <div class="col-md-8">
               <select type="text" class="form-control" v-model="firstClassEnterprise.timeZone"/>
             </div>
@@ -161,9 +175,9 @@
         <div class="dialog-title">创建企业</div>
         <form class="form-horizontal default-form">
           <div class="form-group">
-            <label class="col-md-4 control-label" for="parent">上级企业：</label>
+            <label class="col-md-4 control-label">上级企业：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" id="parent" v-model="addCompanyData.parentid"/>
+              <tree-select-component v-model="addCompanyData.parentid" :list="companies"></tree-select-component>
             </div>
           </div>
           <div class="form-group">
@@ -172,14 +186,14 @@
               <input type="text" class="form-control" v-model="addCompanyData.companyname"/>
             </div>
           </div>
-          <div class="form-group" v-if="addCompanyData.timeZone" >
-            <label class="col-md-4 control-label" >时区：</label>
+          <div class="form-group" v-if="addCompanyData.timeZone">
+            <label class="col-md-4 control-label">时区：</label>
             <div class="col-md-8">
               <select type="text" class="form-control" v-model="addCompanyData.timeZone"/>
             </div>
           </div>
           <div class="dialog-btn">
-            <span @click="editCompany" class="dialog-btn-icon">确认创建</span>
+            <span @click="addCompany" class="dialog-btn-icon">确认创建</span>
           </div>
         </form>
       </div>
@@ -190,7 +204,7 @@
         <div class="text-center">
           <div class="dialog-warning"></div>
         </div>
-        <p>您确认要删除企业：<a>deleteCompanyData.companyname</a>及其名下的所有分支机构吗？相关部门下的属性的账号将一并删除！</p>
+        <p>您确认要删除企业：<a>{{operCompany.companyname}}</a>及其名下的所有分支机构吗？相关部门下的属性的账号将一并删除！</p>
         <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
         <div class="dialog-btn">
           <span @click="deleteCompany" class="dialog-btn-icon">确认删除</span>
@@ -206,6 +220,7 @@
     import Config from "../../../config";
     import moment from 'moment';
     import Service from '../services';
+    import {ContentCompany, ContentPost} from "../models";
     export default {
         name: 'organizeManagementPage',
         data() {
@@ -213,11 +228,8 @@
                 companies: [],
                 currentCompany: {},
                 currentPost: {},
-                posts: [{postname: '岗位',postid: 1},{postname: '岗位',postid: 2}],
-                limits: [{title: '系统权限', items: [{modulename: '组织管理'}, {modulename: '组织管理'}]}, {
-                    title: '管理权限',
-                    items: [{modulename: '组织管理'}]
-                }],
+                posts: [],
+                limits: [],
                 operPost: {
                     postid: '',
                     postname: '',
@@ -225,7 +237,7 @@
                 },
                 deleteCompanyData: {
                     companyname: '',
-                    id: ''
+                    companyid: ''
                 },
                 editCompanyData: {
                     companyid: '',
@@ -235,6 +247,7 @@
                     parentid: '',
                     companyname: ''
                 },
+                operCompany: {},
                 firstClassEnterprise: {
                     companyname: '',
                 },
@@ -266,17 +279,19 @@
                 this.currentCompany = company;
             },
             getPosts: function () {
-                this.$http.post('post/getListByCompanyid', this.currentCompany).then(res => {
-                    this.posts = res.data.list;
+                this.$http.get('post/getListByCompanyid', {params: {companyid: this.currentCompany.objectid}}).then(res => {
+                    this.posts = res.body.data.list;
                     this.choosePost(this.posts[0]);
                 });
             },
             getPostsPermission: function () {
-                this.$http.post('permission/getModuleListByPostid', this.currentPost).then(res => {
-                    this.limits = res.data.list;
+                this.isEditLimit = false;
+                this.$http.post('permission/getModuleListByPostid', {postid: this.currentPost.objectid}).then(res => {
+                    this.limits = res.body.data.result;
                 })
             },
             choosePost: function (post) {
+                if (!post) post = '';
                 this.currentPost = post;
             },
 
@@ -284,57 +299,74 @@
                 $('#first-class-enterprise').modal('show');
             },
             dialogEditCompany: function (company) {
-                this.editCompanyData.companyid = company.id;
+                this.editCompanyData.objectid = company.objectid;
                 this.editCompanyData.companyname = company.companyname;
                 $('#edit-company').modal();
             },
             editCompany: function () {
                 this.$http.post('company/edit', this.editCompanyData).then(res => {
-
+                    this.$globalCache.refleshCompanies().then(companies => {
+                        this.companies = companies;
+                    });
+                    this.closeMode();
                 })
             },
             dialogAddCompany: function (company) {
-                this.addCompanyData.parentid = company.id;
+                this.addCompanyData.parentid = company.objectid;
                 $('#add-company').modal();
             },
             addCompany: function () {
                 this.$http.post('company/add', this.addCompanyData).then(res => {
-
+                    this.$globalCache.refleshCompanies().then(companies => {
+                        this.companies = companies;
+                    });
+                    this.closeMode();
                 })
             },
-            dialogDeleteCompany: function (company){
-                this.deleteCompanyData.id = company.id;
+            dialogDeleteCompany: function (company) {
+                this.deleteCompanyData.objectid = company.objectid;
                 this.deleteCompanyData.companyname = company.companyname;
+                this.resetData();
+                this.operCompany = company;
                 $('#delete-company').modal();
             },
             deleteCompany: function () {
                 this.$http.post('company/delete', this.deleteCompanyData).then(res => {
-
+                    this.$globalCache.refleshCompanies().then(companies => {
+                        this.companies = companies;
+                    });
+                    this.closeMode();
                 })
             },
             editPost: function () {
                 this.$http.post('post/edit', this.operPost).then(res => {
-
+                    this.closeMode();
                 })
             },
             deletePost: function () {
                 this.$http.post('post/delete', this.operPost).then(res => {
-
+                    this.getPosts();
+                    this.closeMode();
                 })
             },
             addPost: function () {
                 this.operPost.companyid = this.currentCompany.id;
                 this.$http.post('post/add', this.operPost).then(res => {
+                    this.getPosts();
+                    this.closeMode();
                 })
             },
             dialogAddPost: function () {
+                this.resetData();
                 $('#add-job').modal()
             },
             dialogEditPost: function (post) {
+                this.resetData();
                 this.operPost = post;
                 $('#edit-job').modal()
             },
             dialogDeletePost: function (post) {
+                this.resetData();
                 this.operPost = post;
                 $('#delete-job').modal()
             },
@@ -344,19 +376,30 @@
             confirmLimit: function () {
                 let ids = [];
                 this.limits.forEach(item => {
-                    item.items.forEach(permission => {
-                        if (permission.checked) {
-                            ids.push(permission.id)
-                        }
-                    })
+                    if (item.checked) {
+                        ids.push(item.objectid);
+                        item.children.forEach(permission => {
+                            if (permission.checked) {
+                                ids.push(permission.objectid)
+                            }
+                        })
+                    }
+
                 });
-                this.$http.post('permission/changeForPost', {postid: this.currentPost.id, permissionlist: ids}).then(res => {
+                this.$http.post('permission/changeForPost', {
+                    postid: this.currentPost.objectid,
+                    permissionlist: ids.join(',')
+                }).then(res => {
                     this.isEditLimit = false;
                 });
                 this.isEditLimit = false;
             },
+            closeMode: function () {
+                $('.modal').modal('hide')
+            },
             resetData: function () {
-                this.operCompany = {};
+                this.operCompany = this.$common.copyObj(ContentCompany);
+                this.operPost = this.$common.copyObj(ContentPost)
             }
         },
         watch: {
@@ -375,6 +418,7 @@
   @lineColor: #efefef;
   .organize {
     white-space: nowrap;
+    display: inline-block;
   }
 
   .company,
@@ -448,7 +492,7 @@
 
   .company {
     max-width: 880px;
-    max-height: 910px;
+    max-height: 800px;
     .company-full {
       display: inline-block;
     }
@@ -477,7 +521,7 @@
       font-size: 18px;
       cursor: pointer;
       &.active,
-      &:hover{
+      &:hover {
         background-color: #ccc;
       }
       .job-content-item-name {
@@ -510,6 +554,9 @@
         margin-bottom: 35px;
         font-size: 24px;
         text-align: left;
+        input {
+          margin-right: 10px;
+        }
       }
       .limit-content-items {
         margin-bottom: 35px;

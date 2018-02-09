@@ -12,10 +12,10 @@ class GlobalCache {
     }
     get companies() {
         if (!this._companies) {
-            /*this._companies = HttpClient.post(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO).then(res => {
-                return res.data.companies;
-            })*/
-            this._companies = new Promise(function (resolve) {
+            this._companies = HttpClient.get(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO).then(res => {
+                return res.body.data.companies;
+            })
+           /* this._companies = new Promise(function (resolve) {
                 resolve([{
                     name: '厦门纵行科技',
                     id: 1,
@@ -28,40 +28,47 @@ class GlobalCache {
                         }]
                     }, {name: '厦门纵行科技3',id: 6, children: []}]
                 },{name: '厦门纵行科技3',id:7, children: []}])
-            })
+            })*/
         }
         return this._companies;
     }
+    refleshCompanies() {
+        this._companies = null;
+        return this.companies;
+    }
     get apps() {
-        if (!this._apps) {
-           /* this._apps = HttpClient.get('permission/getAppList').then(res => {
-                return res.data.list;
-            })*/
-           this._apps = new Promise(function (resolve) {
+        // if (!this._apps) {
+             this._apps = HttpClient.get('permission/getAppList').then(res => {
+                console.log(res)
+                let app = '';
+                if (res.body.data) app =  res.body.data.result;
+                return app;
+            })
+           /*this._apps = new Promise(function (resolve) {
                resolve([
                    {appname: '路灯', appcode: 'code1'},
                    {appname: '建筑大脑-智慧照明', appcode: 'code2'},
                    {appname: 'JLL-智慧物业', appcode: 'code3'},
                ])
-           })
-        }
+           })*/
+        // }
         return this._apps;
     }
     get sysMenus() {
         if (!this._sysMenus) {
-            /*this._sysMenus = HttpClient.get('permission/getModuleListByLoginname').then(res => {
-                return res.data.list;
-            })*/
-            this._sysMenus = new Promise(function (resolve) {
-                resolve([{modulename: '用户管理', modulecode: 'code1'}, {modulename: '组织管理', modulecode: 'code2'}, {modulename: '操作日志', modulecode: 'code3'}])
+            this._sysMenus = HttpClient.get('permission/getModuleListByUserid').then(res => {
+                return res.body.data.list;
             })
+            /*this._sysMenus = new Promise(function (resolve) {
+                resolve([{modulename: '用户管理', modulecode: 'code1'}, {modulename: '组织管理', modulecode: 'code2'}, {modulename: '操作日志', modulecode: 'code3'}])
+            })*/
         }
         return this._sysMenus;
     }
     get managementMenus() {
         if (!this._managementMenus) {
            /* this._managementMenus = HttpClient.get('permission/getModuleListByPostid').then(res => {
-                return res.data.list;
+                return res.body.data.list;
             })*/
             this._managementMenus = new Promise(function (resolve) {
                 resolve([

@@ -69,9 +69,11 @@
                         if (this.verifyCode) access.code = this.verifyCode;
                         if (this.code != this.verifyCode) return;
                         this.getUser(access).then((user) => {
-                            this.$router.push('/')
+                            setTimeout(()=> {
+                                this.$router.push('/')
+                            }, 200)
                         }).catch(err => {
-                            this.$tips.fail(err.msg)
+                            this.$tips.fail(err.message);
                         })
                     } else {
                         this.$tips.fail('表单验证失败');

@@ -14,7 +14,7 @@ export default new Router({
     routes: [
         {path: '/login', name: 'login', component: loginPage},
         {path: '/', name: 'home', component: homePage, alias: ['/index', '/home']},
-        {path: '/management', name: 'systemManagement', component: systemManagementPage,
+        {path: '/sys', name: 'systemManagement', component: systemManagementPage,
         children: [
             {path: 'user',name: 'user', component: userManagementPage},
             {path: 'organize', component: organizeManagementPage},

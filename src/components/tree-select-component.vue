@@ -38,7 +38,7 @@
     <div class="tree-select-open" v-else @click.self="show(item)"></div>
 </template>
 
-    <div @click.self="chooseItem(item)" class="tree-select-name">{{item.name}}</div>
+    <div @click.self="chooseItem(item)" class="tree-select-name">{{item.companyname}}</div>
     <template v-if="!item.close">
             <tree-select-contents v-if="item.children" :items="item.children" v-on:input="chooseItem"></tree-select-contents>
 </template>
@@ -74,8 +74,8 @@
                 let text = ''
                 let that = this;
                 this.list.forEach(function exc(item) {
-                    if (item.id == that.value) {
-                        text = item.name;
+                    if (item.objectid == that.value) {
+                        text = item.companyname;
                         return;
                     }
                     if (item.children.length <= 0) {
@@ -108,7 +108,7 @@
                 }
             },
             chooseItem: function (item) {
-                this.$emit('input', item.id);
+                this.$emit('input', item.objectid);
                 this.isShow = false
             },
             dropdown: function () {
@@ -119,7 +119,6 @@
             },
         },
         mounted: function () {
-
         }
     }
 </script>
@@ -133,6 +132,9 @@
     position: relative;
     width: auto;
     vertical-align: middle;
+    input {
+      padding-right: 35px;
+    }
     .tree-select-clear {
       position: absolute;
       right: 10px;

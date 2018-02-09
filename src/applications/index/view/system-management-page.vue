@@ -10,8 +10,7 @@
           <div class="aside-nav">
             <ul>
               <li v-for="nav in navs">
-                <router-link :to="nav.url" :class="nav.ename" class="nav"><div class="nav-icon"></div>{{nav.name}}
-                </router-link>
+                <router-link :to="nav.url" :class="nav.ename" class="nav"><div class="nav-icon"></div>{{nav.modulename}}</router-link>
               </li>
             </ul>
           </div>
@@ -34,45 +33,46 @@
         },
         created: function () {
             this.getSysMenus();
-            this.initMenus();
         },
         methods: {
             getSysMenus: function () {
                 let navs = [
                     {
                         ename: 'user',
-                        url: '/management/user',
-                        modulecode: 'code1'
+                        url: '/sys/user',
+                        modulecode: 'INETLIGHTYHGL'
                     },
                     {
                         ename: 'organize',
-                        url: '/management/organize',
-                        modulecode: 'code2'
+                        url: '/sys/organize',
+                        modulecode: 'INETLIGHTZZGL'
                     },
                     {
                         ename: 'log',
-                        url: '/management/log',
-                        modulecode: 'code3'
+                        url: '/sys/log',
+                        modulecode: 'INETLIGHTCZRZ'
                     },
                 ];
                 this.$globalCache.sysMenus.then(list => {
-                    this.navs = navs.filter(nav => {
+                    this.navs = list.filter(nav => {
                         let permission = false;
-                        list.forEach(item => {
+                        navs.forEach(item => {
                             if (nav.modulecode == item.modulecode) {
-                                nav.name = item.modulename;
+                                nav.url = item.url;
+                                nav.ename = item.ename;
                                 permission = true;
                             }
                         });
                         return permission;
                     })
+                    this.initMenus();
                 })
             },
             initMenus: function () {
                 this.initDefaultMenu();
             },
             initDefaultMenu: function () {
-                if (window.location.hash == '#/management') this.$router.push({name: 'user'});
+                if (window.location.hash == '#/sys') this.$router.push(this.navs[0].url);
             },
         },
         mounted: function () {
