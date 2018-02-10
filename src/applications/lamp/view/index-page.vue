@@ -16,7 +16,7 @@
                       <a :class="nav.ename" data-toggle="collapse" data-parent="#nav" :href="'#' + nav.ename" aria-expanded="false"
                          aria-controls="collapseOne">
                         <div class="nav-icon"></div>
-                        {{nav.name}}
+                        {{nav.modulename}}
                         <span class="nav-selected"></span>
                       </a>
                     </h4>
@@ -24,7 +24,7 @@
                   <div :id="nav.ename" class="panel-collapse collapse" role="tabpanel">
                     <template v-for="child in nav.children">
                       <router-link :to="child.url" class="panel-body">
-                        {{child.name}}
+                        {{child.modulename}}
                       </router-link>
                     </template>
                   </div>
@@ -47,7 +47,39 @@
         name: 'lampPage',
         data() {
             return {
-                navs: []
+                navs: [],
+                localNavs: [
+                    {
+                        modulename: '设备管理',
+                        ename: 'device',
+                        modulecode: '',
+                        children: [
+                            {modulename: '灯控器', modulecode: '', url: '/device/lamp'},
+                            {modulename: '回路控制器', modulecode: '', url: '/device/loop'},
+                            {modulename: '控制面板', modulecode: '', url: '/device/panel'},
+                        ]
+                    },
+                    {
+                        modulename: '控制管理',
+                        ename: 'control',
+                        url: '/management/control',
+
+                        children: [
+                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
+                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                        ]
+                    },
+                    {
+                        modulename: '策略管理',
+                        ename: 'strategy',
+                        url: '/management/control',
+
+                        children: [
+                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
+                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                        ]
+                    },
+                ]
             }
         },
         created: function () {
@@ -57,35 +89,52 @@
             getSysMenus: function () {
                 let navs = [
                     {
-                        name: '设备管理',
+                        modulename: '设备管理',
                         ename: 'device',
+                        modulecode: '',
                         children: [
-                            {name: '灯控器', url: '/device/lamp'},
-                            {name: '回路控制器', url: '/device/loop'},
-                            {name: '控制面板', url: '/device/panel'},
+                            {modulename: '灯控器', modulecode: '', url: '/device/lamp'},
+                            {modulename: '回路控制器', modulecode: '', url: '/device/loop'},
+                            {modulename: '控制面板', modulecode: '', url: '/device/panel'},
                         ]
                     },
                     {
-                        name: '控制管理',
+                        modulename: '控制管理',
                         ename: 'control',
                         url: '/management/control',
+
                         children: [
-                            {name: '灯控器', url: '/management/device'},
-                            {name: '回路控制器', url: '/management/device'}
+                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
+                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                        ]
+                    },
+                    {
+                        modulename: '策略管理',
+                        ename: 'strategy',
+                        url: '/management/control',
+
+                        children: [
+                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
+                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
                         ]
                     },
                 ];
                 this.navs = navs;
                /* this.$globalCache.managementMenus.then(list => {
-                    this.navs = navs.filter(nav => {
-                        let permission = false;
-                        list.forEach(item => {
+                    this.navs = list.forEach(item => {
+                        navs.forEach(nav => {
                             if (nav.modulecode == item.modulecode) {
-                                nav.name = item.modulename;
-                                permission = true;
+                                list.ename = nav.ename ;
+                                item.children.forEach(child => {
+                                    nav.children.forEach(local => {
+                                        if (local.modulecode == child.modulecode) {
+                                            child.url = local.url;
+                                        }
+                                    })
+                                })
                             }
                         });
-                        return permission;
+
                     })
                 })*/
             },
@@ -164,7 +213,10 @@
               font-size: 20px;
               &[aria-expanded=false] {
                 .nav-selected {
-                  display: none;
+                  width: 11px;
+                  height: 20px;
+                  margin-top: -10px;
+                  background-image: url("../assets/home/hide-nav.png");
                 }
               }
               .nav-selected {
@@ -182,7 +234,8 @@
                 background-color: #15283f;
               }
               &.device,
-              &.control {
+              &.control,
+              &.strategy{
                 .nav-icon {
                   position: absolute;
                   left: 70px;
@@ -212,6 +265,18 @@
                 &:hover {
                   .nav-icon {
                     background-image: url("../assets/home/control-active.png");
+                  }
+                }
+              }
+              &.strategy {
+                .nav-icon {
+                  width: 24px;
+                  height: 24px;
+                  background-image: url("../assets/home/strategy.png");
+                }
+                &:hover {
+                  .nav-icon {
+                    background-image: url("../assets/home/strategy-active.png");
                   }
                 }
               }

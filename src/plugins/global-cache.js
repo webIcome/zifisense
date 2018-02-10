@@ -13,7 +13,11 @@ class GlobalCache {
     get companies() {
         if (!this._companies) {
             this._companies = HttpClient.get(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO).then(res => {
-                return res.body.data.companies;
+                if (!res.body.data) {
+                    this._companies = null;
+                } else {
+                    return res.body.data.companies;
+                }
             })
            /* this._companies = new Promise(function (resolve) {
                 resolve([{
@@ -37,12 +41,13 @@ class GlobalCache {
         return this.companies;
     }
     get apps() {
-        // if (!this._apps) {
+        if (!this._apps) {
              this._apps = HttpClient.get('permission/getAppList').then(res => {
-                console.log(res)
-                let app = '';
-                if (res.body.data) app =  res.body.data.result;
-                return app;
+                 if (!res.body.data) {
+                     this._apps = null;
+                 } else {
+                     return res.body.data.result;
+                 }
             })
            /*this._apps = new Promise(function (resolve) {
                resolve([
@@ -51,13 +56,17 @@ class GlobalCache {
                    {appname: 'JLL-智慧物业', appcode: 'code3'},
                ])
            })*/
-        // }
+        }
         return this._apps;
     }
     get sysMenus() {
         if (!this._sysMenus) {
             this._sysMenus = HttpClient.get('permission/getModuleListByUserid').then(res => {
-                return res.body.data.list;
+                if (!res.body.data) {
+                    this._sysMenus = null;
+                } else {
+                    return res.body.data.list;
+                }
             })
             /*this._sysMenus = new Promise(function (resolve) {
                 resolve([{modulename: '用户管理', modulecode: 'code1'}, {modulename: '组织管理', modulecode: 'code2'}, {modulename: '操作日志', modulecode: 'code3'}])

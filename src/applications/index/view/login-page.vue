@@ -67,7 +67,9 @@
                     if (result) {
                         let access = {loginname: this.loginname, password: this.password};
                         if (this.verifyCode) access.code = this.verifyCode;
-                        if (this.code != this.verifyCode) return;
+                        if (this.code != this.verifyCode) {
+                            return this.$tips.fail('表单验证失败');
+                        }
                         this.getUser(access).then((user) => {
                             setTimeout(()=> {
                                 this.$router.push('/')

@@ -245,7 +245,8 @@
       </div>
     </form>
   </div>
-  <detail-panel-control-page v-else-if="currentPage == pages.detail" :id="detailDeviceId" :pages="pages" @page="showPage"></detail-panel-control-page>
+  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
+
 </template>
 
 <script>
@@ -274,7 +275,7 @@
                 },
                 operData: {},
                 addDeviceData: {},
-                detailDeviceId: '',
+                deviceView: '',
                 list: [{}],
                 companies: [],
                 groups: [{name: '分组1'},{name: '分组2'}],
@@ -330,10 +331,13 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.post('controlPanel/getList', params).then(res => {
-                    this.searchParams.pageNum = res.pageNum;
-                    this.searchParams.pages = res.pages;
-                    this.list = res.list;
+                this.$http.get('controlPanel/getList', {params: params}).then(res => {
+                    this.searchParams.pageNum = res.body.data.pageNum;
+                    this.searchParams.pages = res.body.data.pages;
+                    this.searchParams.pageSize = res.body.data.pageSize;
+                    this.list = res.body.data.list;
+                }).catch(err => {
+
                 })
             },
             addGroup: function () {
@@ -356,8 +360,15 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-              this.detailDeviceId = device.sn;
-              this.showPage(this.pages.detail)
+                this.getDevice(device.sn).then(device => {
+                    this.deviceView = device;
+                    this.showPage(this.pages.detail)
+                });
+            },
+            getDevice: function (id) {
+                return this.$http.post('controlPanel/getDetailsBySn', {sn: id}).then(res => {
+                    return res.body.data
+                }).catch()
             },
             showPage:function (page) {
                 this.currentPage = page;
@@ -367,7 +378,9 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                this.operData = device;
+                this.getDevice(device.sn).then(device => {
+                    this.operData = device
+                });
             },
             dialogDeleteDevice: function () {
             },

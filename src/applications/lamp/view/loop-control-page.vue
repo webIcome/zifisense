@@ -292,7 +292,7 @@
       </div>
     </form>
   </div>
-  <detail-loop-control-page v-else-if="currentPage == pages.detail" :id="detailDeviceId" :pages="pages" @page="showPage"></detail-loop-control-page>
+  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
 <script>
@@ -350,7 +350,7 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
-                detailDeviceId: '',
+                deviceView: {},
                 pages: {
                     home: 1,
                     search: 2,
@@ -387,10 +387,13 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.post('loopController/getList', params).then(res => {
-                    this.searchParams.pageNum = res.pageNum;
-                    this.searchParams.pages = res.pages;
-                    this.list = res.list;
+                this.$http.get('loopController/getList', {params: params}).then(res => {
+                    this.searchParams.pageNum = res.body.data.pageNum;
+                    this.searchParams.pages = res.body.data.pages;
+                    this.searchParams.pageSize = res.body.data.pageSize;
+                    this.list = res.body.data.list;
+                }).catch(err => {
+
                 })
             },
             addGroup: function () {
@@ -413,8 +416,15 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                this.detailDeviceId = device.sn;
-                this.showPage(this.pages.detail)
+                this.getDevice(device.sn).then(device => {
+                    this.deviceView = device;
+                    this.showPage(this.pages.detail)
+                });
+            },
+            getDevice: function (id) {
+                return this.$http.post('loopController/getDetailsBySn', {sn: id}).then(res => {
+                    return res.body.data
+                }).catch()
             },
             showPage:function (page) {
                 this.currentPage = page;
@@ -424,7 +434,9 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                this.operData = device;
+                this.getDevice(device.sn).then(device => {
+                    this.operData = device
+                });
             },
             dialogDeleteDevice: function (device) {
                 this.resetData();

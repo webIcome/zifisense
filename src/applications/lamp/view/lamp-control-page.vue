@@ -420,7 +420,7 @@
       </div>
     </form>
   </div>
-  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :id="detailDeviceId" :pages="pages" @page="showPage"></detail-lamp-control-page>
+  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
 <script>
@@ -495,13 +495,13 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
-                detailDeviceId: '',
                 pages: {
                     home: 1,
                     search: 2,
                     detail: 3
                 },
-                currentPage: 1
+                currentPage: 1,
+                deviceView: {}
             }
         },
         components: {
@@ -532,10 +532,13 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.post('lightController/getList', params).then(res => {
-                    this.searchParams.pageNum = res.pageNum;
-                    this.searchParams.pages = res.pages;
-                    this.list = res.list;
+                this.$http.get('lightController/getList', {params: params}).then(res => {
+                    this.searchParams.pageNum = res.body.data.pageNum;
+                    this.searchParams.pages = res.body.data.pages;
+                    this.searchParams.pageSize = res.body.data.pageSize;
+                    this.list = res.body.data.list;
+                }).catch(err => {
+
                 })
             },
             addGroup: function () {
@@ -558,8 +561,10 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                this.detailDeviceId = device.sn;
-                this.showPage(this.pages.detail)
+                this.getDevice(device.sn).then(device => {
+                    this.deviceView = device;
+                    this.showPage(this.pages.detail)
+                });
             },
             showPage:function (page) {
                 this.currentPage = page;
@@ -569,24 +574,34 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                this.operData = device;
+                this.getDevice(device.sn).then(device => {
+                    this.operData = device
+                });
             },
             dialogDeleteDevice: function (device) {
                 this.resetData();
                 this.operData = device;
             },
+            getDevice: function (id) {
+                return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
+                    return res.body.data
+                }).catch()
+            },
             deleteDevice: function () {
-                this.$http.post('lightController/delete', this.operData).then(res => {
+                this.$http.post('lightController/delete', {sn: this.operData.sn}).then(res => {
+                    this.initLamp();
                     this.hideModal();
                 });
             },
             editDevice: function () {
                 this.$http.post('lightController/edit', this.operData).then(res => {
+                    this.initLamp();
                     this.hideModal();
                 });
             },
             addDevice: function () {
                 this.$http.post('lightController/add', this.operData).then(res => {
+                    this.initLamp();
                     this.hideModal();
                 });
             },

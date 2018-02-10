@@ -1,6 +1,6 @@
 <template>
   <div class="tree-select">
-    <input @click.self="dropdown" readonly class="form-control" :value="text" :placeholder="placeholder"/>
+    <input readonly class="form-control" :value="text" :placeholder="placeholder"/>
     <div class="tree-select-clear" @click.self="clear">&times;</div>
     <div class="tree-select-content" v-if="isShow">
       <tree-select-contents :items="items" v-on:input="chooseItem"></tree-select-contents>
@@ -13,6 +13,7 @@
         data () {
             return {
                 isShow: false,
+                disabled: true
             }
         },
         props: {
@@ -109,16 +110,21 @@
             },
             chooseItem: function (item) {
                 this.$emit('input', item.objectid);
-                this.isShow = false
-            },
-            dropdown: function () {
-                this.isShow = !this.isShow;
+                this.disabled = false
             },
             clear: function () {
                 this.chooseItem({})
             },
+            dc (e) {
+                this.isShow = this.$el.contains(e.target) && this.disabled;
+                this.disabled = true;
+            }
         },
-        mounted: function () {
+        mounted () {
+            document.addEventListener('click', this.dc)
+        },
+        beforeDestroy () {
+            document.removeEventListener('click', this.dc)
         }
     }
 </script>

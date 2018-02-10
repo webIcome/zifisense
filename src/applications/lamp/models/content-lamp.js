@@ -15,4 +15,5 @@ export const Lamp ={
     lightcontrollerType: '',
     sensortype: '',
     switchstate: '',
+    loopcontrollerSn: ''
 };

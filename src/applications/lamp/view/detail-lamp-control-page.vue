@@ -61,22 +61,14 @@
         name: 'searchLampControlPage',
         data() {
             return {
-                device: {},
             }
         },
         props: {
-            id: '',
-            pages: {}
+            pages: {},
+            device: {}
         },
-        created: function () {
-            this.getDetail(this.id);
-        },
+
         methods: {
-            getDetail: function (id) {
-                this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
-                    this.device = res.data
-                })
-            },
             goBack: function () {
                 this.$emit('page', this.pages.home);
             },

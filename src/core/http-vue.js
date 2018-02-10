@@ -19,8 +19,11 @@ Vue.http.interceptors.push(function (request, next) {
 
     next(function (response) {
         Vue.Loading.end();
-        if (response.body.code == 3 || response.body.code == 401) {
-            return window.vue.$router.push('/login');
+        if (response.body.code == 3 || response.body.code == 401 || response.body.code == 410) {
+            setTimeout(function () {
+                window.location.replace('/#login')
+            })
+            return ;
 
         }
         if (!(response.status == 200 || response.status == 304)) {
