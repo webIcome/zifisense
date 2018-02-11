@@ -4,27 +4,27 @@
     <div class="form-horizontal">
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
-        <div class="col-md-3">{{device.devicename}}</div>
+        <div class="col-md-3 form-control-static">{{device.devicename}}</div>
         <label class="col-md-3 control-label">设备ID：</label>
-        <div class="col-md-3">{{device.sn}}</div>
+        <div class="col-md-3 form-control-static">{{device.sn}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3">{{device.group}}</div>
+        <div class="col-md-3 form-control-static">{{device.group}}</div>
         <label class="col-md-3 control-label">控制模式：</label>
-        <div class="col-md-3">{{device.controlmode}}</div>
+        <div class="col-md-3 form-control-static">{{device.controlmode}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">地理位置：</label>
-        <div class="col-md-3">{{device.position}}</div>
+        <div class="col-md-3 form-control-static">{{device.position}}</div>
         <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">{{device.companyname}}</div>
+        <div class="col-md-3 form-control-static">{{device.companyname}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3">{{device.regtime}}</div>
+        <div class="col-md-3 form-control-static">{{device.regtime}}</div>
         <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">{{device.runningstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.runningstate}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

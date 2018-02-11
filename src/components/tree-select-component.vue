@@ -1,6 +1,6 @@
 <template>
   <div class="tree-select">
-    <input readonly class="form-control" :value="text" :placeholder="placeholder"/>
+    <el-input readonly :value="text" :placeholder="placeholder"/>
     <div class="tree-select-clear" @click.self="clear">&times;</div>
     <div class="tree-select-content" v-if="isShow">
       <tree-select-contents :items="items" v-on:input="chooseItem"></tree-select-contents>
@@ -24,7 +24,7 @@
 
             placeholder: {
                 type: String,
-                default: '--选择归属企业--'
+                default: '选择归属企业'
             },
             value: ''
         },

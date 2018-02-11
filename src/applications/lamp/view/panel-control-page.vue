@@ -5,11 +5,11 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <input type="text" class="form-control" v-model="searchParams.phone" placeholder="输入设备名称"/>
+            <el-input type="text" v-model="searchParams.phone" placeholder="输入设备名称"/>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <input type="text" class="form-control" v-model="searchParams.phone" placeholder="输入设备ID"/>
+            <el-input type="text" v-model="searchParams.phone" placeholder="输入设备ID"/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
@@ -62,13 +62,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">设备名称：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.devicename"/>
+              <el-input type="text" v-model="operData.devicename"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">设备ID：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.sn"/>
+              <el-input type="text" v-model="operData.sn"/>
             </div>
           </div>
           <div class="form-group">
@@ -83,18 +83,15 @@
           <div class="form-group">
             <label class="col-md-4 control-label">情景模式：</label>
             <div class="col-md-8">
-              <select class="form-control" v-model="operData.controlmode">
-                <option value="">--选择情景模式--</option>
-                <template v-for="status in controlPattern">
-                  <option :value="status.value">{{status.text}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
+                <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">地理位置：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.position" placeholder="请输入地理位置"/>
+              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
             </div>
           </div>
           <div class="form-group">
@@ -116,13 +113,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">设备名称：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.devicename"/>
+              <el-input type="text" v-model="operData.devicename"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">设备ID：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.sn"/>
+              <el-input type="text" v-model="operData.sn"/>
             </div>
           </div>
           <div class="form-group">
@@ -137,18 +134,15 @@
           <div class="form-group">
             <label class="col-md-4 control-label">情景模式：</label>
             <div class="col-md-8">
-              <select v-model="operData.controlmode" class="form-control">
-                <option value="">--选择情景模式--</option>
-                <template v-for="pattern in controlPattern">
-                  <option :value="pattern.value">{{pattern.text}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
+                <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">地理位置：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.position" placeholder="请输入地理位置"/>
+              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
             </div>
           </div>
           <div class="form-group">
@@ -185,37 +179,31 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename"/>
         </div>
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <select class="form-control">
-            <option value="">--无--</option>
-            <template>
-              <option></option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
+            <el-option v-for="type in groups" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">情景模式：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.controlmode">
-            <option value="">--选择情景模式--</option>
-            <template v-for="pattern in controlPattern">
-              <option :value="pattern.value">{{pattern.text}}</option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
+            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
@@ -231,12 +219,9 @@
         </div>
         <label class="col-md-3 control-label">运行状态：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.runningstate">
-            <option value="">--选择运行状态--</option>
-            <template v-for="status in runningStatus">
-              <option :value="status.value">{{status.text}}</option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
+            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
       </div>
       <div class="search-btn">

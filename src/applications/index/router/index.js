@@ -10,7 +10,7 @@ const organizeManagementPage =  () => import(/* webpackChunkName: "group-sys" */
 Vue.use(Router);
 
 export default new Router({
-    // mode:'history',
+    mode:'history',
     routes: [
         {path: '/login', name: 'login', component: loginPage},
         {path: '/', name: 'home', component: homePage, alias: ['/index', '/home']},

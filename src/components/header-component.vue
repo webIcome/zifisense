@@ -23,7 +23,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label" for="currentPassword">当前密码：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" id="currentPassword" v-model="password.oldpwd"/>
+              <input type="password" class="form-control" id="currentPassword" v-model="password.oldpwd"/>
             </div>
           </div>
           <div class="form-group">

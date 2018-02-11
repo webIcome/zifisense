@@ -5,11 +5,11 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <input type="text" class="form-control" v-model="searchParams.devicename" placeholder="输入设备名称"/>
+            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <input type="text" class="form-control" v-model="searchParams.sn" placeholder="输入设备ID"/>
+            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID"/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
@@ -17,30 +17,21 @@
           </div>
           <div class="form-group">
             <label class="sr-only">选择开关状态：</label>
-            <select class="form-control" v-model="searchParams.switchstate">
-              <option value="">--选择开关状态--</option>
-              <template v-for="status in switchStatus">
-                <option :value="status.value">{{status.text}}</option>
-              </template>
-            </select>
+            <el-select v-model="searchParams.switchstate" placeholder="选择开关状态" clearable >
+              <el-option v-for="status in switchStatus" :key="status.value" :value="status.value" :label="status.text"></el-option>
+            </el-select>
           </div>
           <div class="form-group">
             <label class="sr-only">灯控器类型：</label>
-            <select v-model="searchParams.lightcontrollerType" class="form-control">
-              <option value="">--选择灯控器类型--</option>
-              <template v-for="type in lightControllerType">
-                <option :value="type.value">{{type.text}}</option>
-              </template>
-            </select>
+            <el-select v-model="searchParams.lightcontrollerType" placeholder="选择灯控器类型" clearable >
+              <el-option v-for="status in lightControllerType" :key="status.value" :value="status.value" :label="status.text"></el-option>
+            </el-select>
           </div>
           <div class="form-group">
             <label class="sr-only">传感器类型：</label>
-            <select class="form-control" v-model="searchParams.sensortype">
-              <option value="">--选择传感器类型--</option>
-              <template v-for="type in sensorType">
-                <option :value="type.value">{{type.text}}</option>
-              </template>
-            </select>
+            <el-select v-model="searchParams.sensortype" placeholder="选择传感器类型" clearable >
+              <el-option v-for="status in sensorType" :key="status.value" :value="status.value" :label="status.text"></el-option>
+            </el-select>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
@@ -99,13 +90,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">设备名称：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.devicename"/>
+              <el-input type="text" v-model="operData.devicename"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">设备ID：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.sn"/>
+              <el-input type="text" v-model="operData.sn"/>
             </div>
           </div>
           <div class="form-group">
@@ -120,40 +111,31 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属回路控制器：</label>
             <div class="col-md-8">
-              <select v-model="operData.loopcontrollerSn" class="form-control">
-                <option value="">--选择回路控制器--</option>
-                <template >
-                  <option>{{}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.loopcontrollerSn" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+                <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">灯控器类型：</label>
             <div class="col-md-8">
-              <select class="form-control" v-model="operData.lightcontrollerType">
-                <option value="">--选择灯控器类型--</option>
-                <template v-for="type in lightControllerType">
-                  <option :value="type.value">{{type.text}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.lightcontrollerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
+                <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">传感器类型：</label>
             <div class="col-md-8">
-              <select class="form-control" v-model="operData.sensortype">
-                <option value="">--选择传感器类型--</option>
-                <template v-for="type in sensorType">
-                  <option :value="type.value">{{type.text}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.sensortype" placeholder="选择传感器类型" clearable  style="width: 100%;">
+                <el-option v-for="type in sensorType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">地理位置：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.position" placeholder="请输入地理位置"/>
+              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
             </div>
           </div>
           <div class="form-group">
@@ -175,13 +157,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">设备名称：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.devicename"/>
+              <el-input type="text" v-model="operData.devicename"/>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">设备ID：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.sn"/>
+              <el-input type="text" v-model="operData.sn"/>
             </div>
           </div>
           <div class="form-group">
@@ -196,37 +178,31 @@
           <div class="form-group">
             <label class="col-md-4 control-label">归属回路控制器：</label>
             <div class="col-md-8">
-              <select v-model="operData.loopcontrollerSn" class="form-control">
-                <template >
-                  <option>{{}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.loopcontrollerSn" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+                <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">灯控器类型：</label>
             <div class="col-md-8">
-              <select class="form-control" v-model="operData.lightcontrollerType">
-                <template v-for="type in lightControllerType">
-                  <option :value="type.value">{{type.text}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.lightcontrollerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
+                <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">传感器类型：</label>
             <div class="col-md-8">
-              <select class="form-control" v-model="operData.sensortype">
-                <template v-for="type in sensorType">
-                  <option :value="type.value">{{type.text}}</option>
-                </template>
-              </select>
+              <el-select v-model="operData.sensortype" placeholder="选择传感器类型" clearable  style="width: 100%;">
+                <el-option v-for="type in sensorType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-4 control-label">地理位置：</label>
             <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operData.position" placeholder="请输入地理位置"/>
+              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
             </div>
           </div>
           <div class="form-group">
@@ -304,68 +280,61 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename"/>
         </div>
         <label class="col-md-3 control-label">电压：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two" v-model="advancedSearchParams.voltagelow"/>到<input
-            type="text" class="form-control input-two" v-model="advancedSearchParams.voltagehigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.voltagelow"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.voltagehigh"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn"/>
         </div>
         <label class="col-md-3 control-label">电流：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two" v-model="advancedSearchParams.currrentlow"/>到<input
-            v-model="advancedSearchParams.currenthigh" type="text" class="form-control input-two"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow"/>到<el-input
+            v-model="advancedSearchParams.currenthigh" type="text" class="input-two"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.groupid">
-            <option value="">--选择归属组--</option>
-            <template>
-              <option></option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
+            <el-option></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">有功电能：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two" v-model="advancedSearchParams.activepowerlow"/>到<input
-            type="text" class="form-control input-two" v-model="advancedSearchParams.activepowerhigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属回路控制器：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.loopcontrollerSn">
-            <option value="">--选择归属回路控制器--</option>
-            <template>
-              <option></option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.loopcontrollerSn" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+            <el-option></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">灯控器类型：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.lightcontrollerType">
-            <option value="">--选择灯控器类型--</option>
-            <template v-for="type in lightControllerType">
-              <option :value="type.value">{{type.text}}</option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.lightcontrollerType" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+            <el-option v-for="type in lightControllerType" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
+   <!--       <el-date-picker v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
+          <el-date-picker v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>-->
           <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"
                                 v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>到
           <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"
@@ -375,12 +344,9 @@
       <div class="form-group">
         <label class="col-md-3 control-label">传感器类型：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.sensortype">
-            <option value="">--选择传感器类型--</option>
-            <template v-for="type in sensorType">
-              <option :value="type.value">{{type.text}}</option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.sensortype" placeholder="选择传感器类型" clearable  style="width: 100%;">
+            <el-option v-for="type in sensorType" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3">
@@ -390,28 +356,22 @@
       <div class="form-group">
         <label class="col-md-3 control-label">开关状态：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.switchstate">
-            <option value="">--选择开关状态--</option>
-            <template v-for="status in switchStatus">
-              <option :value="status.value">{{status.text}}</option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.switchstate" placeholder="选择开关状态" clearable  style="width: 100%;">
+            <el-option v-for="type in switchStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
         <label class="col-md-3 control-label">运行状态：</label>
         <div class="col-md-3">
-          <select class="form-control" v-model="advancedSearchParams.runningstate">
-            <option value="">--选择运行状态--</option>
-            <template v-for="status in runningStatus">
-              <option :value="status.value">{{status.text}}</option>
-            </template>
-          </select>
+          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
+            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
         <div class="col-md-3">
-          <input type="text" class="form-control input-two" v-model="advancedSearchParams.brightnesslow"/>到<input
-            type="text" class="form-control input-two" v-model="advancedSearchParams.brightnesshigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.brightnesshigh"/>
         </div>
       </div>
       <div class="search-btn">
@@ -428,6 +388,8 @@
     import Config from "../../../config";
     import {ContentLamp} from '../models';
     import detailLampControlPage from './detail-lamp-control-page.vue'
+    import {Select, Option} from 'element-ui'
+    import ElOption from "../../../../node_modules/element-ui/packages/select/src/option";
     export default {
         name: 'lampControlPage',
         data() {
@@ -505,7 +467,9 @@
             }
         },
         components: {
-            detailLampControlPage
+            ElOption, detailLampControlPage,
+            'el-select': Select,
+//            'el-option': Option
         },
         created: function () {
             this.initData()

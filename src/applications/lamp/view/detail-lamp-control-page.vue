@@ -4,49 +4,49 @@
     <div class="form-horizontal">
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
-        <div class="col-md-3">{{device.devicename}}</div>
+        <div class="col-md-3 form-control-static">{{device.devicename}}</div>
         <label class="col-md-3 control-label">电压：</label>
-        <div class="col-md-3">{{device.voltagelow}}</div>
+        <div class="col-md-3 form-control-static">{{device.voltagelow}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
-        <div class="col-md-3">{{device.sn}}</div>
+        <div class="col-md-3 form-control-static">{{device.sn}}</div>
         <label class="col-md-3 control-label">电流：</label>
-        <div class="col-md-3">{{device.oldpwd}}</div>
+        <div class="col-md-3 form-control-static">{{device.oldpwd}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3">{{device.group}}</div>
+        <div class="col-md-3 form-control-static">{{device.group}}</div>
         <label class="col-md-3 control-label">有功电能：</label>
-        <div class="col-md-3">{{device.activepower}}</div>
+        <div class="col-md-3 form-control-static">{{device.activepower}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属回路控制器：</label>
-        <div class="col-md-3">{{device.voltagelow}}</div>
+        <div class="col-md-3 form-control-static">{{device.voltagelow}}</div>
         <label class="col-md-3 control-label">地理位置：</label>
-        <div class="col-md-3">{{device.position}}</div>
+        <div class="col-md-3 form-control-static">{{device.position}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">灯控类型：</label>
-        <div class="col-md-3">{{device.lightControllerType}}</div>
+        <div class="col-md-3 form-control-static">{{device.lightControllerType}}</div>
         <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3">{{device.regtime}}</div>
+        <div class="col-md-3 form-control-static">{{device.regtime}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">传感器类型：</label>
-        <div class="col-md-3">{{device.sensortype}}</div>
+        <div class="col-md-3 form-control-static">{{device.sensortype}}</div>
         <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">{{device.compnayname}}</div>
+        <div class="col-md-3 form-control-static">{{device.compnayname}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">开关状态：</label>
-        <div class="col-md-3">{{device.switchstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.switchstate}}</div>
         <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">{{device.runningstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.runningstate}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
-        <div class="col-md-3">{{device.brightness}}</div>
+        <div class="col-md-3 form-control-static">{{device.brightness}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

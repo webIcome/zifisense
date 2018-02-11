@@ -139,7 +139,7 @@
                 })*/
             },
             initMenus: function () {
-                if (window.location.hash == '#/') {
+                if (window.location.hash == '#/'  || window.location.pathname == '/lamp' || window.location.pathname == '/lamp/') {
                     this.$router.push({name: 'lamp'});
                 }
                 this.$nextTick(function () {

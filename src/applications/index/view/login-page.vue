@@ -68,7 +68,10 @@
                         let access = {loginname: this.loginname, password: this.password};
                         if (this.verifyCode) access.code = this.verifyCode;
                         if (this.code != this.verifyCode) {
-                            return this.$tips.fail('表单验证失败');
+                            return this.$message({
+                                message: '表单验证失败',
+                                type: 'warning'
+                            });
                         }
                         this.getUser(access).then((user) => {
                             setTimeout(()=> {
@@ -78,7 +81,10 @@
                             this.$tips.fail(err.message);
                         })
                     } else {
-                        this.$tips.fail('表单验证失败');
+                        this.$message({
+                            message: '表单验证失败',
+                            type: 'warning'
+                        });
                     }
                 })
             },

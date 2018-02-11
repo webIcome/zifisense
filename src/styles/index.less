@@ -4,6 +4,8 @@
 @defaultBtnActiveColor: #2b71b8;
 @lineHeight: 2px;
 @lineColor: #efefef;
+@navWidth: 320px;
+@navBackgroundColor: #071627;
 html, body {
   font-family: @fontFamily;
   font-size: 18px;
@@ -25,6 +27,29 @@ th {
 td {
   color: #656565;
   font-size: 16px;
+}
+.content-view-bg {
+  position: relative;
+  min-width: 1920px;
+  &:before {
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: @navWidth;
+    background-color: @navBackgroundColor;
+    z-index: 998;
+  }
+}
+
+.full-view-bg {
+  &:before {
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: @navWidth;
+    background-color: @navBackgroundColor;
+    z-index: 998;
+  }
 }
 .center {
   text-align: center;
