@@ -4,11 +4,11 @@
       <form class="form-inline default-form">
         <div class="form-group">
           <label>操作时间：</label>
-          <vue-datepicker-local clearable :inputClass="'form-control default-input'" v-model="searchParams.operationtimeStart"></vue-datepicker-local>
+          <el-date-picker id="date-start" v-model="searchParams.operationtimeStart" type="date" placeholder="选择开始时间"></el-date-picker>
         </div>
         <div class="form-group">
           <label>至：</label>
-          <vue-datepicker-local clearable :inputClass="'default-input form-control'" v-model="searchParams.operationtimeEnd"></vue-datepicker-local>
+          <el-date-picker id="date-end" v-model="searchParams.operationtimeEnd" type="date" placeholder="选择结束时间"></el-date-picker>
         </div>
         <div class="form-group">
           <label for="username">用户名：</label>
@@ -31,7 +31,7 @@
         </thead>
         <tbody>
         <tr v-for="log in logs">
-          <td>{{log.createtime | formDate}}</td>
+          <td>{{log.operationtime}}</td>
           <td>{{log.loginname}}</td>
           <td>{{log.username}}</td>
           <td>{{log.operation}}</td>
@@ -79,7 +79,7 @@
                 Object.keys(params).forEach(key => {
                     if (params[key] instanceof Date) params[key] = this.$common.getFormDate(params[key])
                 });
-                this.$http.get('user/getList', {params: params}).then(res => {
+                this.$http.get('operationLogs/getList', {params: params}).then(res => {
                     this.searchParams.pageNum = res.body.data.pageNum;
                     this.searchParams.pages = res.body.data.pages;
                     this.searchParams.pageSize = res.body.data.pageSize;

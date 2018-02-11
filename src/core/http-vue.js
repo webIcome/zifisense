@@ -43,6 +43,12 @@ Vue.http.interceptors.push(function (request, next) {
                 type: 'warning',
                 duration: 1000
             })
+        } else if(response.body.code == 0) {
+            Message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500
+            })
         }
         if (!(response.status == 200 || response.status == 304)) {
             Message({

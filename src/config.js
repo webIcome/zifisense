@@ -7,7 +7,7 @@ let config = {
     LAMP_URL_API: 'http://192.168.0.112:20002/',
     // URL_API: 'http://localhost:3100/lamp/',
 
-    DEFAULT_PAGE_SIZE: 20
+    DEFAULT_PAGE_SIZE: 10
 };
 
 export default config;

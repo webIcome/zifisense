@@ -54,7 +54,7 @@
     <dialog-component id="reset-password">
       <div slot="body">
         <div class="dialog-title">重置密码</div>
-        <p class="text-center">您确认要重置账号：<a>{{operUser.loginname}}</a>的密码吗？
+        <p class="text-center">您确认要重置账号：<a>{{currentUsername}}</a>的密码吗？
 
 
 
@@ -105,8 +105,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
-              <vue-datepicker-local clearable :inputClass="'form-control default-input'"
-                                    v-model="operUser.expiretime"></vue-datepicker-local>
+              <el-date-picker id="add-date" v-model="operUser.expiretime" type="date" placeholder="选择日期"></el-date-picker>
             </div>
           </div>
           <div class="dialog-btn">
@@ -157,12 +156,11 @@
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
-              <vue-datepicker-local clearable :inputClass="'form-control default-input'" :value="operUser.expiretime | formDate" @input="operUser.expiretime=arguments[0]"></vue-datepicker-local>
-
+              <el-date-picker name="edit-date" v-model="operUser.expiretime" type="date" placeholder="选择日期"></el-date-picker>
             </div>
           </div>
           <div class="dialog-btn">
-            <span @click="addUser" class="dialog-btn-icon">确认修改</span>
+            <span @click="editUser" class="dialog-btn-icon">确认修改</span>
           </div>
         </form>
       </div>
@@ -173,8 +171,8 @@
         <div class="text-center">
           <div class="dialog-warning"></div>
         </div>
-        <p>您确认要删除账号：<a>{{operUser.loginname}}</a>吗？</p>
-        <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+        <p class="text-center">您确认要删除账号：<a>{{currentUsername}}</a>吗？</p>
+        <p class="text-center">请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
         <div class="dialog-btn">
           <span @click="deleteUser" class="dialog-btn-icon">确认删除</span>
         </div>
@@ -223,15 +221,13 @@
           <div class="form-group">
             <label class="col-md-4 control-label">有效期：</label>
             <div class="col-md-8">
-              <vue-datepicker-local clearable :inputClass="'form-control'"
-                                    v-model="advancedSearchParams.expiretimelow"></vue-datepicker-local>
+              <el-date-picker id="search-start-date" v-model="advancedSearchParams.expiretimelow" type="date" placeholder="选择日期"></el-date-picker>
             </div>
           </div>
             <div class="form-group">
               <label class="col-md-4 control-label">到：</label>
               <div class="col-md-8">
-              <vue-datepicker-local clearable :inputClass="'form-control'"
-                                    v-model="advancedSearchParams.expiretimehigh"></vue-datepicker-local>
+                <el-date-picker id="search-end-date" v-model="advancedSearchParams.expiretimehigh" type="date" placeholder="选择日期"></el-date-picker>
               </div>
           </div>
 
@@ -277,6 +273,8 @@
                 operUser: {
 
                 },
+                currentUsername: '',
+                currentUserId: '',
                 companies: [],
                 posts: []
             }
@@ -316,7 +314,7 @@
             },
             transformTime: function (list) {
                 return list.map(item => {
-                    item.expiretime = this.$common.getFormDate(item.expiretime);
+//                    item.expiretime = this.$common.getFormDate(item.expiretime);
                     return item;
                 })
             },
@@ -341,12 +339,12 @@
                 })
             },
             dialogResetPassword: function (user) {
-                this.resetData();
-                this.operUser = user;
+                this.currentUserId = user.objectid;
+                this.currentUsername = user.username;
                 $('#reset-password').modal();
             },
             resetPassword: function () {
-                this.$http.post('user/resetPassword', {objectid: this.operUser.objectid}).then(res => {
+                this.$http.post('user/resetPassword', {objectid: this.currentUserId}).then(res => {
                     this.closeMode();
                 })
             },
@@ -362,12 +360,12 @@
                 })
             },
             dialogDeleteUser: function (user) {
-                this.resetData();
-                this.operUser = user;
+                this.currentUserId = user.objectid;
+                this.currentUsername = user.username;
                 $('#delete-user').modal();
             },
             deleteUser: function () {
-                this.$http.post('user/delete', {objectid: this.operUser.objectid}).then(res => {
+                this.$http.post('user/delete', {objectid: this.currentUserId}).then(res => {
                     this.initUsers();
                     this.closeMode()
                 })
@@ -385,11 +383,8 @@
             }
         },
         watch: {
-            /*operUser: {
-                handler(curVal, oldVal){this.getPosts(curVal.companyid)},
-                deep:true
-            },*/
-            currentCompanyid: function () {
+            currentCompanyid: function (newVal, oldVal) {
+                if (!newVal) return;
                 this.getPosts(this.currentCompanyid)
             },
             ['advancedSearchParams.companyid']: function () {
