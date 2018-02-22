@@ -4,7 +4,7 @@
       <div class="company-full">
         <div class="company-title clearfix">
           <div class="company-title-name">公司</div>
-          <div @click="dialogFirstClassEnterPrise" class="btn-add-company">创建一级企业</div>
+          <div @click="dialogFirstClassEnterPrise" class="btn-add-company" style="visibility: hidden">创建一级企业</div>
         </div>
         <div class="company-content">
           <template v-for="company in companies">
@@ -27,8 +27,8 @@
           <div @click="choosePost(post)" class="job-content-item"
                :class="{active: post.objectid==currentPost.objectid}">
             <div class="job-content-item-name">{{post.postname}}</div>
-            <span @click.self="dialogEditPost(post)" class="job-content-item-edit"></span>
-            <span @click.self="dialogDeletePost(post)" class="job-content-item-delete"></span>
+            <span @click.stop="dialogEditPost(post)" class="job-content-item-edit"></span>
+            <span @click.stop="dialogDeletePost(post)" class="job-content-item-delete"></span>
           </div>
         </template>
       </div>
@@ -66,8 +66,76 @@
         </form>
       </div>
     </div>
-
-    <dialog-component id="first-class-enterprise">
+    <el-dialog title="编辑企业" :visible.sync="editCompanyDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="editCompanyData" :rules="editCompanyRoules" ref="editCompany" class="el-form">
+        <el-form-item label="名称：" prop="companyname">
+          <el-input :span="12" v-model="editCompanyData.companyname" placeholder="请输入名称"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="editCompany('editCompany')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="创建企业" :visible.sync="addCompanyDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="addCompanyData" :rules="addCompanyRoules" ref="addCompany" class="el-form">
+        <el-form-item label="上级企业：" prop="parentid">
+          <tree-select-component v-model="addCompanyData.parentid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="名称：" prop="companyname">
+          <el-input :span="12" v-model="addCompanyData.companyname" placeholder="请输入名称"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addCompany('addCompany')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="删除企业" :visible.sync="deleteCompanyDialogVisible" center :width="'600px'">
+      <div class="text-center">
+        <div class="dialog-warning"></div>
+      </div>
+      <p>您确认要删除企业：<a>{{deleteCompanyData.companyname}}</a>及其名下的所有分支机构吗？相关部门下的属性的账号将一并删除！</p>
+      <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="deleteCompany">确认删除</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="编辑岗位" :visible.sync="editPostDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="editPost" class="el-form">
+        <el-form-item label="名称：" prop="postname">
+          <el-input :span="12" v-model="operPost.postname" placeholder="请输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位描述：" prop="description">
+          <el-input  type="textarea"  v-model="operPost.description" placeholder="请输入名称"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="editPost('editPost')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="创建岗位" :visible.sync="addPostDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="addPost" class="el-form">
+        <el-form-item label="名称：" prop="postname">
+          <el-input :span="12" v-model="operPost.postname" placeholder="请输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位描述：" prop="description">
+          <el-input  type="textarea"  v-model="operPost.description" placeholder="请输入描述"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addPost('addPost')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="删除岗位" :visible.sync="deletePostDialogVisible" center :width="'600px'">
+      <div class="text-center">
+        <div class="dialog-warning"></div>
+      </div>
+      <p>您确认要删除岗位：<a>{{operPost.postname}}</a>吗？相关岗位下的属性的账号将一并删除！</p>
+      <p>请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="deletePost">确认删除</el-button>
+      </span>
+    </el-dialog>
+<!--    <dialog-component id="first-class-enterprise">
       <div slot="body">
         <div class="dialog-title">创建一级企业</div>
         <form class="form-horizontal default-form">
@@ -89,7 +157,7 @@
         </form>
       </div>
     </dialog-component>
-    <!--job-->
+    &lt;!&ndash;job&ndash;&gt;
     <dialog-component id="add-job">
       <div slot="body">
         <div class="dialog-title">创建岗位</div>
@@ -147,7 +215,7 @@
         </div>
       </div>
     </dialog-component>
-    <!--company-->
+    &lt;!&ndash;company&ndash;&gt;
     <dialog-component id="edit-company">
       <div slot="body">
         <div class="dialog-title">编辑企业</div>
@@ -210,7 +278,7 @@
           <span @click="deleteCompany" class="dialog-btn-icon">确认删除</span>
         </div>
       </div>
-    </dialog-component>
+    </dialog-component>-->
   </div>
 </template>
 
@@ -225,6 +293,33 @@
         name: 'organizeManagementPage',
         data() {
             return {
+                editPostDialogVisible: false,
+                editCompanyDialogVisible: false,
+                addCompanyDialogVisible: false,
+                addPostDialogVisible: false,
+                deletePostDialogVisible: false,
+                deleteCompanyDialogVisible: false,
+                editCompanyRoules: {
+                    companyname: [
+                        {required: true, message: '不能为空'}
+                    ],
+                },
+                addCompanyRoules: {
+                    companyname: [
+                        {required: true, message: '不能为空'}
+                    ],
+                    parentid: [
+                        {required: true, message: '不能为空'}
+                    ],
+                },
+                editPostRoules: {
+                    postname: [
+                        {required: true, message: '不能为空'}
+                    ],
+                    description: [
+                        {required: true, message: '不能为空'}
+                    ],
+                },
                 companies: [],
                 currentCompany: {},
                 currentPost: {},
@@ -301,34 +396,40 @@
             dialogEditCompany: function (company) {
                 this.editCompanyData.objectid = company.objectid;
                 this.editCompanyData.companyname = company.companyname;
-                $('#edit-company').modal();
+                this.editCompanyDialogVisible = true;
             },
-            editCompany: function () {
-                this.$http.post('company/edit', this.editCompanyData).then(res => {
-                    this.$globalCache.refleshCompanies().then(companies => {
-                        this.companies = companies;
-                    });
-                    this.closeMode();
+            editCompany: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('company/edit', this.editCompanyData).then(res => {
+                            this.$globalCache.refleshCompanies().then(companies => {
+                                this.companies = companies;
+                            });
+                            this.closeMode();
+                        })
+                    }
                 })
             },
             dialogAddCompany: function (company) {
                 this.addCompanyData.parentid = company.objectid;
-                $('#add-company').modal();
+                this.addCompanyDialogVisible = true;
             },
-            addCompany: function () {
-                this.$http.post('company/add', this.addCompanyData).then(res => {
-                    this.$globalCache.refleshCompanies().then(companies => {
-                        this.companies = companies;
-                    });
-                    this.closeMode();
+            addCompany: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('company/add', this.addCompanyData).then(res => {
+                            this.$globalCache.refleshCompanies().then(companies => {
+                                this.companies = companies;
+                            });
+                            this.closeMode();
+                        })
+                    }
                 })
             },
             dialogDeleteCompany: function (company) {
                 this.deleteCompanyData.objectid = company.objectid;
                 this.deleteCompanyData.companyname = company.companyname;
-                this.resetData();
-                this.operCompany = company;
-                $('#delete-company').modal();
+                 this.deleteCompanyDialogVisible = true;
             },
             deleteCompany: function () {
                 this.$http.post('company/delete', this.deleteCompanyData).then(res => {
@@ -338,9 +439,13 @@
                     this.closeMode();
                 })
             },
-            editPost: function () {
-                this.$http.post('post/edit', this.operPost).then(res => {
-                    this.closeMode();
+            editPost: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('post/edit', this.operPost).then(res => {
+                            this.closeMode();
+                        })
+                    }
                 })
             },
             deletePost: function () {
@@ -349,26 +454,31 @@
                     this.closeMode();
                 })
             },
-            addPost: function () {
-                this.operPost.companyid = this.currentCompany.id;
-                this.$http.post('post/add', this.operPost).then(res => {
-                    this.getPosts();
-                    this.closeMode();
+            addPost: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.operPost.companyid = this.currentCompany.objectid;
+                        this.$http.post('post/add', this.operPost).then(res => {
+                            this.getPosts();
+                            this.closeMode();
+                        })
+                    }
                 })
             },
             dialogAddPost: function () {
                 this.resetData();
-                $('#add-job').modal()
+                this.addPostDialogVisible = true;
             },
             dialogEditPost: function (post) {
                 this.resetData();
                 this.operPost = post;
-                $('#edit-job').modal()
+                this.editPostDialogVisible = true;
             },
             dialogDeletePost: function (post) {
                 this.resetData();
                 this.operPost = post;
-                $('#delete-job').modal()
+//                $('#delete-job').modal()
+                this.deletePostDialogVisible = true;
             },
             editLimit: function () {
                 this.isEditLimit = true;
@@ -395,7 +505,12 @@
                 this.isEditLimit = false;
             },
             closeMode: function () {
-                $('.modal').modal('hide')
+                this.editPostDialogVisible = false;
+                this.editCompanyDialogVisible = false;
+                this.addCompanyDialogVisible = false;
+                this.addPostDialogVisible = false;
+                this.deletePostDialogVisible = false;
+                this.deleteCompanyDialogVisible = false;
             },
             resetData: function () {
                 this.operCompany = this.$common.copyObj(ContentCompany);

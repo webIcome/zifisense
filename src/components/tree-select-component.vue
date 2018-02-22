@@ -134,6 +134,9 @@
   .form-inline .tree-select {
     display: inline-block;
   }
+  .el-form .tree-select {
+    width: 100%;
+  }
   .tree-select {
     position: relative;
     width: auto;

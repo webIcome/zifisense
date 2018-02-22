@@ -51,10 +51,11 @@
     </div>
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-    <dialog-component id="reset-password">
+  <!--  <dialog-component id="reset-password">
       <div slot="body">
         <div class="dialog-title">重置密码</div>
         <p class="text-center">您确认要重置账号：<a>{{currentUsername}}</a>的密码吗？
+
 
 
 
@@ -62,59 +63,176 @@
           <span @click="resetPassword" class="dialog-btn-icon">确认</span>
         </div>
       </div>
-    </dialog-component>
-    <dialog-component id="add-user">
-      <div slot="body">
-        <div class="dialog-title">创建账号</div>
-        <form class="form-horizontal default-form"  @submit.prevent="addUser">
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属企业：</label>
-            <div class="col-md-8">
-              <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
+    </dialog-component>-->
+    <!--  <dialog-component id="add-user">
+        <div slot="body">
+          <div class="dialog-title">创建账号</div>
+          <el-form :inline="true" :model="operUser" :rules="addUserRoules" ref="operUser" class="form-horizontal default-form">
+           &lt;!&ndash; <div class="form-group">
+              <label class="col-md-4 control-label">归属企业：</label>
+              <div class="col-md-8">
+                <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属岗位：</label>
-            <div class="col-md-8">
-              <select v-model="operUser.postid" class="form-control">
-                <option value="">--选择岗位--</option>
-                <template v-for="post in posts">
-                  <option :value="post.objectid">{{post.postname}}</option>
-                </template>
-              </select>
+            <div class="form-group">
+              <label class="col-md-4 control-label">归属岗位：</label>
+              <div class="col-md-8">
+                <select v-model="operUser.postid" class="form-control">
+                  <option value="">&#45;&#45;选择岗位&#45;&#45;</option>
+                  <template v-for="post in posts">
+                    <option :value="post.objectid">{{post.postname}}</option>
+                  </template>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">登录名：</label>
-            <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.loginname"/>
+            <div class="form-group">
+              <label class="col-md-4 control-label">登录名：</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" v-model="operUser.loginname"/>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">姓名：</label>
-            <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.username"/>
+            <div class="form-group">
+              <label class="col-md-4 control-label">姓名：</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" v-model="operUser.username"/>
+              </div>
+            </div>&ndash;&gt;
+          &lt;!&ndash;  <div class="form-group">
+              <label class="col-md-4 control-label">电子邮箱：</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" v-model="operUser.email"/>
+              </div>
+            </div>&ndash;&gt;
+            <el-form-item label="电子邮箱" prop="email">
+              <el-input v-model="operUser.email"></el-input>
+            </el-form-item>
+            &lt;!&ndash;<div class="form-group">
+              <label class="col-md-4 control-label">有效期至：</label>
+              <div class="col-md-8">
+                <el-date-picker id="add-date" v-model="operUser.expiretime" type="date" placeholder="选择日期"></el-date-picker>
+              </div>
+            </div>&ndash;&gt;
+            <div class="dialog-btn">
+              <button type="button" class="dialog-btn-icon" @click="addUser('operUser')">创建账号</button>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">电子邮箱：</label>
-            <div class="col-md-8">
-              <input type="text" class="form-control" v-model="operUser.email"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">有效期至：</label>
-            <div class="col-md-8">
-              <el-date-picker id="add-date" v-model="operUser.expiretime" type="date" placeholder="选择日期"></el-date-picker>
-            </div>
-          </div>
-          <div class="dialog-btn">
-            <button type="submit" class="dialog-btn-icon">创建账号</button>
-          </div>
-        </form>
+          </el-form>
+        </div>
+      </dialog-component>-->
+    <el-dialog title="创建账号" :visible.sync="addUserDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="addUser" class="el-form">
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="归属岗位：" prop="postid">
+          <el-select v-model="operUser.postid" placeholder="请选择岗位">
+            <el-option v-for="item in posts" :key="item.objectid" :label="item.postname"
+                       :value="item.objectid"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="登录名：" prop="loginname">
+          <el-input v-model="operUser.loginname" placeholder="请输入登录名"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="username">
+          <el-input v-model="operUser.username" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="电子邮箱：" prop="email">
+          <el-input :span="12" v-model="operUser.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="有效期至：" prop="expiretime">
+          <el-date-picker v-model="operUser.expiretime" type="datetime" placeholder="选择日期"
+                          class="display-block"></el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addUser('addUser')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="编辑账号" :visible.sync="editUserDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="editUser" class="el-form">
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="归属岗位：" prop="postid">
+          <el-select v-model="operUser.postid" placeholder="请选择岗位">
+            <template v-for="post in posts">
+              <el-option :value="post.objectid">{{post.postname}}</el-option>
+            </template>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="登录名：" prop="loginname">
+          <el-input v-model="operUser.loginname" placeholder="请输入登录名"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="username">
+          <el-input v-model="operUser.username" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="电子邮箱：" prop="email">
+          <el-input :span="12" v-model="operUser.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="有效期至：" prop="expiretime">
+          <el-date-picker v-model="operUser.expiretime" type="datetime" placeholder="选择日期"
+                          class="display-block"></el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="editUser('editUser')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="删除账号" :visible.sync="deleteUserDialogVisible" center :width="'600px'">
+      <div class="text-center">
+        <div class="dialog-warning"></div>
       </div>
-    </dialog-component>
-    <dialog-component id="edit-user">
+      <p class="text-center">您确认要删除账号：<a>{{currentUsername}}</a>吗？</p>
+      <p class="text-center">请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="deleteUser">确认删除</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="重置密码" :visible.sync="resetUserDialogVisible" center :width="'600px'">
+      <p class="text-center">您确认要重置账号：<a>{{currentUsername}}</a>的密码吗？</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="resetPassword">确认</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="高级搜索" :visible.sync="highSearchDialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="advancedSearchParams" class="el-form">
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="归属岗位：" prop="postid">
+          <el-select v-model="advancedSearchParams.postid" placeholder="请选择岗位" clearable>
+            <el-option v-for="item in posts" :key="item.objectid" :label="item.postname"
+                       :value="item.objectid"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="登录名：" prop="loginname">
+          <el-input v-model="advancedSearchParams.loginname" placeholder="请输入登录名"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="username">
+          <el-input v-model="advancedSearchParams.username" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="电子邮箱：" prop="email">
+          <el-input :span="12" v-model="advancedSearchParams.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="有效期：">
+          <el-col :span="11">
+            <el-form-item prop="expiretimelow">
+              <el-date-picker style="width: 100%" v-model="advancedSearchParams.expiretimelow" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col class="line text-center" :span="2">到</el-col>
+          <el-col :span="11">
+            <el-form-item prop="expiretimehigh">
+              <el-date-picker style="width: 100%" v-model="advancedSearchParams.expiretimehigh" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="highSearch">确 定</el-button>
+      </span>
+    </el-dialog>
+
+<!--    <dialog-component id="edit-user">
       <div slot="body">
         <div class="dialog-title">编辑账号</div>
         <form class="form-horizontal default-form">
@@ -128,7 +246,7 @@
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
               <select v-model="operUser.postid" class="form-control">
-                <option value="">--选择岗位--</option>
+                <option value="">&#45;&#45;选择岗位&#45;&#45;</option>
                 <template v-for="post in posts">
                   <option :value="post.objectid">{{post.postname}}</option>
                 </template>
@@ -156,7 +274,8 @@
           <div class="form-group">
             <label class="col-md-4 control-label">有效期至：</label>
             <div class="col-md-8">
-              <el-date-picker name="edit-date" v-model="operUser.expiretime" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker name="edit-date" v-model="operUser.expiretime" type="date"
+                              placeholder="选择日期"></el-date-picker>
             </div>
           </div>
           <div class="dialog-btn">
@@ -193,7 +312,7 @@
             <label class="col-md-4 control-label">归属岗位：</label>
             <div class="col-md-8">
               <select v-model="advancedSearchParams.postid" class="form-control">
-                <option value="">--选择岗位--</option>
+                <option value="">&#45;&#45;选择岗位&#45;&#45;</option>
                 <template v-for="post in posts">
                   <option :value="post.objectid">{{post.postname}}</option>
                 </template>
@@ -221,14 +340,16 @@
           <div class="form-group">
             <label class="col-md-4 control-label">有效期：</label>
             <div class="col-md-8">
-              <el-date-picker id="search-start-date" v-model="advancedSearchParams.expiretimelow" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker id="search-start-date" v-model="advancedSearchParams.expiretimelow" type="date"
+                              placeholder="选择日期"></el-date-picker>
             </div>
           </div>
-            <div class="form-group">
-              <label class="col-md-4 control-label">到：</label>
-              <div class="col-md-8">
-                <el-date-picker id="search-end-date" v-model="advancedSearchParams.expiretimehigh" type="date" placeholder="选择日期"></el-date-picker>
-              </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label">到：</label>
+            <div class="col-md-8">
+              <el-date-picker id="search-end-date" v-model="advancedSearchParams.expiretimehigh" type="date"
+                              placeholder="选择日期"></el-date-picker>
+            </div>
           </div>
 
           <div class=" dialog-btn">
@@ -236,7 +357,7 @@
           </div>
         </form>
       </div>
-    </dialog-component>
+    </dialog-component>-->
   </div>
 </template>
 
@@ -249,6 +370,31 @@
         name: 'userComponent',
         data() {
             return {
+                addUserRoules: {
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                    postid: [
+                        {required: true, message: '请选择岗位'}
+                    ],
+                    loginname: [
+                        {required: true, message: '请填写登入名'}
+                    ],
+                    username: [
+                        {required: true, message: '请填写姓名'}
+                    ],
+                    expiretime: [
+                        {required: true, message: '请填写邮箱'}
+                    ],
+                    email: [
+                        {required: true, message: '请选择日期'}
+                    ],
+                },
+                addUserDialogVisible: false,
+                editUserDialogVisible: false,
+                deleteUserDialogVisible: false,
+                resetUserDialogVisible: false,
+                highSearchDialogVisible: false,
                 searchParams: {
                     postid: '',
                     companyid: '',
@@ -270,9 +416,7 @@
                     pageNum: 1
                 },
                 users: [],
-                operUser: {
-
-                },
+                operUser: this.$common.copyObj(ContentUser),
                 currentUsername: '',
                 currentUserId: '',
                 companies: [],
@@ -319,7 +463,7 @@
                 })
             },
             dialogHighSearch: function () {
-                $('#high-search').modal();
+                this.highSearchDialogVisible = true;
             },
             search: function () {
                 this.getUsers(Object.assign(this.searchParams, this.defaultPaging));
@@ -330,18 +474,23 @@
             },
             dialogAddUser: function () {
                 this.resetData();
-                $('#add-user').modal();
+                this.addUserDialogVisible = true
             },
-            addUser: function () {
-                this.$http.post('user/add', this.operUser).then(res => {
-                    this.initUsers();
-                    this.closeMode()
+            addUser: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('user/add', this.operUser).then(res => {
+                            this.initUsers();
+                            this.closeMode();
+                        })
+                    }
                 })
+
             },
             dialogResetPassword: function (user) {
                 this.currentUserId = user.objectid;
                 this.currentUsername = user.username;
-                $('#reset-password').modal();
+                this.resetUserDialogVisible = true;
             },
             resetPassword: function () {
                 this.$http.post('user/resetPassword', {objectid: this.currentUserId}).then(res => {
@@ -351,18 +500,23 @@
             dialogEditUser: function (user) {
                 this.resetData();
                 this.operUser = user;
-                $('#edit-user').modal();
+                this.editUserDialogVisible = true;
             },
-            editUser: function () {
-                this.$http.post('user/edit', this.operUser).then(res => {
-                    this.initUsers();
-                    this.closeMode();
+            editUser: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('user/edit', this.operUser).then(res => {
+                            this.initUsers();
+                            this.closeMode();
+                        })
+                    }
                 })
             },
             dialogDeleteUser: function (user) {
                 this.currentUserId = user.objectid;
                 this.currentUsername = user.username;
-                $('#delete-user').modal();
+//                $('#delete-user').modal();
+                this.deleteUserDialogVisible = true;
             },
             deleteUser: function () {
                 this.$http.post('user/delete', {objectid: this.currentUserId}).then(res => {
@@ -371,10 +525,14 @@
                 })
             },
             closeMode: function () {
-                $('.modal').modal('hide')
+                this.addUserDialogVisible = false;
+                this.editUserDialogVisible = false;
+                this.resetUserDialogVisible = false;
+                this.highSearchDialogVisible = false;
+                this.deleteUserDialogVisible = false;
             },
             resetData: function () {
-               this.operUser = this.$common.copyObj(ContentUser);
+                this.operUser = this.$common.copyObj(ContentUser);
             }
         },
         computed: {
