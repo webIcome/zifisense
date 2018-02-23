@@ -119,7 +119,7 @@
         </div>
       </dialog-component>-->
     <el-dialog title="创建账号" :visible.sync="addUserDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="addUser" class="el-form">
+      <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="addUser" class="el-form-default">
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
         </el-form-item>
@@ -148,7 +148,7 @@
       </span>
     </el-dialog>
     <el-dialog title="编辑账号" :visible.sync="editUserDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="editUser" class="el-form">
+      <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="editUser" class="el-form-default">
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
         </el-form-item>
@@ -194,7 +194,7 @@
       </span>
     </el-dialog>
     <el-dialog title="高级搜索" :visible.sync="highSearchDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="advancedSearchParams" class="el-form">
+      <el-form label-width="140px" :model="advancedSearchParams" class="el-form-default">
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
         </el-form-item>

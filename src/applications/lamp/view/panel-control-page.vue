@@ -18,7 +18,7 @@
           <div class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
             <div @click="dialogHighSearch" class="default-btn"><span class="search-icon default-icon"></span>高级搜索</div>
-            <div data-toggle="modal" data-target="#add-device" class="default-btn"><span
+            <div @click="dialogAddDevice" data-toggle="modal" data-target="#add-device" class="default-btn"><span
                 class="add-icon default-icon"></span>创建
             </div>
           </div>
@@ -55,7 +55,82 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <dialog-component id="add-device">
+    <el-dialog title="创建控制面版" :visible.sync="addDeviceDialogVisible" center :width="'600px'">
+      <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
+        <el-form-item label="设备名称：" prop="devicename">
+          <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="设备ID：" prop="sn">
+          <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
+        </el-form-item>
+        <el-form-item label="归属组：">
+          <div class="group-lamp">
+            <template v-for="group in groups">
+              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
+            </template>
+            <div @click="addGroup" class="group-add"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="情景模式：" prop="controlmode">
+          <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
+            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地理位置：" prop="position">
+          <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
+        </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addDevice('addDevice')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="编辑控制面版" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
+      <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="editDevice" class="el-form-default">
+        <el-form-item label="设备名称：" prop="devicename">
+          <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="设备ID：" prop="sn">
+          <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
+        </el-form-item>
+        <el-form-item label="归属组：">
+          <div class="group-lamp">
+            <template v-for="group in groups">
+              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
+            </template>
+            <div @click="addGroup" class="group-add"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="情景模式：" prop="controlmode">
+          <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
+            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地理位置：" prop="position">
+          <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
+        </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="editDevice('editDevice')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="删除控制面版" :visible.sync="deleteDeviceDialogVisible" center :width="'600px'">
+      <div class="text-center">
+        <div class="dialog-warning"></div>
+      </div>
+      <p class="title">您确认要删除此控制面板吗？</p>
+      <p class="text-center">请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="deleteDevice">确认删除</el-button>
+      </span>
+    </el-dialog>
+
+ <!--   <dialog-component id="add-device">
       <div slot="body">
         <div class="dialog-title">创建控制面版</div>
         <form class="form-horizontal default-form">
@@ -170,7 +245,7 @@
           <span @click="deleteDevice" class="dialog-btn-icon">确认删除</span>
         </div>
       </div>
-    </dialog-component>
+    </dialog-component>-->
   </div>
 
   <div v-else-if="currentPage == pages.search" class="content-right">
@@ -207,9 +282,16 @@
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>
+          <!--<vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>
           到
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimeend"></vue-datepicker-local>
+          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimeend"></vue-datepicker-local>-->
+          <el-col :span="11">
+            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
+          </el-col>
+          <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
+          <el-col :span="11">
+            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
+          </el-col>
         </div>
       </div>
       <div class="form-group">
@@ -242,6 +324,26 @@
         name: 'lampControlPage',
         data() {
             return {
+                addDeviceDialogVisible: false,
+                editDeviceDialogVisible: false,
+                deleteDeviceDialogVisible: false,
+                addDeviceRoules: {
+                    devicename: [
+                        {required: true, message: '请输入名称'}
+                    ],
+                    sn: [
+                        {required: true, message: '请输入设备ID'}
+                    ],
+                    controlmode: [
+                        {required: true, message: '请选择情景模式'}
+                    ],
+                    position: [
+                        {required: true, message: '请输入地理位置'}
+                    ],
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                },
                 searchParams: {
                     devicename: '',
                     sn: '',
@@ -296,11 +398,11 @@
         },
         methods: {
             initData: function () {
-                this.initLoop();
+                this.initPanel();
                 this.initCompanies();
                 this.initOperData();
             },
-            initLoop: function () {
+            initPanel: function () {
                 this.findList(this.defaultPaging)
             },
             initCompanies: function () {
@@ -360,26 +462,48 @@
             },
             dialogAddDevice: function () {
                 this.resetData();
+                this.addDeviceDialogVisible = true;
             },
             dialogEditDevice: function (device) {
                 this.resetData();
                 this.getDevice(device.sn).then(device => {
                     this.operData = device
                 });
+                this.editDeviceDialogVisible = true;
             },
-            dialogDeleteDevice: function () {
+            dialogDeleteDevice: function (device) {
+                this.resetData();
+                this.operData = device;
+                this.deleteDeviceDialogVisible = true;
             },
             deleteDevice: function () {
-                this.hideModal();
+                this.$http.post('controlPanel/delete', this.operData).then(res => {
+                    this.hideModal();
+                });
             },
-            editDevice: function () {
-                this.hideModal();
+            editDevice: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('controlPanel/edit', this.operData).then(res => {
+                            this.hideModal();
+                        });
+                    }
+                })
             },
-            addDevice: function () {
-                this.hideModal();
+            addDevice: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('controlPanel/add', this.operData).then(res => {
+                            this.initPanel();
+                            this.hideModal();
+                        });
+                    }
+                })
             },
             hideModal: function () {
-                $('.modal').modal('hide')
+                this.addDeviceDialogVisible = false;
+                this.editDeviceDialogVisible = false;
+                this.deleteDeviceDialogVisible = false;
             },
             resetData: function () {
                 this.operData = this.$common.copyObj(ContentPanel);

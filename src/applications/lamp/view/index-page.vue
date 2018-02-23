@@ -23,9 +23,27 @@
                   </div>
                   <div :id="nav.ename" class="panel-collapse collapse" role="tabpanel">
                     <template v-for="child in nav.children">
-                      <router-link :to="child.url" class="panel-body">
+                      <router-link v-if="child.url" :to="child.url" class="panel-body">
                         {{child.modulename}}
                       </router-link>
+                      <div v-else class="panel-group" id="navTwo" aria-multiselectable="true">
+                          <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#navTwo" :href="'#' + child.ename" aria-expanded="false"
+                                   aria-controls="collapseOne">
+                                  {{child.modulename}}
+                        <span class="nav-two-selected"></span>
+                                </a>
+                              </h4>
+                            </div>
+                            <div :id="child.ename" class="panel-collapse collapse">
+                              <template v-for="childTwo in child.children">
+                                <router-link v-if="childTwo.url" :to="childTwo.url" class="panel-body">{{childTwo.modulename}}</router-link>
+                              </template>
+                            </div>
+                          </div>
+                      </div>
                     </template>
                   </div>
                 </div>
@@ -62,11 +80,15 @@
                     {
                         modulename: '控制管理',
                         ename: 'control',
-                        url: '/management/control',
 
                         children: [
-                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
-                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                            {modulename: '单控', ename: 'single', modulecode: '', children: [
+                                {modulename: '灯控器', modulecode: '', url: '/control/single/lamp'},
+                                {modulename: '回路控制器', modulecode: '', url: '/control/single/loop'},
+                                {modulename: '控制面板', modulecode: '', url: '/control/single/panel'},
+                            ]},
+                            {modulename: '组控', modulecode: '', url: '/control/group'},
+                            {modulename: '区域控制', modulecode: '', url: '/control/area'},
                         ]
                     },
                     {
@@ -101,11 +123,15 @@
                     {
                         modulename: '控制管理',
                         ename: 'control',
-                        url: '/management/control',
 
                         children: [
-                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
-                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                            {modulename: '单控', ename: 'single', modulecode: '', children: [
+                                {modulename: '灯控器', modulecode: '', url: '/control/single/lamp'},
+                                {modulename: '回路控制器', modulecode: '', url: '/control/single/loop'},
+                                {modulename: '控制面板', modulecode: '', url: '/control/single/panel'},
+                            ]},
+                            {modulename: '组控', modulecode: '', url: '/control/group'},
+                            {modulename: '区域控制', modulecode: '', url: '/control/area'},
                         ]
                     },
                     {
@@ -311,6 +337,38 @@
           vertical-align: text-top;
         }
       }
+      #navTwo {
+        margin-bottom: 0;
+        a{
+          height: 60px;
+          line-height: 60px;
+          &[aria-expanded=false] {
+            .nav-two-selected {
+              width: 18px;
+              height: 10px;
+              margin-top: -5px;
+              background-image: url("../assets/home/show-two-nav.png");
+              transform: rotate(-90deg);
+            }
+          }
+          .nav-two-selected {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            margin-top: -3px;
+            display: inline-block;
+            width: 18px;
+            height: 10px;
+            background-image: url("../assets/home/show-two-nav.png");
+          }
+        }
+        .panel-collapse {
+          .panel-body {
+            padding: 0 0 0 158px;
+          }
+        }
+      }
+
     }
 
     .content {

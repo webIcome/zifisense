@@ -67,7 +67,7 @@
       </div>
     </div>
     <el-dialog title="编辑企业" :visible.sync="editCompanyDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="editCompanyData" :rules="editCompanyRoules" ref="editCompany" class="el-form">
+      <el-form label-width="140px" :model="editCompanyData" :rules="editCompanyRoules" ref="editCompany" class="el-form-default">
         <el-form-item label="名称：" prop="companyname">
           <el-input :span="12" v-model="editCompanyData.companyname" placeholder="请输入名称"></el-input>
         </el-form-item>
@@ -77,7 +77,7 @@
       </span>
     </el-dialog>
     <el-dialog title="创建企业" :visible.sync="addCompanyDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="addCompanyData" :rules="addCompanyRoules" ref="addCompany" class="el-form">
+      <el-form label-width="140px" :model="addCompanyData" :rules="addCompanyRoules" ref="addCompany" class="el-form-default">
         <el-form-item label="上级企业：" prop="parentid">
           <tree-select-component v-model="addCompanyData.parentid" :list="companies"></tree-select-component>
         </el-form-item>
@@ -100,7 +100,7 @@
       </span>
     </el-dialog>
     <el-dialog title="编辑岗位" :visible.sync="editPostDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="editPost" class="el-form">
+      <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="editPost" class="el-form-default">
         <el-form-item label="名称：" prop="postname">
           <el-input :span="12" v-model="operPost.postname" placeholder="请输入名称"></el-input>
         </el-form-item>
@@ -113,7 +113,7 @@
       </span>
     </el-dialog>
     <el-dialog title="创建岗位" :visible.sync="addPostDialogVisible" center :width="'600px'">
-      <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="addPost" class="el-form">
+      <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="addPost" class="el-form-default">
         <el-form-item label="名称：" prop="postname">
           <el-input :span="12" v-model="operPost.postname" placeholder="请输入名称"></el-input>
         </el-form-item>

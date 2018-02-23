@@ -36,7 +36,7 @@
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
             <div @click="dialogHighSearch" class="default-btn"><span class="search-icon default-icon"></span>高级搜索</div>
-            <div data-toggle="modal" data-target="#add-device" class="default-btn"><span
+            <div  class="default-btn"  @click="dialogAddDevice"><span
                 class="add-icon default-icon"></span>创建
             </div>
           </div>
@@ -83,7 +83,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <dialog-component id="add-device">
+<!--    <dialog-component id="add-device">
       <div slot="body">
         <div class="dialog-title">创建灯控器</div>
         <form class="form-horizontal default-form">
@@ -149,8 +149,8 @@
           </div>
         </form>
       </div>
-    </dialog-component>
-    <dialog-component id="edit-device">
+    </dialog-component>-->
+<!--    <dialog-component id="edit-device">
       <div slot="body">
         <div class="dialog-title">编辑灯控器</div>
         <form class="form-horizontal default-form">
@@ -216,9 +216,9 @@
           </div>
         </form>
       </div>
-    </dialog-component>
+    </dialog-component>-->
 
-    <dialog-component id="delete-device">
+   <!-- <dialog-component id="delete-device">
       <div slot="body">
         <div class="dialog-title">删除灯控器</div>
         <div class="text-center">
@@ -230,7 +230,101 @@
           <span @click="deleteDevice" class="dialog-btn-icon">确认删除</span>
         </div>
       </div>
-    </dialog-component>
+    </dialog-component>-->
+    <el-dialog title="创建灯控器" :visible.sync="addDeviceDialogVisible" center :width="'600px'">
+      <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
+        <el-form-item label="设备名称：" prop="devicename">
+          <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="设备ID：" prop="sn">
+          <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
+        </el-form-item>
+        <el-form-item label="归属组：">
+          <div class="group-lamp">
+            <template v-for="group in groups">
+              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
+            </template>
+            <div @click="addGroup" class="group-add"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="归属回路控制器：" prop="loopcontrollerSn">
+          <el-select v-model="operData.loopcontrollerSn" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+            <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="灯控器类型：" prop="lightcontrollerType">
+          <el-select v-model="operData.lightcontrollerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
+            <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="传感器类型：" prop="sensortype">
+          <el-select v-model="operData.sensortype" placeholder="选择传感器类型" clearable  style="width: 100%;">
+            <el-option v-for="type in sensorType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地理位置：" prop="position">
+          <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
+        </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addDevice('addDevice')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="编辑灯控器" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
+      <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="editDevice" class="el-form-default">
+        <el-form-item label="设备名称：" prop="devicename">
+          <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="设备ID：" prop="sn">
+          <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
+        </el-form-item>
+        <el-form-item label="归属组：">
+          <div class="group-lamp">
+            <template v-for="group in groups">
+              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
+            </template>
+            <div @click="addGroup" class="group-add"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="归属回路控制器：" prop="loopcontrollerSn">
+          <el-select v-model="operData.loopcontrollerSn" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+            <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="灯控器类型：" prop="lightcontrollerType">
+          <el-select v-model="operData.lightcontrollerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
+            <el-option v-for="type in lightControllerType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="传感器类型：" prop="sensortype">
+          <el-select v-model="operData.sensortype" placeholder="选择传感器类型" clearable  style="width: 100%;">
+            <el-option v-for="type in sensorType" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地理位置：" prop="position">
+          <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
+        </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="editDevice('editDevice')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="删除灯控器" :visible.sync="deleteDeviceDialogVisible" center :width="'600px'">
+      <div class="text-center">
+        <div class="dialog-warning"></div>
+      </div>
+      <p class="title">您确认要删除此灯控器吗？</p>
+      <p class="text-center">请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="deleteDevice">确认删除</el-button>
+      </span>
+    </el-dialog>
 
     <!-- <dialog-component id="set-device">
        <div slot="body">
@@ -333,12 +427,13 @@
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
-   <!--       <el-date-picker v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
-          <el-date-picker v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>-->
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"
-                                v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>到
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two"
-                                v-model="advancedSearchParams.regtimeend"></vue-datepicker-local>
+          <el-col :span="11">
+            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
+          </el-col>
+          <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
+          <el-col :span="11">
+            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
+          </el-col>
         </div>
       </div>
       <div class="form-group">
@@ -388,12 +483,36 @@
     import Config from "../../../config";
     import {ContentLamp} from '../models';
     import detailLampControlPage from './detail-lamp-control-page.vue'
-    import {Select, Option} from 'element-ui'
-    import ElOption from "../../../../node_modules/element-ui/packages/select/src/option";
     export default {
         name: 'lampControlPage',
         data() {
             return {
+                addDeviceDialogVisible: false,
+                editDeviceDialogVisible: false,
+                deleteDeviceDialogVisible: false,
+                addDeviceRoules: {
+                    devicename: [
+                        {required: true, message: '请输入名称'}
+                    ],
+                    sn: [
+                        {required: true, message: '请输入设备ID'}
+                    ],
+                    loopcontrollerSn: [
+                        {required: true, message: '选择归属回路控制器'}
+                    ],
+                    lightcontrollerType: [
+                        {required: true, message: '选择灯控器类型'}
+                    ],
+                    sensortype: [
+                        {required: true, message: '选择传感器类型'}
+                    ],
+                    position: [
+                        {required: true, message: '请输入地理位置'}
+                    ],
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                },
                 searchParams: {
                     devicename: '',
                     sn: '',
@@ -467,9 +586,7 @@
             }
         },
         components: {
-            ElOption, detailLampControlPage,
-            'el-select': Select,
-//            'el-option': Option
+            detailLampControlPage,
         },
         created: function () {
             this.initData()
@@ -535,16 +652,19 @@
             },
             dialogAddDevice: function () {
                 this.resetData();
+                this.addDeviceDialogVisible = true;
             },
             dialogEditDevice: function (device) {
                 this.resetData();
                 this.getDevice(device.sn).then(device => {
                     this.operData = device
                 });
+                this.editDeviceDialogVisible = true;
             },
             dialogDeleteDevice: function (device) {
                 this.resetData();
                 this.operData = device;
+                this.deleteDeviceDialogVisible = true;
             },
             getDevice: function (id) {
                 return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
@@ -557,20 +677,31 @@
                     this.hideModal();
                 });
             },
-            editDevice: function () {
-                this.$http.post('lightController/edit', this.operData).then(res => {
-                    this.initLamp();
-                    this.hideModal();
-                });
+            editDevice: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('lightController/edit', this.operData).then(res => {
+                            this.initLamp();
+                            this.hideModal();
+                        });
+                    }
+                })
             },
-            addDevice: function () {
-                this.$http.post('lightController/add', this.operData).then(res => {
-                    this.initLamp();
-                    this.hideModal();
-                });
+            addDevice: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.$http.post('lightController/add', this.operData).then(res => {
+                            this.initLamp();
+                            this.hideModal();
+                        });
+                    }
+                })
             },
             hideModal: function () {
-                $('.modal').modal('hide')
+//                $('.modal').modal('hide')
+                this.addDeviceDialogVisible = false;
+                this.editDeviceDialogVisible = false;
+                this.deleteDeviceDialogVisible = false;
             },
             resetData: function () {
                 this.operData = this.$common.copyObj(ContentLamp);

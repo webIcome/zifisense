@@ -33,13 +33,15 @@
     margin-top: 20px;
     .td-btns {
       white-space: nowrap;
+      display: flex;
+      justify-content: space-around;
       .icon-item {
         display: inline-block;
-        width: 33%;
         vertical-align: middle;
         .edit-icon,
         .set-icon,
-        .delete-icon {
+        .delete-icon,
+        .repeal-icon{
           display: inline-block;
           text-align: center;
           vertical-align: middle;
@@ -60,10 +62,16 @@
           height: 26px;
           background-image: url("./assets/device/delete.png");
         }
+        .repeal-icon {
+          width: 20px;
+          height: 22px;
+          background-image: url("./assets/control/repeal.png");
+        }
       }
     }
   }
   .group-lamp {
+    line-height: normal;
     position: relative;
     .group-item {
       width: 40%;
@@ -82,7 +90,7 @@
     }
     .group-add {
       position: absolute;
-      right: -20px;
+      right: -35px;
       top: 50%;
       margin-top: -12px;
       display: inline-block;
