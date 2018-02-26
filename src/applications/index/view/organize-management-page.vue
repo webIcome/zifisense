@@ -45,21 +45,17 @@
                 <input v-if="isEditLimit"
                        class="limit-content-checkbox"
                        type="checkbox"
-                       name="limit" v-model="limit.checked"
-                       checked="item.checked">{{limit.modulename}}：</div>
+                       v-model="limit.checked">{{limit.modulename}}：</div>
               <div class="limit-content-items" v-if="limit.checked">
                 <template v-for="item in limit.children">
                   <div class="limit-content-item" v-if="showLimit(item)"><input v-if="isEditLimit"
                                                                                 class="limit-content-checkbox"
-                                                                                type="checkbox"
-                                                                                name="limit" v-model="item.checked"
-                                                                                checked="item.checked">{{item.modulename}}
+                                                                                type="checkbox" v-model="item.checked">{{item.modulename}}
 
                 </div>
                 </template>
               </div>
             </div>
-
           </template>
           <div @click="editLimit" v-if="!isEditLimit" class="limit-btn">修改</div>
           <div @click="confirmLimit" v-else class="limit-btn">确认</div>
@@ -382,8 +378,20 @@
             getPostsPermission: function () {
                 this.isEditLimit = false;
                 this.$http.post('permission/getModuleListByPostid', {postid: this.currentPost.objectid}).then(res => {
-                    this.limits = res.body.data.result;
+                    this.limits = this.getTransformChecked(res.body.data.result);
                 })
+            },
+            getTransformChecked: function (array) {
+                array.forEach(item => {
+                    item.checked = JSON.parse(item.checked);
+                    if (item.children.length) {
+                        this.getTransformChecked(item.children);
+                    } else {
+                        return;
+                    }
+
+                });
+                return array
             },
             choosePost: function (post) {
                 if (!post) post = '';
@@ -501,6 +509,7 @@
                     permissionlist: ids.join(',')
                 }).then(res => {
                     this.isEditLimit = false;
+                    this.getPostsPermission();
                 });
                 this.isEditLimit = false;
             },

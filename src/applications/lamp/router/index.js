@@ -11,6 +11,9 @@ import controlSingleLampPage from '../view/control-single-lamp-page.vue';
 import controlSingleLoopPage from '../view/control-single-loop-page.vue'
 import controlSinglePanelPage from '../view/control-single-panel-page.vue'
 import controlGroupPage from '../view/control-group-page.vue'
+import controlAreaPage from '../view/control-area-page.vue'
+import strategyTimePage from '../view/strategy-time-page.vue'
+import strategyModelPage from '../view/strategy-model-page.vue'
 
 Vue.use(Router);
 
@@ -25,7 +28,10 @@ export default new Router({
                 {path: 'control/single/lamp', name: 'single/lamp', component: controlSingleLampPage},
                 {path: 'control/single/loop', name: 'single/loop', component: controlSingleLoopPage},
                 {path: 'control/single/panel', name: 'single/panel', component: controlSinglePanelPage},
-                {path: 'control/group', name: 'gtroup', component: controlGroupPage},
+                {path: 'control/group', name: 'group', component: controlGroupPage},
+                {path: 'control/area', name: 'area', component: controlAreaPage},
+                {path: 'strategy/time', name: 'strategy/time', component: strategyTimePage},
+                {path: 'strategy/model', name: 'strategy/model', component: strategyModelPage},
             ]
         },
     ]

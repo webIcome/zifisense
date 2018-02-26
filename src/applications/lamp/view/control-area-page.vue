@@ -21,7 +21,7 @@
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
-            <div @click="dialogAddGroup" class="default-btn"><span class="add-icon default-icon"></span>创建组</div>
+            <div @click="dialogAddArea" class="default-btn"><span class="add-icon default-icon"></span>创建区域</div>
           </div>
         </form>
       </div>
@@ -38,17 +38,17 @@
         <th>操作</th>
         </thead>
         <tbody>
-        <tr v-for="item in list" @click="showDetail($event, item)">
+        <tr v-for="item in list">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
           <td>{{(item.switchstate == 1)? '开':'关'}}</td>
           <td>{{item.brightness}}</td>
           <td class="td-btns">
-            <div class="icon-item"><span @click="dialogSetGroup" class="set-icon"></span></div>
-            <div class="icon-item"><span @click="dialogEditGroup" class="edit-icon"></span></div>
-            <div class="icon-item"><span @click="dialogRepealGroup" class="repeal-icon"></span></div>
-            <div class="icon-item"><span @click="dialogDeleteGroup" class="delete-icon"></span></div>
+            <div class="icon-item"><span @click="dialogSetArea" class="set-icon"></span></div>
+            <div class="icon-item"><span @click="dialogEditArea" class="edit-icon"></span></div>
+            <div class="icon-item"><span @click="dialogRepealArea" class="repeal-icon"></span></div>
+            <div class="icon-item"><span @click="dialogDeleteArea" class="delete-icon"></span></div>
           </td>
         </tr>
         </tbody>
@@ -56,69 +56,64 @@
     </div>
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-    <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="addGroupData"  ref="addGroup" class="el-form-default">
+    <el-dialog title="创建区域" :visible.sync="addAreaDialogVisible" center :width="'600px'">
+      <el-form label-width="100px" :model="addAreaData"  ref="addArea" class="el-form-default">
         <el-form-item label="名称：" prop="switchstate">
-          <el-input type="text" v-model="addGroupData.devicename" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="addAreaData.devicename" placeholder="输入设备名称"></el-input>
         </el-form-item>
         <el-form-item label="类型：" prop="deviceType">
-          <el-select v-model="addGroupData.deviceType" placeholder="选择类型" clearable >
+          <el-select v-model="addAreaData.deviceType" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="设备：" prop="deviceType">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18">{{devices[0].devicename}} 等{{devices.length}}个设备</el-col>
+            <el-col :span="18">{{devices[0].devicename}} 等{{devices.length}}个组</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
           </el-row>
         </el-form-item>
         <el-form-item label="策略：" prop="deviceType">
-          <el-select v-model="addGroupData.deviceType" placeholder="请选择" clearable >
+          <el-select v-model="addAreaData.deviceType" placeholder="请选择" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addGroup('addGroup')">确 定</el-button>
+        <el-button type="primary" @click="addArea('addArea')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="editGroupData"  ref="editGroup" class="el-form-default">
+    <el-dialog title="编辑区域" :visible.sync="editAreaDialogVisible" center :width="'600px'">
+      <el-form label-width="100px" :model="editAreaData"  ref="editArea" class="el-form-default">
         <el-form-item label="名称：" prop="switchstate">
-          <el-input type="text" v-model="editGroupData.devicename" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="editAreaData.devicename" placeholder="输入设备名称"></el-input>
         </el-form-item>
         <el-form-item label="类型：" prop="deviceType">
-          <el-select v-model="editGroupData.deviceType" placeholder="选择类型" clearable >
+          <el-select v-model="editAreaData.deviceType" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="设备：" prop="deviceType">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18" v-if="selectedDevices.length">{{selectedDevices[0].devicename}} 等{{selectedDevices.length}}个设备</el-col>
+            <el-col :span="18" v-if="selectedDevices.length">{{selectedDevices[0].devicename}} 等{{selectedDevices.length}}个组</el-col>
             <el-col :span="18" v-else>0个设备</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
           </el-row>
         </el-form-item>
         <el-form-item label="策略：" prop="deviceType">
-          <el-select v-model="editGroupData.deviceType" placeholder="请选择" clearable >
+          <el-select v-model="editAreaData.deviceType" placeholder="请选择" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="editGroup('editGroup')">确 定</el-button>
+        <el-button type="primary" @click="editArea('editArea')">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="编辑设备列表" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
-      <el-form :inline="true" label-width="170px" :model="searchDeviceParams"  ref="editGroup" >
+    <el-dialog title="编辑组列表" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
+      <el-form :inline="true" label-width="170px" :model="searchDeviceParams"  ref="editArea" >
         <el-form-item prop="switchstate">
-          <el-input type="text" v-model="searchDeviceParams.devicename" placeholder="输入设备名称"></el-input>
-        </el-form-item>
-        <el-form-item prop="deviceType">
-          <el-select v-model="searchDeviceParams.deviceType" placeholder="选择类型" clearable >
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
+          <el-input type="text" v-model="searchDeviceParams.devicename" placeholder="输入组名称"></el-input>
         </el-form-item>
         <el-button type="primary" @click="searchDevice()" icon="el-icon-search">筛选</el-button>
       </el-form>
@@ -130,8 +125,8 @@
         <el-table ref="multiplyTable" :data="devices" border class="table" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center"></el-table-column>
           <el-table-column label="组名称" prop="devicename" align="center"></el-table-column>
-          <el-table-column label="设备ID" prop="sn" align="center"></el-table-column>
-          <el-table-column label="类型" prop="type" align="center"></el-table-column>
+          <el-table-column label="设备数量" prop="sn" align="center"></el-table-column>
+          <el-table-column label="当前策略" prop="type" align="center"></el-table-column>
         </el-table>
         <paging-component v-if="searchDeviceParams.pages" :pageNumber="searchDeviceParams.pageNum" :pages="searchDeviceParams.pages"
                           @pagingEvent='pagingDeviceEvent'></paging-component>
@@ -141,38 +136,38 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="setGroupDialogVisible" center :width="'500px'">
+    <el-dialog :visible.sync="setAreaDialogVisible" center :width="'500px'">
       <span slot="title" class="el-dialog__title">控制组：{{}}</span>
-      <el-form label-width="100px" :model="setGroupData"  ref="setGroup" class="el-form-default">
+      <el-form label-width="100px" :model="setAreaData"  ref="setArea" class="el-form-default">
         <el-form-item label="回路：" prop="switchstate">
-          <el-radio v-model="setGroupData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="setGroupData.switchstate" label="2">关</el-radio>
+          <el-radio v-model="setAreaData.switchstate" label="1">开</el-radio>
+          <el-radio v-model="setAreaData.switchstate" label="2">关</el-radio>
         </el-form-item>
         <el-form-item label="DI口：" prop="switchstate">
-          <el-radio v-model="setGroupData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="setGroupData.switchstate" label="2">关</el-radio>
+          <el-radio v-model="setAreaData.switchstate" label="1">开</el-radio>
+          <el-radio v-model="setAreaData.switchstate" label="2">关</el-radio>
         </el-form-item>
         <el-form-item label="电压：" prop="">
-          <el-input type="text" v-model="setGroupData.loopnum"/>
+          <el-input type="text" v-model="setAreaData.loopnum"/>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setGroup('setGroup')">确 定</el-button>
+        <el-button type="primary" @click="setArea('setArea')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="策略撤销" :visible.sync="repealGroupDialogVisible" center :width="'600px'">
-      <p class="text-center">您确认要将已生效的策略 <span style="color: #1789e1">“{{repealGroupData.name}}”</span></p>
-      <p class="text-center">从您的选中的组 <span style="color: #1789e1">“{{repealGroupData.name}}”</span> 中撤销吗？</p>
+    <el-dialog title="策略撤销" :visible.sync="repealAreaDialogVisible" center :width="'600px'">
+      <p class="text-center">您确认要将已生效的策略 <span style="color: #1789e1">“{{repealAreaData.name}}”</span></p>
+      <p class="text-center">从您的选中的组 <span style="color: #1789e1">“{{repealAreaData.name}}”</span> 中撤销吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="repealGroup">确认</el-button>
+        <el-button type="primary" @click="repealArea">确认</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除组" :visible.sync="deleteGroupDialogVisible" center :width="'600px'">
-      <p class="text-center">您确认要删除您选中的组 <span style="color: #1789e1">“{{deleteGroupData.name}}”</span>吗？</p>
+    <el-dialog title="删除区域" :visible.sync="deleteAreaDialogVisible" center :width="'600px'">
+      <p class="text-center">您确认要删除您选中的区域 <span style="color: #1789e1">“{{deleteAreaData.name}}”</span>吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="deleteGroup">确认</el-button>
+        <el-button type="primary" @click="deleteArea">确认</el-button>
       </span>
     </el-dialog>
 
@@ -183,22 +178,17 @@
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
-    let LampContent = {
-        switchstate: '',
-        brightness: '',
-        runningstate: ''
-    };
     export default {
-        name: 'controlSingleLampPage',
+        name: 'controlAreaPage',
         data() {
             return {
-                addGroupDialogVisible: false,
-                setGroupDialogVisible: false,
-                editGroupDialogVisible: false,
+                addAreaDialogVisible: false,
+                setAreaDialogVisible: false,
+                editAreaDialogVisible: false,
                 editDeviceDialogVisible: false,
-                repealGroupDialogVisible: false,
-                issueGroupDialogVisible: false,
-                deleteGroupDialogVisible: false,
+                repealAreaDialogVisible: false,
+                issueAreaDialogVisible: false,
+                deleteAreaDialogVisible: false,
                 searchParams: {
                     devicename: '',
                     sn: '',
@@ -210,12 +200,12 @@
                     pages: 1,
                     pageNum: 1
                 },
-                setGroupData: {},
-                addGroupData: {},
-                editGroupData:{},
-                repealGroupData:{},
-                issueGroupData:{},
-                deleteGroupData:{},
+                setAreaData: {},
+                addAreaData: {},
+                editAreaData:{},
+                repealAreaData:{},
+                issueAreaData:{},
+                deleteAreaData:{},
                 devices: [{devicename: 'ddddd', sn: '', type:''},{devicename: 'ddddd', sn: '', type:''}],
                 selectedDevices: [],
                 groups: [{name: '分组1'}, {name: '分组2'}],
@@ -268,7 +258,7 @@
                 })
             },
             initOperData: function () {
-                this.operData = this.$common.copyObj(LampContent);
+
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -317,55 +307,55 @@
             getDevices: function () {
 
             },
-            dialogAddGroup: function () {
+            dialogAddArea: function () {
                 this.resetData();
-                this.addGroupDialogVisible = true;
+                this.addAreaDialogVisible = true;
             },
-            dialogSetGroup: function () {
+            dialogSetArea: function () {
                 this.resetData();
-                this.setGroupDialogVisible = true;
+                this.setAreaDialogVisible = true;
             },
-            dialogEditGroup: function () {
+            dialogEditArea: function () {
                 this.resetData();
-                this.editGroupDialogVisible = true;
+                this.editAreaDialogVisible = true;
             },
             dialogEditDevice: function () {
                 this.resetData();
                 this.findDevice(this.defaultPaging);
                 this.editDeviceDialogVisible = true;
             },
-            dialogRepealGroup: function () {
+            dialogRepealArea: function () {
                 this.resetData();
-                this.repealGroupDialogVisible = true;
+                this.repealAreaDialogVisible = true;
             },
-            dialogDeleteGroup: function () {
+            dialogDeleteArea: function () {
                 this.resetData();
-                this.deleteGroupDialogVisible = true;
+                this.deleteAreaDialogVisible = true;
             },
-            addGroup:function (formName) {
+            addArea:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
 
                     }
                 })
             },
-            setGroup:function (formName) {
+            setArea:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
 
                     }
                 })
             },
-            editGroup:function (formName) {
+            editArea:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
 
                     }
                 })
             },
-            repealGroup:function () {
+            repealArea:function () {
             },
-            deleteGroup:function () {
+            deleteArea:function () {
             },
             getDevice: function (id) {
                 return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
@@ -373,21 +363,21 @@
                 }).catch()
             },
             hideModal: function () {
-                this.addGroupDialogVisible = false;
-                this.setGroupDialogVisible = false;
-                this.editGroupDialogVisible = false;
-                this.repealGroupDialogVisible = false;
-                this.issueGroupDialogVisible = false;
-                this.deleteGroupDialogVisible = false;
+                this.addAreaDialogVisible = false;
+                this.setAreaDialogVisible = false;
+                this.editAreaDialogVisible = false;
+                this.repealAreaDialogVisible = false;
+                this.issueAreaDialogVisible = false;
+                this.deleteAreaDialogVisible = false;
                 this.editDeviceDialogVisible = false;
             },
             resetData: function () {
-                this.setGroupData = {};
-                this.addGroupData = {};
-                this.editGroupData = {};
-                this.repealGroupData = {};
-                this.issueGroupData = {};
-                this.deleteGroupData = {};
+                this.setAreaData = {};
+                this.addAreaData = {};
+                this.editAreaData = {};
+                this.repealAreaData = {};
+                this.issueAreaData = {};
+                this.deleteAreaData = {};
                 this.selectedDevices = [];
             }
 

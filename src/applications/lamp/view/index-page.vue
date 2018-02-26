@@ -137,11 +137,10 @@
                     {
                         modulename: '策略管理',
                         ename: 'strategy',
-                        url: '/management/control',
 
                         children: [
-                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
-                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                            {modulename: '时序控制', modulecode: '', url: '/strategy/time'},
+                            {modulename: '情景模式', modulecode: '', url: '/strategy/model'}
                         ]
                     },
                 ];
@@ -165,7 +164,7 @@
                 })*/
             },
             initMenus: function () {
-                if (window.location.hash == '#/'  || window.location.pathname == '/lamp' || window.location.pathname == '/lamp/') {
+                if (window.location.hash == '#/'  /*|| window.location.pathname == '/lamp' || window.location.pathname == '/lamp/'*/) {
                     this.$router.push({name: 'lamp'});
                 }
                 this.$nextTick(function () {
