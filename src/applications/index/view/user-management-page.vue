@@ -428,7 +428,7 @@
         },
         methods: {
             initData: function () {
-                this.initUsers();
+//                this.initUsers();
                 this.initCompanies();
             },
             initUsers: function () {

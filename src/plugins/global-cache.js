@@ -12,7 +12,7 @@ class GlobalCache {
     }
     get companies() {
         if (!this._companies) {
-            this._companies = HttpClient.get(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO).then(res => {
+            this._companies = HttpClient.get(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO, {root: Config.LAMP_URL_API}).then(res => {
                 if (!res.body.data) {
                     this._companies = null;
                 } else {

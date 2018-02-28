@@ -14,6 +14,7 @@ import controlGroupPage from '../view/control-group-page.vue'
 import controlAreaPage from '../view/control-area-page.vue'
 import strategyTimePage from '../view/strategy-time-page.vue'
 import strategyModelPage from '../view/strategy-model-page.vue'
+import energyPage from '../view/energy-page.vue'
 
 Vue.use(Router);
 
@@ -32,6 +33,7 @@ export default new Router({
                 {path: 'control/area', name: 'area', component: controlAreaPage},
                 {path: 'strategy/time', name: 'strategy/time', component: strategyTimePage},
                 {path: 'strategy/model', name: 'strategy/model', component: strategyModelPage},
+                {path: 'energy', name: 'energy', component: energyPage},
             ]
         },
     ]

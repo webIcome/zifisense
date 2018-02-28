@@ -10,7 +10,7 @@
           <div class="aside-nav">
             <div class="panel-group" id="nav" aria-multiselectable="true">
               <template v-for="nav in navs">
-                <div class="panel panel-default">
+                <div class="panel panel-default" v-if="!nav.url">
                   <div class="panel-heading">
                     <h4 class="panel-title">
                       <a :class="nav.ename" data-toggle="collapse" data-parent="#nav" :href="'#' + nav.ename" aria-expanded="false"
@@ -47,6 +47,18 @@
                     </template>
                   </div>
                 </div>
+                <div class="panel panel-default" v-else>
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <router-link :class="nav.ename" :to="nav.url">
+                        <div class="nav-icon"></div>
+                        {{nav.modulename}}
+                 </router-link>
+                    </h4>
+                  </div>
+                </div>
+
+
               </template>
             </div>
           </div>
@@ -143,6 +155,14 @@
                             {modulename: '情景模式', modulecode: '', url: '/strategy/model'}
                         ]
                     },
+                    {
+                        modulename: '能耗分析',
+                        ename: 'energy',
+                        modulecode: '',
+                        url: '/energy',
+
+                        children: []
+                    },
                 ];
                 this.navs = navs;
                /* this.$globalCache.managementMenus.then(list => {
@@ -236,6 +256,17 @@
               line-height: 100px;
               color: #fff;
               font-size: 20px;
+              &.router-link-active {
+                color: #66bbff;
+                background-color: #15283f;
+                &.energy {
+                  .nav-icon {
+                    width: 26px;
+                    height: 26px;
+                    background-image: url("../assets/home/energy-active.png");
+                  }
+                }
+              }
               &[aria-expanded=false] {
                 .nav-selected {
                   width: 11px;
@@ -260,7 +291,8 @@
               }
               &.device,
               &.control,
-              &.strategy{
+              &.strategy,
+              &.energy{
                 .nav-icon {
                   position: absolute;
                   left: 70px;
@@ -302,6 +334,18 @@
                 &:hover {
                   .nav-icon {
                     background-image: url("../assets/home/strategy-active.png");
+                  }
+                }
+              }
+              &.energy {
+                .nav-icon {
+                  width: 26px;
+                  height: 26px;
+                  background-image: url("../assets/home/energy.png");
+                }
+                &:hover {
+                  .nav-icon {
+                    background-image: url("../assets/home/energy-active.png");
                   }
                 }
               }
