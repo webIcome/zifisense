@@ -27,7 +27,7 @@
       </div>
 
     </div>
-    <div class="table center">
+    <div class="my-table center">
       <table class="table table-hover table-striped">
         <thead>
         <th>名称</th>

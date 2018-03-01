@@ -21,7 +21,7 @@
       <div @click="dialogHighSearch" class="default-btn"><span class="search-icon"></span>高级搜索</div>
       <div @click="dialogAddUser" class="default-btn"><span class="add-icon"></span>创建账号</div>
     </div>
-    <div class="table center">
+    <div class="my-table center">
       <table class="table table-hover table-striped">
         <thead>
         <th>用户名</th>
@@ -428,7 +428,7 @@
         },
         methods: {
             initData: function () {
-//                this.initUsers();
+                this.initUsers();
                 this.initCompanies();
             },
             initUsers: function () {
@@ -584,8 +584,8 @@
         }
       }
     }
-    .table {
-      margin-top: 90px;
+    .my-table {
+      margin-top: 50px;
     }
     .td-btns {
       white-space: nowrap;

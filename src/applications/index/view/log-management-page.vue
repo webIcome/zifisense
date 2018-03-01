@@ -21,7 +21,7 @@
         <div @click="search" class="form-group default-btn">搜索</div>
       </form>
     </div>
-    <div class="table center">
+    <div class="my-table center">
       <table class="table table-hover table-striped">
         <thead>
         <th>操作时间</th>
@@ -103,8 +103,8 @@
     min-width: 1540px;
     .search {
     }
-    .table {
-      margin-top: 90px;
+    .my-table {
+      margin-top: 20px;
     }
   }
 

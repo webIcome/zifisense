@@ -53,8 +53,29 @@ td {
 }
 .center {
   text-align: center;
-  th {
-    text-align: center;
+  &.my-table {
+    background-color: #eee;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    thead {
+      background-color: #eee;
+      border-top-left-radius: 5px;
+    }
+    tbody {
+      background-color: #fff;
+      td {
+        border: none;
+      }
+    }
+  }
+  .table {
+    border: 2px solid #eee;
+    th {
+      text-align: center;
+      height: 50px;
+      line-height: 50px;
+    }
+
   }
 }
 .default-btn {

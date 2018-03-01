@@ -4,13 +4,76 @@
       <div @click="choosePage(pages.excel)" class="energy-title-excel" :class="{active: currentPage == pages.excel}"><span class="icon"></span>表格</div>
       <div @click="choosePage(pages.echart)" class="energy-title-chart" :class="{active: currentPage == pages.echart}"><span class="icon"></span>柱状图</div>
     </div>
-      <div v-show="currentPage == pages.echart" id="charts" style="width: 100%; height: 500px">
+    <div  v-show="currentPage == pages.echart">
+      <div id="charts" style="width: 100%; height: 500px">
       </div>
-
-    <div v-show="currentPage == pages.excel">
-      <el-table ref="companyTable" :data="companyList" class="table" header-cell-class-name="header-cell">
-        <el-table-column label="企业名称" prop="devicename" align="center"></el-table-column>
-      </el-table>
+      <div class="get-table">
+        <div class="get-table-btn">下载图片</div>
+      </div>
+    </div>
+    <div v-show="currentPage == pages.excel" class="center">
+        <table class="table table-hover table-striped">
+          <thead>
+          <th>设备名称</th>
+          <th>设备ID</th>
+          <th>运行状态</th>
+          <th>地理位置</th>
+          <th>开关状态</th>
+          <th>亮度值</th>
+          <th>电压</th>
+          <th>电流</th>
+          <th>有功电能</th>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr v-for="item in list">
+            <td>{{item.devicename}}</td>
+            <td>{{item.sn}}</td>
+            <td>{{item.runnintstate}}</td>
+            <td>{{item.position}}</td>
+            <td>{{(item.switchstate == 1)? '开':'关'}}</td>
+            <td>{{item.brightness}}</td>
+            <td>{{item.voltagelow}}</td>
+            <td>{{item.oldpwd}}</td>
+            <td>{{item.activepower}}</td>
+          </tr>
+          </tbody>
+        </table>
+      <div class="get-table">
+        <div class="get-table-btn">导出表格</div>
+      </div>
     </div>
   </div>
 </template>
@@ -122,7 +185,49 @@
       }
     }
   }
-  .header-cell {
-    background-color: #1789e1;
+  thead {
+    th{
+      height: 60px;
+      line-height: 60px;
+      color: #fff;
+      background: linear-gradient(#1789e1, #2b71b8);
+      border-left: 0.5px solid #fff;
+      &:last-child {
+        border-top-right-radius: 6px;
+      }
+      &:first-child {
+        border-left: none;
+        border-top-left-radius: 6px;
+      }
+    }
+  }
+  .table-striped > tbody > tr:nth-of-type(even) {
+    background-color: #e3eef6;
+  }
+  .table {
+    border: none;
+    tbody {
+      td {
+        border-top: none;
+        border-left: 0.5px solid #fff;
+        &:first-child {
+          border-left: none;
+        }
+      }
+    }
+  }
+  .get-table {
+    text-align: center;
+    margin: 40px 0 0 0;
+    .get-table-btn {
+      display: inline-block;
+      width: 204px;
+      height: 60px;
+      line-height: 60px;
+      border-radius: 5px;
+      background-color: #1789e1;
+      color: #fff;
+      cursor: pointer;
+    }
   }
 </style>

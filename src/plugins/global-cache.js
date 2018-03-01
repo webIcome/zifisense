@@ -3,6 +3,7 @@
  */
 import HttpClient from '../core/http-vue';
 import RestfulConstant from '../constants/restful';
+import Config from "../config";
 class GlobalCache {
     constructor(){
         this._companies;
@@ -12,7 +13,7 @@ class GlobalCache {
     }
     get companies() {
         if (!this._companies) {
-            this._companies = HttpClient.get(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO, {root: Config.LAMP_URL_API}).then(res => {
+            this._companies = HttpClient.get(RestfulConstant.COMPANY + '/' + RestfulConstant.GET_TREE_INFO, {root: Config.URL_API}).then(res => {
                 if (!res.body.data) {
                     this._companies = null;
                 } else {
