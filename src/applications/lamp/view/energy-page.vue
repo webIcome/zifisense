@@ -10,6 +10,7 @@
 <script>
   import EnergyParamsComponent from "./energy-params-component";
   import EnergyEchartsComponent from './energy-echarts-component.vue';
+  import Services from "../services";
     export default {
         name: 'energyPage',
         components: {
@@ -33,10 +34,8 @@
         },
         methods: {
             findList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
+                Services.findChartData(params).then(data => {
+                    this.list = data;
                 })
             },
             search: function (searchParams) {

@@ -136,6 +136,7 @@
 
 <script>
     import Config from "../../../config";
+    import Services from "../services";
     export default {
         name: 'energyParamsComponent',
         data() {
@@ -214,7 +215,6 @@
                 this.$emit('search', this.searchParams);
             },
             itemsLength: function () {
-                console.log(this.selectedList[this.searchParams.unit])
                 return Object.keys(this.selectedList[this.searchParams.unit]).length;
             },
             pagingDeviceEvent: function (pageNumber) {
@@ -234,52 +234,50 @@
                 this.findCompanyList(this.searchCompanyParams);
             },
             findDeviceList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchDeviceParams.pageNum = res.body.data.pageNum;
-                    this.searchDeviceParams.pages = res.body.data.pages;
-                    this.searchDeviceParams.pageSize = res.body.data.pageSize;
-                    this.deviceList = res.body.data.list;
+                Services.findLampList(params).then(data => {
+                    this.searchDeviceParams.pageNum =data.pageNum;
+                    this.searchDeviceParams.pages = data.pages;
+                    this.searchDeviceParams.pageSize = data.pageSize;
+                    this.deviceList = data.list;
                     this.$nextTick(() => {
-                        this.chooseAllDevices(this.getNewSelectedList(res.body.data.list, this.units.device))
+                        this.chooseAllDevices(this.getNewSelectedList(data.list, this.units.device))
                     })
-                }).catch(err => {
-
                 })
             },
             findGroupList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchGroupParams.pageNum = res.body.data.pageNum;
-                    this.searchGroupParams.pages = res.body.data.pages;
-                    this.searchGroupParams.pageSize = res.body.data.pageSize;
-                    this.groupList = res.body.data.list;
+                Services.findGroupList(params).then(data => {
+                    this.searchGroupParams.pageNum = data.pageNum;
+                    this.searchGroupParams.pages = data.pages;
+                    this.searchGroupParams.pageSize = data.pageSize;
+                    this.groupList = data.list;
                     this.$nextTick(() => {
-                        this.chooseAllDevices(this.getNewSelectedList(res.body.data.list, this.units.group))
+                        this.chooseAllDevices(this.getNewSelectedList(data.list, this.units.group))
                     })
                 }).catch(err => {
 
                 })
             },
             findAreaList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchAreaParams.pageNum = res.body.data.pageNum;
-                    this.searchAreaParams.pages = res.body.data.pages;
-                    this.searchAreaParams.pageSize = res.body.data.pageSize;
-                    this.areaList = res.body.data.list;
+                Services.findAreaList(params).then(data => {
+                    this.searchAreaParams.pageNum = data.pageNum;
+                    this.searchAreaParams.pages = data.pages;
+                    this.searchAreaParams.pageSize = data.pageSize;
+                    this.areaList = data.list;
                     this.$nextTick(() => {
-                        this.chooseAllDevices(this.getNewSelectedList(res.body.data.list, this.units.area))
+                        this.chooseAllDevices(this.getNewSelectedList(data.list, this.units.area))
                     })
                 }).catch(err => {
 
                 })
             },
             findCompanyList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchCompanyParams.pageNum = res.body.data.pageNum;
-                    this.searchCompanyParams.pages = res.body.data.pages;
-                    this.searchCompanyParams.pageSize = res.body.data.pageSize;
-                    this.companyList = res.body.data.list;
+                Services.findCompanyList(params).then(data => {
+                    this.searchCompanyParams.pageNum = data.pageNum;
+                    this.searchCompanyParams.pages = data.pages;
+                    this.searchCompanyParams.pageSize = data.pageSize;
+                    this.companyList = data.list;
                     this.$nextTick(() => {
-                        this.chooseAllDevices(this.getNewSelectedList(res.body.data.list, this.units.company))
+                        this.chooseAllDevices(this.getNewSelectedList(data.list, this.units.company))
                     })
                 }).catch(err => {
 

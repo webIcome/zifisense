@@ -177,6 +177,7 @@
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
+    import Services from "../services";
     let LoopContent = {
         switchstate: '',
         brightness: '',
@@ -281,14 +282,12 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('loopController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
-                })
+                Services.findLoopList(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
+                });
             },
             dialogHighSearch: function () {
                 this.showPage(this.pages.search)
@@ -306,19 +305,17 @@
             showPage:function (page) {
                 this.currentPage = page;
             },
-            dialogControlDevice: function () {
+            dialogControlDevice: function (device) {
                 this.resetData();
-                this.controlDeviceDialogVisible = true;
-            },
-            getDevice: function (id) {
-                return this.$http.post('loopController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
+                Services.getLoop(device.id).then(data => {
+                    this.operData = data;
+                    this.controlDeviceDialogVisible = true;
+                })
             },
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        this.$http.post('loopController/add', this.operData).then(res => {
+                        Services.editLoop(this.operData).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });

@@ -59,7 +59,7 @@
           <td>{{item.brightness}}</td>
           <td>{{item.activepower}}</td>
           <td class="td-btns">
-            <div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice" class="set-icon"></span></div>
+            <div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice(item)" class="set-icon"></span></div>
           </td>
         </tr>
         </tbody>
@@ -116,9 +116,6 @@
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
-          <!--<vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>
-          到
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimeend"></vue-datepicker-local>-->
           <el-col :span="11">
             <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
           </el-col>
@@ -152,6 +149,7 @@
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
+    import Services from "../services";
     let PanelContent = {
         switchstate: '',
         brightness: '',
@@ -256,14 +254,12 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('loopController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
-                })
+                Services.findPanelList(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
+                });
             },
             dialogHighSearch: function () {
                 this.showPage(this.pages.search)
@@ -281,19 +277,17 @@
             showPage:function (page) {
                 this.currentPage = page;
             },
-            dialogControlDevice: function () {
-                this.resetData();
-                this.controlDeviceDialogVisible = true;
-            },
-            getDevice: function (id) {
-                return this.$http.post('loopController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
+            dialogControlDevice: function (device) {
+                Services.getPanel(device.sn).then(data => {
+                    this.resetData();
+                    this.operData = data;
+                    this.controlDeviceDialogVisible = true;
+                })
             },
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        this.$http.post('loopController/add', this.operData).then(res => {
+                        Services.editPanel(this.operData).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });

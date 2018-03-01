@@ -68,7 +68,8 @@
         </el-form-item>
         <el-form-item label="设备：" prop="deviceType">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18">{{devices[0].devicename}} 等{{devices.length}}个设备</el-col>
+            <el-col :span="18" v-if="selectedListArray.length">{{selectedListArray[0].devicename}} 等{{selectedListArray.length}}个设备</el-col>
+            <el-col :span="18" v-else>0个设备</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
           </el-row>
         </el-form-item>
@@ -94,7 +95,7 @@
         </el-form-item>
         <el-form-item label="设备：" prop="deviceType">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18" v-if="selectedDevices.length">{{selectedDevices[0].devicename}} 等{{selectedDevices.length}}个设备</el-col>
+            <el-col :span="18" v-if="selectedListArray.length">{{selectedListArray[0].devicename}} 等{{selectedListArray.length}}个设备</el-col>
             <el-col :span="18" v-else>0个设备</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
           </el-row>
@@ -137,7 +138,7 @@
                           @pagingEvent='pagingDeviceEvent'></paging-component>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="getDevices">确 定</el-button>
+        <el-button type="primary" @click="confirmSelectedList">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -183,6 +184,7 @@
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
+    import Services from '../services';
     let LampContent = {
         switchstate: '',
         brightness: '',
@@ -217,7 +219,6 @@
                 issueGroupData:{},
                 deleteGroupData:{},
                 devices: [{devicename: 'ddddd', sn: '', type:''},{devicename: 'ddddd', sn: '', type:''}],
-                selectedDevices: [],
                 groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
                 list: [{}],
@@ -248,6 +249,20 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
+                selectedList: {},
+                selectedListCache: {},
+            }
+        },
+        computed: {
+            selectedListArray: function () {
+                return Object.keys(this.selectedList).map(key => {
+                    return this.selectedList[key];
+                })
+            },
+            selectedListCacheArray: function () {
+                return Object.keys(this.selectedListCache).map(key => {
+                    return this.selectedListCache[key];
+                })
             }
         },
         created: function () {
@@ -275,25 +290,50 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
+               Services.findGroupList(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
                 })
             },
             pagingDeviceEvent: function (pageNumber) {
                 this.searchDeviceParams.pageNum = pageNumber;
-                this.findDevice(this.searchDeviceParams);
+                this.findDeviceList(this.searchDeviceParams);
             },
-            findDevice: function (params) {
-                this.$http.get('', {params: params}).then(res => {
-                    this.searchDeviceParams.pageNum = res.body.data.pageNum;
-                    this.searchDeviceParams.pages = res.body.data.pages;
-                    this.searchDeviceParams.pageSize = res.body.data.pageSize;
-                    this.devices = res.body.data.list;
+            findDeviceList: function (params) {
+                let findList;
+                switch (Number(this.addGroupData.deviceType || this.editGroupData.deviceType)) {
+                    case 1:
+                        findList = Services.findLampList;
+                        break;
+                    case 2:
+                        findList = Services.findLoopList;
+                        break;
+                    case 3:
+                        findList = Services.findPanelList;
+                        break;
+                    default:
+                        this.$message({
+                            message: '请先选择类型',
+                            type: 'warning'
+                        });
+                }
+                findList(params).then(data => {
+                    this.searchDeviceParams.pageNum = data.pageNum;
+                    this.searchDeviceParams.pages = data.pages;
+                    this.searchDeviceParams.pageSize = data.pageSize;
+                    this.devices = data.list;
+                    this.$nextTick(() => {
+                        this.chooseAllDevices(this.getNewSelectedList(data.list))
+                    })
+                });
+            },
+            getNewSelectedList: function (list) {
+                return list.filter(item => {
+                    if (this.selectedList[item.sn]){
+                        return true;
+                    }
                 })
             },
             search: function () {
@@ -312,10 +352,18 @@
                 }
             },
             handleSelectionChange: function (val) {
-                this.selectedDevices = val;
+                this.devices.forEach(item => {
+                    if (this.selectedListCache[item.sn]) {
+                        delete this.selectedListCache[item.sn];
+                    }
+                });
+                val.forEach(item => {
+                    this.selectedListCache[item.sn] = item;
+                });
             },
-            getDevices: function () {
-
+            confirmSelectedList: function () {
+                this.selectedList = this.selectedListCache;
+                this.hideSecondModal();
             },
             dialogAddGroup: function () {
                 this.resetData();
@@ -330,8 +378,7 @@
                 this.editGroupDialogVisible = true;
             },
             dialogEditDevice: function () {
-                this.resetData();
-                this.findDevice(this.defaultPaging);
+                this.findDeviceList(this.defaultPaging);
                 this.editDeviceDialogVisible = true;
             },
             dialogRepealGroup: function () {
@@ -379,6 +426,8 @@
                 this.repealGroupDialogVisible = false;
                 this.issueGroupDialogVisible = false;
                 this.deleteGroupDialogVisible = false;
+            },
+            hideSecondModal: function () {
                 this.editDeviceDialogVisible = false;
             },
             resetData: function () {
@@ -388,9 +437,12 @@
                 this.repealGroupData = {};
                 this.issueGroupData = {};
                 this.deleteGroupData = {};
-                this.selectedDevices = [];
+                this.selectedList = {};
+                this.selectedListCache = {};
+            },
+            resetSecondModal: function () {
+                this.devices = [];
             }
-
         }
     }
 </script>

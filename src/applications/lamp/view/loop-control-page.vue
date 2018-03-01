@@ -360,6 +360,7 @@
     import {ContentLoop} from '../models';
     import Config from "../../../config";
     import detailLoopControlPage from './detail-loop-control-page.vue'
+    import Services from "../services";
     export default {
         name: 'loopControlPage',
         data() {
@@ -468,14 +469,12 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('loopController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
-                })
+                Services.findLoopList(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
+                });
             },
             addGroup: function () {
 
@@ -497,15 +496,10 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                this.getDevice(device.sn).then(device => {
+                Services.getLoop(device.sn).then(device => {
                     this.deviceView = device;
                     this.showPage(this.pages.detail)
                 });
-            },
-            getDevice: function (id) {
-                return this.$http.post('loopController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
             },
             showPage:function (page) {
                 this.currentPage = page;
@@ -516,7 +510,7 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                this.getDevice(device.sn).then(device => {
+                Services.getLoop(device.sn).then(device => {
                     this.operData = device
                 });
                 this.editDeviceDialogVisible = true;
@@ -527,14 +521,14 @@
                 this.deleteDeviceDialogVisible = true;
             },
             deleteDevice: function () {
-                this.$http.post('loopController/delete', this.operData).then(res => {
+                Services.deleteLoop(this.operData.sn).then(res => {
                     this.hideModal();
                 });
             },
             editDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        this.$http.post('loopController/edit', this.operData).then(res => {
+                        Services.editLoop(this.operData).then(res => {
                             this.hideModal();
                         });
                     }
@@ -543,7 +537,7 @@
             addDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        this.$http.post('loopController/add', this.operData).then(res => {
+                        Services.addLoop(this.operData).then(res => {
                             this.initLoop();
                             this.hideModal();
                         });

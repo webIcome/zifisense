@@ -70,7 +70,6 @@
           <td>{{item.oldpwd}}</td>
           <td>{{item.activepower}}</td>
           <td class="td-btns">
-            <!--<div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogSetDevice" class="set-icon"></span></div>-->
             <div class="icon-item"><span data-toggle="modal" data-target="#edit-device"
                                          @click="dialogEditDevice(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span data-toggle="modal" data-target="#delete-device" @click="dialogDeleteDevice(item)"
@@ -483,6 +482,7 @@
     import Config from "../../../config";
     import {ContentLamp} from '../models';
     import detailLampControlPage from './detail-lamp-control-page.vue'
+    import Services from '../services';
     export default {
         name: 'lampControlPage',
         data() {
@@ -613,14 +613,12 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
-                })
+                Services.findLampList(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
+                });
             },
             addGroup: function () {
 
@@ -642,7 +640,7 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                this.getDevice(device.sn).then(device => {
+                Services.getLamp(device.sn).then(device => {
                     this.deviceView = device;
                     this.showPage(this.pages.detail)
                 });
@@ -656,7 +654,7 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                this.getDevice(device.sn).then(device => {
+                Services.getLamp(device.sn).then(device => {
                     this.operData = device
                 });
                 this.editDeviceDialogVisible = true;
@@ -666,13 +664,8 @@
                 this.operData = device;
                 this.deleteDeviceDialogVisible = true;
             },
-            getDevice: function (id) {
-                return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
-            },
             deleteDevice: function () {
-                this.$http.post('lightController/delete', {sn: this.operData.sn}).then(res => {
+                Services.deleteLamp(this.operData.sn).then(res => {
                     this.initLamp();
                     this.hideModal();
                 });
@@ -680,7 +673,7 @@
             editDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        this.$http.post('lightController/edit', this.operData).then(res => {
+                        Services.editLamp(this.operData).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });
@@ -690,7 +683,7 @@
             addDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        this.$http.post('lightController/add', this.operData).then(res => {
+                       Services.addLamp(this.operData).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });
@@ -698,7 +691,6 @@
                 })
             },
             hideModal: function () {
-//                $('.modal').modal('hide')
                 this.addDeviceDialogVisible = false;
                 this.editDeviceDialogVisible = false;
                 this.deleteDeviceDialogVisible = false;
