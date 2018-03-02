@@ -68,9 +68,9 @@
           <td>{{item.loopcontrol + '、' + item.diportstate}}</td>
           <td>{{item.threevoltage}}{{item.threecurrent}}{{item.sumActivePower}}{{item.sumReactivePower}}</td>
         <td class="td-btns">
-          <div class="icon-item"><span data-toggle="modal" data-target="#edit-device" @click="dialogEditDevice"
+          <div class="icon-item"><span data-toggle="modal" data-target="#edit-device" @click="dialogEditDevice(item)"
                                        class="edit-icon"></span></div>
-          <div class="icon-item"><span data-toggle="modal" data-target="#delete-device" @click="dialogDeleteDevice"
+          <div class="icon-item"><span data-toggle="modal" data-target="#delete-device" @click="dialogDeleteDevice(item)"
                                        class="delete-icon"></span></div>
         </td>
         </tr>
@@ -203,6 +203,11 @@
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
+        <el-form-item label="归属厂商：" prop="vendor">
+          <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
+            <el-option v-for="type in vendor" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="addDevice('addDevice')">确 定</el-button>
@@ -233,6 +238,11 @@
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
+        <el-form-item label="归属厂商：" prop="vendor">
+          <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
+            <el-option v-for="type in vendor" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="editDevice('editDevice')">确 定</el-button>
@@ -248,20 +258,6 @@
         <el-button type="primary" @click="deleteDevice">确认删除</el-button>
       </span>
     </el-dialog>
-
-<!--    <dialog-component id="delete-device">
-      <div slot="body">
-        <div class="dialog-title">删除回路控制器</div>
-        <div class="text-center">
-          <div class="dialog-warning"></div>
-        </div>
-        <p class="title">您确认要删除此回路灯控器吗？</p>
-        <p class="text-center">请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
-        <div class="dialog-btn">
-          <span @click="deleteDevice" class="dialog-btn-icon">确认删除</span>
-        </div>
-      </div>
-    </dialog-component>-->
   </div>
 
   <div v-else-if="currentPage == pages.search" class="content-right">
@@ -353,7 +349,7 @@
       </div>
     </form>
   </div>
-  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
+  <detail-loop-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-loop-control-page>
 </template>
 
 <script>
@@ -383,6 +379,9 @@
                     ],
                     companyid: [
                         {required: true, message: '请选择企业'}
+                    ],
+                    vendor: [
+                        {required: true, message: '请选择厂商'}
                     ],
                 },
                 searchParams: {
@@ -427,6 +426,9 @@
                     {value: 3, text: '过流'},
                     {value: 4, text: '欠压'},
                     {value: 5, text: '过压'},
+                ],
+                vendor: [
+                    {value: 1, text: '1-纵行zeta'},
                 ],
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
@@ -522,6 +524,7 @@
             },
             deleteDevice: function () {
                 Services.deleteLoop(this.operData.sn).then(res => {
+                    this.initLoop();
                     this.hideModal();
                 });
             },
@@ -529,6 +532,7 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         Services.editLoop(this.operData).then(res => {
+                            this.initLoop();
                             this.hideModal();
                         });
                     }

@@ -15,4 +15,5 @@ export const Loop ={
     threecurrent: '',
     sumActivePower: '',
     sumReactivePower: '',
+    groupid: 1
 };
