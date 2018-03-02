@@ -305,7 +305,7 @@
                 let findList;
                 switch (Number(this.addGroupData.deviceType || this.editGroupData.deviceType)) {
                     case 1:
-                        findList = Services.findLampList;
+                        findList = Services.findLightList;
                         break;
                     case 2:
                         findList = Services.findLoopList;

@@ -12,8 +12,13 @@ export const Lamp ={
     voltagelow: '',
     current: '',
     activepower: '',
-    lightcontrollerType: '',
+    lightControllerType: '',
     sensortype: '',
     switchstate: '',
-    loopcontrollerSn: ''
+    loopcontrollerSn: '',
+    groupid: '',
+    vendor: '',
+    lampTypeID: 1,
+    toloopnum: '',
+    lampType: ''
 };

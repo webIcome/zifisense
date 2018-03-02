@@ -4,30 +4,30 @@
 import HttpClient from '../../core/http-vue';
 import Config from "../../config";
 export default {
-    //lamp
-    findLampList(params) {
+    //灯控
+    findLightList(params) {
         return HttpClient.get('lightController/getList', {params: params}).then(res => {
             return res.body.data
         })
     },
-    getLamp(id) {
+    getLight(id) {
         return HttpClient.post('lightController/getDetailsBySn', {sn: id}).then(res => {
             let data = res.body.data;
             if (!data) data = {};
             return data
         })
     },
-    deleteLamp(id) {
+    deleteLight(id) {
         return HttpClient.post('lightController/delete', {sn: id}).then(res => {
             return res;
         });
     },
-    editLamp(body) {
+    editLight(body) {
         return HttpClient.post('lightController/edit', body).then(res => {
             return res
         });
     },
-    addLamp(body) {
+    addLight(body) {
         return HttpClient.post('lightController/add', body).then(res => {
             return res
         });
@@ -85,6 +85,34 @@ export default {
     },
     addPanel(body) {
         return HttpClient.post('controlPanel/add', body).then(res => {
+            return res
+        });
+    },
+    //灯具
+    findLampsList(params) {
+        return HttpClient.get('lamps/getList', {params: params}).then(res => {
+            return res.body.data
+        })
+    },
+    getLamps(id) {
+        return HttpClient.post('lamps/getDetailsBySn', {objectid: id}).then(res => {
+            let data = res.body.data;
+            if (!data) data = {};
+            return data
+        })
+    },
+    deleteLamps(id) {
+        return HttpClient.post('lamps/delete', {objectid: id}).then(res => {
+            return res;
+        });
+    },
+    editLamps(body) {
+        return HttpClient.post('lamps/edit', body).then(res => {
+            return res
+        });
+    },
+    addLamps(body) {
+        return HttpClient.post('lamps/add', body).then(res => {
             return res
         });
     },

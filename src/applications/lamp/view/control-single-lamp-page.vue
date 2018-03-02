@@ -311,7 +311,7 @@
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                Services.findLampList(params).then(data => {
+                Services.findLightList(params).then(data => {
                     this.searchParams.pageNum = data.pageNum;
                     this.searchParams.pages = data.pages;
                     this.searchParams.pageSize = data.pageSize;
@@ -335,7 +335,7 @@
                 this.currentPage = page;
             },
             dialogControlDevice: function (device) {
-                Services.getLamp(device.sn).then(data => {
+                Services.getLight(device.sn).then(data => {
                     this.resetData();
                     this.operData = data;
                     this.controlDeviceDialogVisible = true;
@@ -344,7 +344,7 @@
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        Services.editLamp(this.operData).then(res => {
+                        Services.editLight(this.operData).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });

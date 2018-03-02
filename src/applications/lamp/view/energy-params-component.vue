@@ -234,7 +234,7 @@
                 this.findCompanyList(this.searchCompanyParams);
             },
             findDeviceList: function (params) {
-                Services.findLampList(params).then(data => {
+                Services.findLightList(params).then(data => {
                     this.searchDeviceParams.pageNum =data.pageNum;
                     this.searchDeviceParams.pages = data.pages;
                     this.searchDeviceParams.pageSize = data.pageSize;
