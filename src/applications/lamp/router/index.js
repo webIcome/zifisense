@@ -15,6 +15,7 @@ import controlAreaPage from '../view/control-area-page.vue'
 import strategyTimePage from '../view/strategy-time-page.vue'
 import strategyModelPage from '../view/strategy-model-page.vue'
 import energyPage from '../view/energy-page.vue'
+import lampsControlPage from '../view/lamps-control-page.vue'
 
 Vue.use(Router);
 
@@ -26,6 +27,7 @@ export default new Router({
                 {path: 'device/lamp', name: 'lamp', component: lampControlPage},
                 {path: 'device/loop', name: 'loop', component: loopControlPage},
                 {path: 'device/panel', name: 'panel', component: panelControlPage},
+                {path: 'device/lamps', name: 'lamps', component: lampsControlPage},
                 {path: 'control/single/lamp', name: 'single/lamp', component: controlSingleLampPage},
                 {path: 'control/single/loop', name: 'single/loop', component: controlSingleLoopPage},
                 {path: 'control/single/panel', name: 'single/panel', component: controlSinglePanelPage},

@@ -226,7 +226,7 @@
         <el-form-item prop="deviceType">
           <tree-select-component v-model="searchLampParams.companyid" :list="companies"></tree-select-component>
         </el-form-item>
-        <el-button type="primary" @click="findLightList" icon="el-icon-search">筛选</el-button>
+        <el-button type="primary" @click="findLampsList" icon="el-icon-search">筛选</el-button>
       </el-form>
       <div>
         <el-table ref="singleTable" :data="lampList" border class="table" @current-change="selectLamp" highlight-current-row>

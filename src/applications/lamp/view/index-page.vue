@@ -87,6 +87,7 @@
                             {modulename: '灯控器', modulecode: '', url: '/device/lamp'},
                             {modulename: '回路控制器', modulecode: '', url: '/device/loop'},
                             {modulename: '控制面板', modulecode: '', url: '/device/panel'},
+                            {modulename: '灯具', modulecode: '', url: '/device/lamps'},
                         ]
                     },
                     {
@@ -130,6 +131,7 @@
                             {modulename: '灯控器', modulecode: '', url: '/device/lamp'},
                             {modulename: '回路控制器', modulecode: '', url: '/device/loop'},
                             {modulename: '控制面板', modulecode: '', url: '/device/panel'},
+                            {modulename: '灯具', modulecode: '', url: '/device/lamps'},
                         ]
                     },
                     {

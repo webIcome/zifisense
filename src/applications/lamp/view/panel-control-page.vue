@@ -312,7 +312,7 @@
       </div>
     </form>
   </div>
-  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
+  <detail-panel-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-panel-control-page>
 
 </template>
 
