@@ -16,7 +16,40 @@ const CommonConstant = {
         {value: 2, text: '电子镇流器'},
         {value: 3, text: '恒流驱动电源'},
         {value: 4, text: '调色温驱动电源'},
-    ]
+    ],
+    deviceType: [
+        {value: 1, text: '灯控器'},
+        {value: 2, text: '回路控制器'},
+        {value: 3, text: '控制面板'},
+    ],
+    deviceState: [
+        {value: 1, text: '应用'},
+        {value: 2, text: '停用'},
+    ],
+    runningStatus: [
+        {value: 1, text: '正常'},
+        {value: 2, text: '欠流'},
+        {value: 3, text: '过流'},
+        {value: 4, text: '欠压'},
+        {value: 5, text: '过压'},
+    ],
+    switchState: [
+        {value: 1, text: '开'},
+        {value: 2, text: '关'},
+    ],
+    lightControllerType: [
+        {value: 1, text: '电源蓝牙'},
+        {value: 2, text: '电源ZETA'},
+        {value: 3, text: '电源蓝牙+ZETA'},
+        {value: 4, text: '外挂式蓝牙'},
+        {value: 5, text: '外挂式ZETA'},
+        {value: 6, text: '外挂式蓝牙+ZETA'},
+    ],
+    sensorType: [
+        {value: 1, text: '无'},
+        {value: 2, text: '光感'},
+        {value: 3, text: '微波'},
+    ],
 };
 
 export default CommonConstant;

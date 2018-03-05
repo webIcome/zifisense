@@ -4,19 +4,19 @@
       <div class="search pull-left">
         <form class="form-inline default-form">
           <div class="form-group">
-            <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"></el-input>
+            <label class="sr-only">名称：</label>
+            <el-input type="text" v-model="searchParams.groupname" placeholder="输入设备名称"></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
-            <el-select v-model="searchParams.switchstate" placeholder="选择类型" clearable >
+            <el-select v-model="searchParams.moduleTypeID" placeholder="选择类型" clearable >
               <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
             </el-select>
           </div>
           <div class="form-group">
             <label class="sr-only">应用状态：</label>
             <el-select v-model="searchParams.switchstate" placeholder="选择应用状态" clearable >
-              <el-option v-for="status in deviceType" :key="status.value" :value="status.value" :label="status.text"></el-option>
+              <el-option v-for="status in deviceState" :key="status.value" :value="status.value" :label="status.text"></el-option>
             </el-select>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
@@ -39,16 +39,17 @@
         </thead>
         <tbody>
         <tr v-for="item in list" @click="showDetail($event, item)">
-          <td>{{item.devicename}}</td>
-          <td>{{item.sn}}</td>
-          <td>{{item.position}}</td>
-          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
-          <td>{{item.brightness}}</td>
+          <td>{{item.groupname}}</td>
+          <td>{{item.moduleTypeID | deviceTypeNameConverter}}</td>
+          <td>{{item.deviceTotal}}</td>
+          <td>{{item.strategyName}}</td>
+          <td>{{item.state | deviceStateNameConverter}}</td>
           <td class="td-btns">
-            <div class="icon-item"><span @click="dialogSetGroup" class="set-icon"></span></div>
-            <div class="icon-item"><span @click="dialogEditGroup" class="edit-icon"></span></div>
-            <div class="icon-item"><span @click="dialogRepealGroup" class="repeal-icon"></span></div>
-            <div class="icon-item"><span @click="dialogDeleteGroup" class="delete-icon"></span></div>
+            <div class="icon-item"><span @click="dialogSetGroup(item)" class="set-icon"></span></div>
+            <div class="icon-item"><span @click="dialogEditGroup(item)" class="edit-icon"></span></div>
+            <div class="icon-item"><span @click="dialogRepealGroup(item)" class="repeal-icon"></span></div>
+            <div class="icon-item"><span @click="dialogRepealGroup(item)" class="issue-icon"></span></div>
+            <div class="icon-item"><span @click="dialogDeleteGroup(item)" class="delete-icon"></span></div>
           </td>
         </tr>
         </tbody>
@@ -185,6 +186,7 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from '../services';
+    import Common from "../../../constants/common";
     let LampContent = {
         switchstate: '',
         brightness: '',
@@ -218,33 +220,12 @@
                 repealGroupData:{},
                 issueGroupData:{},
                 deleteGroupData:{},
-                devices: [{devicename: 'ddddd', sn: '', type:''},{devicename: 'ddddd', sn: '', type:''}],
-                groups: [{name: '分组1'}, {name: '分组2'}],
+                devices: [],
                 isSearchPage: false,
                 list: [{}],
                 companies: [],
-                deviceType: [
-                    {value: '', text: '全部'},
-                    {value: 1, text: '灯控器'},
-                    {value: 2, text: '回路控制器'},
-                    {value: 3, text: '控制面板'},
-                ],
-                switchStatus: [
-                    {value: 1, text: '开'},
-                    {value: 2, text: '关'},
-                ],
-                sensorType: [
-                    {value: 1, text: '无'},
-                    {value: 2, text: '光感'},
-                    {value: 3, text: '微波'},
-                ],
-                runningStatus: [
-                    {value: 1, text: '正常'},
-                    {value: 2, text: '欠流'},
-                    {value: 3, text: '过流'},
-                    {value: 4, text: '欠压'},
-                    {value: 5, text: '过压'},
-                ],
+                deviceState: [],
+                deviceType: [],
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
@@ -270,11 +251,12 @@
         },
         methods: {
             initData: function () {
-                this.initLamp();
+                this.initList();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonData();
             },
-            initLamp: function () {
+            initList: function () {
                 this.findList(this.defaultPaging)
             },
             initCompanies: function () {
@@ -284,6 +266,10 @@
             },
             initOperData: function () {
                 this.operData = this.$common.copyObj(LampContent);
+            },
+            initCommonData: function () {
+                this.deviceType = Common.deviceType;
+                this.deviceState = Common.deviceState;
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -369,23 +355,30 @@
                 this.resetData();
                 this.addGroupDialogVisible = true;
             },
-            dialogSetGroup: function () {
+            dialogSetGroup: function (item) {
                 this.resetData();
                 this.setGroupDialogVisible = true;
             },
-            dialogEditGroup: function () {
+            dialogEditGroup: function (item) {
                 this.resetData();
+                this.editGroupData = item;
                 this.editGroupDialogVisible = true;
             },
-            dialogEditDevice: function () {
+            dialogEditDevice: function (item) {
                 this.findDeviceList(this.defaultPaging);
                 this.editDeviceDialogVisible = true;
             },
-            dialogRepealGroup: function () {
+            dialogRepealGroup: function (item) {
                 this.resetData();
+                this.repealGroupData = item;
                 this.repealGroupDialogVisible = true;
             },
-            dialogDeleteGroup: function () {
+            dialogIssueGroup: function (item) {
+                this.resetData();
+                this.issueGroupData = item;
+                this.issueGroupDialogVisible = true;
+            },
+            dialogDeleteGroup: function (item) {
                 this.resetData();
                 this.deleteGroupDialogVisible = true;
             },
@@ -406,18 +399,30 @@
             editGroup:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-
+                        Services.editGroup(this.editGroupData).then(res => {
+                            this.hideModal();
+                            this.initList();
+                        })
                     }
                 })
             },
             repealGroup:function () {
+                Services.runStrategyGroup({groupID: this.repealGroupData.objectid, strategyID: this.repealGroupData.strategyID}).then(res => {
+                    this.hideModal();
+                    this.initList();
+                })
+            },
+            issueGroup: function () {
+                Services.stopStrategyGroup({groupID: this.repealGroupData.objectid, strategyID: this.repealGroupData.strategyID}).then(res => {
+                    this.hideModal();
+                    this.initList();
+                })
             },
             deleteGroup:function () {
-            },
-            getDevice: function (id) {
-                return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
+                Services.deleteGroup(this.deleteGroupData.objectid).then(res => {
+                    this.hideModal();
+                    this.initList();
+                })
             },
             hideModal: function () {
                 this.addGroupDialogVisible = false;

@@ -32,6 +32,11 @@ export default {
             return res
         });
     },
+    controlLightSingle(body) {
+        return HttpClient.post('lightController/singleControl', body).then(res => {
+            return res;
+        })
+    },
     //loop
     findLoopList(params) {
         return HttpClient.get('loopController/getList', {params: params}).then(res => {
@@ -60,6 +65,11 @@ export default {
             return res
         });
     },
+    controlLoopSingle(body) {
+        return HttpClient.post('loopController/singleControl', body).then(res => {
+            return res;
+        })
+    },
     //panel
     findPanelList(params) {
         return HttpClient.get('controlPanel/getList', {params: params}).then(res => {
@@ -87,6 +97,11 @@ export default {
         return HttpClient.post('controlPanel/add', body).then(res => {
             return res
         });
+    },
+    controlPanelSingle(body) {
+        return HttpClient.post('controlPanel/singleControl', body).then(res => {
+            return res;
+        })
     },
     //灯具
     findLampsList(params) {
@@ -118,14 +133,100 @@ export default {
     },
     //group
     findGroupList(params) {
-        return HttpClient.get('lightController/getList', {params: params}).then(res => {
+        return HttpClient.get('groupInfo/getList', {params: params}).then(res => {
             return res.body.data
+        })
+    },
+    deleteGroup(id) {
+        return HttpClient.post('groupInfo/delete', {objectid: id}).then(res => {
+            return res;
+        });
+    },
+    editGroup(body) {
+        return HttpClient.post('groupInfo/edit', body).then(res => {
+            return res
+        });
+    },
+    addGroup(body) {
+        return HttpClient.post('groupInfo/add', body).then(res => {
+            return res
+        });
+    },
+    controlPanelGroup(body) {
+        return HttpClient.post('controlPanel/groupControl', body).then(res => {
+            return res;
+        })
+    },
+    controlLoopGroup(body) {
+        return HttpClient.post('loopController/groupControl', body).then(res => {
+            return res;
+        })
+    },
+    controlLightGroup(body) {
+        return HttpClient.post('lightController/groupControl', body).then(res => {
+            return res;
+        })
+    },
+    runStrategyGroup(body) {
+        return HttpClient.post('groupInfo/sendStrategy', body).then(res => {
+            return res;
+        })
+    },
+    stopStrategyGroup(body) {
+        return HttpClient.post('groupInfo/recallStrategy', body).then(res => {
+            return res;
         })
     },
     //area
     findAreaList(params) {
-        return HttpClient.get('lightController/getList', {params: params}).then(res => {
+        return HttpClient.get('areaInfo/getList', {params: params}).then(res => {
             return res.body.data
+        })
+    },
+    deleteArea(id) {
+        return HttpClient.post('areaInfo/delete', {objectid: id}).then(res => {
+            return res;
+        });
+    },
+    editArea(body) {
+        return HttpClient.post('areaInfo/edit', body).then(res => {
+            return res
+        });
+    },
+    addArea(body) {
+        return HttpClient.post('areaInfo/add', body).then(res => {
+            return res
+        });
+    },
+    controlPanelArea(body) {
+        return HttpClient.post('controlPanel/areaControl', body).then(res => {
+            return res;
+        })
+    },
+    controlLoopArea(body) {
+        return HttpClient.post('loopController/areaControl', body).then(res => {
+            return res;
+        })
+    },
+    controlLightArea(body) {
+        return HttpClient.post('lightController/areaControl', body).then(res => {
+            return res;
+        })
+    },
+    runStrategyArea(body) {
+        return HttpClient.post('areaInfo/sendStrategy', body).then(res => {
+            return res;
+        })
+    },
+    stopStrategyArea(body) {
+        return HttpClient.post('areaInfo/recallStrategy', body).then(res => {
+            return res;
+        })
+    },
+    //strategy
+    findStrategy(params) {
+        return HttpClient.get('strategy/getList', {params: params}).then(res => {
+            return res.body.data;
         })
     },
     //company

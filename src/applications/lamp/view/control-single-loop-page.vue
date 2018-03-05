@@ -45,19 +45,19 @@
         <th>设备名称</th>
         <th>设备ID</th>
         <th>地理位置</th>
-        <th>开关状态</th>
-        <th>亮度值</th>
-        <th>有功电能</th>
+        <th>运行状态</th>
+        <th>回路状态</th>
+        <th>当前策略</th>
         <th>操作</th>
         </thead>
         <tbody>
-        <tr v-for="item in list" @click="showDetail($event, item)">
+        <tr v-for="item in list">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
-          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
-          <td>{{item.brightness}}</td>
-          <td>{{item.activepower}}</td>
+          <td>{{item.runningstate | runningstateNameConverter}}</td>
+          <td>{{item.loopcontrol}}</td>
+          <td>{{item.loopcontrol}}</td>
           <td class="td-btns">
             <div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice" class="set-icon"></span></div>
           </td>
@@ -68,7 +68,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
+    <el-dialog title="控制回路控制器" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
       <el-form label-width="170px" :model="operData"  ref="controlDevice">
         <el-form-item label="开关：" prop="switchstate">
           <el-radio v-model="operData.switchstate" label="1">开</el-radio>
@@ -171,18 +171,12 @@
       </div>
     </form>
   </div>
-  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    let LoopContent = {
-        switchstate: '',
-        brightness: '',
-        runningstate: ''
-    };
     export default {
         name: 'controlSingleLoopPage',
         data() {
@@ -275,7 +269,7 @@
                 })
             },
             initOperData: function () {
-                this.operData = this.$common.copyObj(LoopContent);
+                this.operData = {}
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -326,7 +320,7 @@
                 this.controlDeviceDialogVisible = false;
             },
             resetData: function () {
-                this.operData = this.$common.copyObj(LoopContent);
+                this.operData = {}
             }
 
         }

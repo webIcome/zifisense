@@ -53,7 +53,7 @@
         <th>操作</th>
         </thead>
         <tbody>
-        <tr v-for="item in list" @click="showDetail($event, item)">
+        <tr v-for="item in list">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
@@ -71,16 +71,38 @@
                       @pagingEvent='pagingEvent'></paging-component>
 
     <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
-      <el-form label-width="170px" :model="operData"  ref="controlDevice">
-        <el-form-item label="开关：" prop="switchstate">
+      <el-form label-width="100px" :model="operData"  ref="controlDevice">
+        <el-form-item label="指令选择：" prop="currentControlPage">
+          <el-radio v-model="currentControlPage" :label='controlPages.switchState'>开关</el-radio>
+          <el-radio v-model="currentControlPage" :label="controlPages.brightness">亮度</el-radio>
+          <el-radio v-model="currentControlPage" :label="controlPages.getState">状态读取</el-radio>
+          <el-radio v-model="currentControlPage" :label="controlPages.temperature">色温</el-radio>
+          <el-radio v-model="currentControlPage" :label="controlPages.rgb">RGB</el-radio>
+        </el-form-item>
+        <el-form-item v-show="currentControlPage == controlPages.switchState" label="开关：" prop="switchstate">
           <el-radio v-model="operData.switchstate" label="1">开</el-radio>
           <el-radio v-model="operData.switchstate" label="2">关</el-radio>
         </el-form-item>
-        <el-form-item label="亮度：" prop="brightness">
+        <el-form-item  v-show="currentControlPage == controlPages.brightness" label="亮度：" prop="brightness">
           <el-slider
               v-model="operData.brightness"
               show-input>
           </el-slider>
+        </el-form-item>
+        <el-form-item v-show="currentControlPage == controlPages.getState" label="" prop="switchstate">
+          <el-checkbox v-model="operData.getState" label="状态读取"></el-checkbox>
+        </el-form-item>
+        <el-form-item  v-show="currentControlPage == controlPages.temperature" label="色温：" prop="temperature">
+          <el-slider
+              v-model="operData.temperature"
+              show-input>
+          </el-slider>
+        </el-form-item>
+        <el-form-item  v-show="currentControlPage == controlPages.rgb" label="RGB：" prop="color">
+          <el-input type="color" v-model="operData.rgb"/>
+        </el-form-item>
+        <el-form-item label="策略：" prop="StrategyID">
+          <select-strategy-component v-model="operData.StrategyID"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -197,20 +219,17 @@
       </div>
     </form>
   </div>
-  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    let LampContent = {
-        switchstate: '',
-        brightness: '',
-        runningstate: ''
-    };
+    import selectStrategyComponent from "./select-strategy-component.vue";
+    import CommonConstant from "../../../constants/common";
     export default {
         name: 'controlSingleLampPage',
+        components: {selectStrategyComponent},
         data() {
             return {
                 controlDeviceDialogVisible: false,
@@ -249,34 +268,23 @@
                 isSearchPage: false,
                 list: [{}],
                 companies: [],
-                lightControllerType: [
-                    {value: 1, text: '电源蓝牙'},
-                    {value: 2, text: '电源ZETA'},
-                    {value: 3, text: '电源蓝牙+ZETA'},
-                    {value: 4, text: '外挂式蓝牙'},
-                    {value: 5, text: '外挂式ZETA'},
-                    {value: 6, text: '外挂式蓝牙+ZETA'},
-                ],
-                switchStatus: [
-                    {value: 1, text: '开'},
-                    {value: 2, text: '关'},
-                ],
-                sensorType: [
-                    {value: 1, text: '无'},
-                    {value: 2, text: '光感'},
-                    {value: 3, text: '微波'},
-                ],
-                runningStatus: [
-                    {value: 1, text: '正常'},
-                    {value: 2, text: '欠流'},
-                    {value: 3, text: '过流'},
-                    {value: 4, text: '欠压'},
-                    {value: 5, text: '过压'},
-                ],
+                lightControllerType: [],
+                switchStatus: [],
+                sensorType: [],
+                runningStatus: [],
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
+                controlPages: {
+                    switchState: 'switchstate',
+                    brightness: 'brightness',
+                    getState: 'getState',
+                    rgb: 'rgb',
+                    temperature: 'temperature'
+                },
+                currentControlPage: '',
+                showSelectedStrategyName: '',
                 pages: {
                     home: 1,
                     search: 2,
@@ -294,6 +302,14 @@
                 this.initLamp();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonConstants();
+                this.currentControlPage = this.controlPages.switchState;
+            },
+            initCommonConstants: function () {
+                this.runningStatus = CommonConstant.runningStatus;
+                this.switchStatus = CommonConstant.switchState;
+                this.lightControllerType = CommonConstant.lightControllerType;
+                this.sensorType = CommonConstant.sensorType;
             },
             initLamp: function () {
                 this.findList(this.defaultPaging)
@@ -304,7 +320,7 @@
                 })
             },
             initOperData: function () {
-                this.operData = this.$common.copyObj(LampContent);
+                this.operData = {}
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -338,13 +354,18 @@
                 Services.getLight(device.sn).then(data => {
                     this.resetData();
                     this.operData = data;
+                    this.operData.brightness = Number(this.operData.brightness);
                     this.controlDeviceDialogVisible = true;
                 });
             },
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        Services.editLight(this.operData).then(res => {
+                        let data = {};
+                        data.deviceID = this.operData.deviceID;
+                        data.StrategyID = this.operData.StrategyID;
+                        data[this.currentControlPage] = this.operData[this.currentControlPage];
+                        Services.editLight(data).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });
@@ -355,7 +376,7 @@
                 this.controlDeviceDialogVisible = false;
             },
             resetData: function () {
-                this.operData = this.$common.copyObj(LampContent);
+                this.operData = {}
             }
 
         }

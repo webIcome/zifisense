@@ -46,18 +46,16 @@
         <th>设备ID</th>
         <th>地理位置</th>
         <th>开关状态</th>
-        <th>亮度值</th>
-        <th>有功电能</th>
+        <th>执行策略</th>
         <th>操作</th>
         </thead>
         <tbody>
-        <tr v-for="item in list" @click="showDetail($event, item)">
+        <tr v-for="item in list">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
-          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
-          <td>{{item.brightness}}</td>
-          <td>{{item.activepower}}</td>
+          <td>{{item.runningstate | runningstateNameConverter }}</td>
+          <td>{{item.runningstate}}</td>
           <td class="td-btns">
             <div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice(item)" class="set-icon"></span></div>
           </td>
@@ -70,9 +68,8 @@
 
     <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
       <el-form label-width="170px" :model="operData"  ref="controlDevice">
-        <el-form-item label="开关：" prop="switchstate">
-          <el-radio v-model="operData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="operData.switchstate" label="2">关</el-radio>
+        <el-form-item label="策略：" prop="StrategyID">
+          <select-strategy-component v-model="operData.StrategyID"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -143,20 +140,17 @@
       </div>
     </form>
   </div>
-  <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    let PanelContent = {
-        switchstate: '',
-        brightness: '',
-        runningstate: ''
-    };
+    import selectStrategyComponent from "./select-strategy-component.vue";
+    import CommonConstant from "../../../constants/common";
     export default {
         name: 'controlSinglePanelPage',
+        components: {selectStrategyComponent},
         data() {
             return {
                 controlDeviceDialogVisible: false,
@@ -237,6 +231,13 @@
                 this.initPanel();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonConstants();
+            },
+            initCommonConstants: function () {
+                this.runningStatus = CommonConstant.runningStatus;
+                this.switchStatus = CommonConstant.switchState;
+                this.lightControllerType = CommonConstant.lightControllerType;
+                this.sensorType = CommonConstant.sensorType;
             },
             initPanel: function () {
                 this.findList(this.defaultPaging)
@@ -247,7 +248,7 @@
                 })
             },
             initOperData: function () {
-                this.operData = this.$common.copyObj(PanelContent);
+                this.operData = {}
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -298,7 +299,7 @@
                 this.controlDeviceDialogVisible = false;
             },
             resetData: function () {
-                this.operData = this.$common.copyObj(PanelContent);
+                this.operData = {}
             }
 
         }
