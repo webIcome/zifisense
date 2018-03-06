@@ -5,16 +5,18 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label>情景名称：</label>
-            <el-input style="width: 180px" type="text" v-model="searchParams.devicename" placeholder="输入策略名称"></el-input>
+            <el-input style="width: 180px" type="text" v-model="searchParams.scenarioname"
+                      placeholder="输入情景名称"></el-input>
           </div>
-          <div class="form-group">
-            <label>情景类别：</label>
-            <el-select v-model="searchParams.sensortype" placeholder="选择策略类别" clearable>
-              <el-option v-for="status in sensorType" :key="status.value" :value="status.value"
-                         :label="status.text"></el-option>
-            </el-select>
-          </div>
+          <!-- <div class="form-group">
+             <label>情景类别：</label>
+             <el-select v-model="searchParams.moduleTypeID" placeholder="选择情景类别" clearable>
+               <el-option v-for="status in deviceType" :key="status.value" :value="status.value"
+                          :label="status.text"></el-option>
+             </el-select>
+           </div>-->
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选
+
           </div>
           <div class="pull-right">
             <div @click="dialogAddStrategy" class="default-btn"><span class="add-icon default-icon"></span>新建</div>
@@ -33,9 +35,9 @@
         </thead>
         <tbody>
         <tr v-for="item in list">
-          <td>{{item.devicename}}</td>
-          <td>{{item.sn}}</td>
-          <td>{{item.brightness}}</td>
+          <td>{{item.scenarioname}}</td>
+          <td>{{item.groupname}}</td>
+          <td>{{item.task}}</td>
           <td class="td-btns">
             <div class="icon-item"><span @click="dialogEditStrategy(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteStrategy(item)" class="delete-icon"></span></div>
@@ -48,13 +50,16 @@
                       @pagingEvent='pagingEvent'></paging-component>
 
     <el-dialog title="新建情景" :visible.sync="addStrategyDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="operData"  ref="addStrategy" class="el-form-default">
-        <el-form-item label="情景名称：" prop="switchstate">
-          <el-input type="text" v-model="operData.devicename" placeholder="输入设备名称"></el-input>
+      <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="operDataRules" class="el-form-default">
+        <el-form-item label="情景名称：" prop="scenarioname">
+          <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
         </el-form-item>
-        <el-form-item label="应用范围：" prop="deviceType">
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="应用范围：" prop="groups">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18">{{selectedGroupData[0]}} 等{{selectedGroupData.length}}个组</el-col>
+            <el-col :span="18">{{operData.groups[0]?operData.groups[0].groupname: '' }} 等{{operData.groups.length}}个组</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditGroup">编辑</el-button>
           </el-row>
         </el-form-item>
@@ -64,13 +69,16 @@
       </span>
     </el-dialog>
     <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="operData"  ref="editStrategy" class="el-form-default">
-        <el-form-item label="情景名称：" prop="switchstate">
-          <el-input type="text" v-model="operData.devicename" placeholder="输入设备名称"></el-input>
+      <el-form label-width="120px" :model="operData" ref="editStrategy" class="el-form-default">
+        <el-form-item label="情景名称：" prop="scenarioname">
+          <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
         </el-form-item>
-        <el-form-item label="应用范围：" prop="deviceType">
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="应用范围：" prop="groups">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18">{{selectedGroupData[0]}} 等{{selectedGroupData.length}}个组</el-col>
+            <el-col :span="18">{{operData.groups[0]?operData.groups[0].groupname: '' }} 等{{operData.groups.length}}个组</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditGroup">编辑</el-button>
           </el-row>
         </el-form-item>
@@ -81,32 +89,35 @@
     </el-dialog>
 
     <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="editGroupData"  ref="editGroup" class="el-form-default">
-        <template v-for="groupItem in editGroupData">
-          <el-form-item label="应用组：" prop="">
-            <el-select v-model="groupItem.deviceType" placeholder="选择设备组" clearable >
-              <el-option v-for="item in group" :key="item.value" :value="item.value" :label="item.text"></el-option>
-            </el-select>
+      <template v-for="(groupItem,index) in editGroupData">
+        <el-form label-width="120px" :model="groupItem" ref="editGroup" :rules="groupRules" class="el-form-default">
+          <el-form-item label="应用组：" prop="objectid">
+            <select-group-component v-model="groupItem.objectid" :groupName="groupItem.groupname"
+                                    @name="name = groupItem.groupname = name"></select-group-component>
           </el-form-item>
-          <el-form-item label="策略功能：" prop="">
-            <el-select v-model="groupItem.deviceType" placeholder="选择设备组" clearable >
-              <el-option v-for="item in strategy" :key="item.value" :value="item.value" :label="item.text"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="执行功能：" prop="">
-            <div><el-radio v-model="groupItem.fn" label="1">开灯</el-radio></div>
-            <div><el-radio v-model="groupItem.fn" label="2">关灯</el-radio></div>
-            <div style="position: relative">
-              <el-radio v-model="groupItem.fn" label="3">调节亮度</el-radio>
-              <div style="position: absolute; width: 300px; right: 0; top: 5px"><el-slider :disabled="groupItem.fn != 3" v-model="groupItem.brightness" show-input></el-slider></div>
+          <el-form-item label="执行功能：" prop="task">
+            <div>
+              <el-radio v-model="groupItem.task" label="1">开灯</el-radio>
             </div>
-            <div><el-radio v-model="groupItem.fn" label="1">状态读取</el-radio></div>
+            <div>
+              <el-radio v-model="groupItem.task" label="2">关灯</el-radio>
+            </div>
+            <div style="position: relative">
+              <el-radio v-model="groupItem.task" label="3">调节亮度</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-slider :disabled="groupItem.task != 3" v-model="groupItem.brightness" show-input></el-slider>
+              </div>
+            </div>
           </el-form-item>
-        </template>
-      </el-form>
+          <el-form-item>
+            <el-button class="pull-right" type="primary" @click="deleteGroup(index)">
+              删除本组
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </template>
       <div style="display: flex; justify-content: space-between; padding: 0 50px;">
         <el-button type="primary" @click="addGroup">添加一组</el-button>
-        <el-button type="primary" @click="deleteGroup" v-if="editGroupData.length > 1">删除本组</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="selectGroup('editGroup')">确 定</el-button>
@@ -131,28 +142,45 @@
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
+    import Services from "../services";
+    import selectGroupComponent from './select-group-component.vue';
     export default {
         name: 'strategyTimePage',
+        components: {selectGroupComponent},
         data() {
             return {
                 addStrategyDialogVisible: false,
                 editStrategyDialogVisible: false,
                 deleteStrategyDialogVisible: false,
                 editGroupDialogVisible: false,
+                groupRules: {
+                    objectid: [
+                        {required: true, message: '请选择应用组'}
+                    ],
+                    task: [
+                        {required: true, message: '请选择功能'}
+                    ],
+                },
+                operDataRules: {
+                    companyid: [
+                        {required: true, message: '请选择所属企业'}
+                    ],
+                    scenarioname: [
+                        {required: true, message: '请输入情景名称'}
+                    ],
+                    groups: [
+                        {required: true, message: '请选择组'}
+                    ],
+                },
                 searchParams: {
-                    devicename: '',
-                    sn: '',
-                    companyid: '',
-                    switchstate: '',
-                    lightcontrollerType: '',
-                    sensortype: ''
+                    scenarioname: '',
                 },
                 operData: {},
                 group: [],
                 strategy: [{}],
                 editGroupData: [{}],
                 selectedGroupData: [],
-                list: [{}],
+                list: [],
                 companies: [],
                 sensorType: [
                     {value: 1, text: '无'},
@@ -170,6 +198,7 @@
                     {value: 2, text: '日出'},
                     {value: 3, text: '日落'},
                 ],
+                deviceType: [],
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
@@ -183,29 +212,82 @@
             initData: function () {
                 this.initPaging();
                 this.initOperData();
+                this.initCompanies();
+                this.initCommonConstants();
             },
             initPaging: function () {
                 this.findList(this.defaultPaging)
             },
             initOperData: function () {
-//                this.operData = this.$common.copyObj(LampContent);
+                this.operData = {};
+                this.operData.groups = [{}];
+            },
+            initCompanies: function () {
+                this.$globalCache.companies.then(companies => {
+                    this.companies = companies;
+                })
+            },
+            initCommonConstants: function () {
+                this.deviceType = [
+                    {value: 1, text: '灯控器'},
+                    {value: 2, text: '回路控制器'},
+                ];
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
+                Services.findScenario(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
                 })
             },
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
+            },
+            transformDataToUse: function (data) {
+                let operData = {};
+                let brightness = 0;
+                let groupsId = data.groupid.split(',');
+                let groupsName = data.groupname.split(',');
+                let tasks = data.task.split(',');
+                operData.objectid = data.objectid;
+                operData.scenarioname = data.scenarioname;
+                operData.companyid = data.companyid;
+                let groups = groupsId.map((id, index) => {
+                    let task;
+                    if (tasks[index].indexOf('|') != -1) {
+                        task = tasks[index].split('|')[0];
+                        brightness = Number(tasks[index].split('|')[1]);
+                    }
+                    return {objectid: id, groupname: groupsName[index], task: task, brightness: brightness}
+                });
+                operData.groups = groups;
+                return operData;
+            },
+            transformDataToSend: function (data) {
+                let operData = {};
+                let groupsId = [];
+                let tasks = [];
+                data.groups.forEach(item => {
+                    groupsId.push(item.objectid);
+                    let task = item.task;
+                    if (task == 3) {
+                        task = task + "|" + item.brightness;
+                    }
+                    tasks.push(task);
+                });
+                if (data.objectid) {
+                    operData.objectid = data.objectid;
+                }
+                operData.scenarioname = data.scenarioname;
+                operData.groupid = groupsId.join();
+                operData.task = tasks.join();
+                operData.companyid = data.companyid;
+                return operData;
             },
             dialogAddStrategy: function () {
                 this.resetData();
@@ -213,7 +295,7 @@
             },
             dialogEditStrategy: function (strategy) {
                 this.resetData();
-                this.operData = strategy;
+                this.operData = this.transformDataToUse(strategy);
                 this.editStrategyDialogVisible = true;
             },
             dialogDeleteStrategy: function (strategy) {
@@ -222,50 +304,57 @@
                 this.deleteStrategyDialogVisible = true;
             },
             dialogEditGroup: function () {
-                if (this.selectedGroupData.length){
-                    this.editGroupData = this.selectedGroupData;
+                this.resetEditGroupData();
+                if (this.operData.groups.length > 0) {
+                    this.editGroupData = this.operData.groups;
+                } else {
                 }
                 this.editGroupDialogVisible = true;
-            },
-            editGroup: function () {
-
             },
             addGroup: function () {
                 this.editGroupData.push({})
             },
-            deleteGroup: function () {
-                this.editGroupData.shift()
+            deleteGroup: function (index) {
+                this.editGroupData.splice(index, 1);
             },
             selectGroup: function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        this.selectedGroupData = this.editGroupData;
-                        this.resetEditGroupData();
-                        this.hideSecondModal();
-                    }
-                })
+                let valids = [];
+                this.$refs[formName].forEach(item => {
+                    item.validate(valid => {
+                        valids.push(valid);
+                    })
+                });
+                if (valids.every(item => item)) {
+                    this.operData.groups = this.editGroupData;
+                    this.resetEditGroupData();
+                    this.hideSecondModal();
+                }
             },
             addStrategy: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-
+                        Services.addScenario(this.transformDataToSend(this.operData)).then(res => {
+                            this.initPaging();
+                            this.hideModal();
+                        })
                     }
                 })
             },
             editStrategy: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-
+                        Services.editScenario(this.transformDataToSend(this.operData)).then(res => {
+                            this.initPaging();
+                            this.hideModal();
+                        })
                     }
                 })
             },
             deleteStrategy: function () {
-
-            },
-            getDevice: function (id) {
-                return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
+                Services.deleteScenario(this.operData.objectid).then(res => {
+                    this.initPaging();
+                    this.hideModal();
+                })
             },
             hideModal: function () {
                 this.addStrategyDialogVisible = false;
@@ -277,7 +366,7 @@
             },
             resetData: function () {
                 this.operData = {};
-                this.selectedGroupData = [];
+                this.operData.groups = [];
             },
             resetEditGroupData: function () {
                 this.editGroupData = [{}];

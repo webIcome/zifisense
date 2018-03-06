@@ -229,6 +229,52 @@ export default {
             return res.body.data;
         })
     },
+    addLightStrategy(body) {
+        return HttpClient.post('strategy/addLight', body).then(res => {
+            return res;
+        })
+    },
+    addLoopStrategy(body) {
+        return HttpClient.post('strategy/addLoopController', body).then(res => {
+            return res;
+        })
+    },
+    editLightStrategy(body) {
+        return HttpClient.post('strategy/editLight', body).then(res => {
+            return res;
+        })
+    },
+    editLoopStrategy(body) {
+        return HttpClient.post('strategy/editLoopController', body).then(res => {
+            return res;
+        })
+    },
+    deleteStrategy(id) {
+        return HttpClient.post('strategy/delete', {objectid: id}).then(res => {
+            return res;
+        })
+    },
+    //scenario
+    findScenario(params) {
+        return HttpClient.get('scenario/getList', {params: params}).then(res => {
+            return res.body.data;
+        })
+    },
+    addScenario(body) {
+        return HttpClient.post('scenario/addControlPanel', body).then(res => {
+            return res;
+        })
+    },
+    editScenario(body) {
+        return HttpClient.post('scenario/editControlPanel', body).then(res => {
+            return res;
+        })
+    },
+    deleteScenario(id) {
+        return HttpClient.post('scenario/delete', {objectid: id}).then(res => {
+            return res;
+        })
+    },
     //company
     findCompanyList(params) {
         return HttpClient.get('companies/getList', {params: params, root: Config.URL_API}).then(res => {
