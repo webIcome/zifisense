@@ -9,7 +9,7 @@
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
-            <el-select v-model="searchParams.moduleTypeID" placeholder="选择类型" clearable >
+            <el-select v-model="searchParams.moduletype" placeholder="选择类型" clearable >
               <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
             </el-select>
           </div>
@@ -40,7 +40,7 @@
         <tbody>
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.groupname}}</td>
-          <td>{{item.moduleTypeID | deviceTypeNameConverter}}</td>
+          <td>{{item.moduletype | deviceTypeNameConverter}}</td>
           <td>{{item.deviceTotal}}</td>
           <td>{{item.strategyName}}</td>
           <td>{{item.state | deviceStateNameConverter}}</td>

@@ -57,7 +57,7 @@
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
-          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
+          <td>{{item.switchstate | switchStateNameConverter}}</td>
           <td>{{item.brightness}}</td>
           <td>{{item.activepower}}</td>
           <td class="td-btns">
@@ -70,9 +70,9 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="operData"  ref="controlDevice">
-        <el-form-item label="指令选择：" prop="currentControlPage">
+    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
+      <el-form label-width="120px" :model="operData"  ref="controlDevice" :rules="Rules" class="el-form-default">
+        <!--<el-form-item label="指令选择：" prop="currentControlPage">
           <el-radio v-model="currentControlPage" :label='controlPages.switchState'>开关</el-radio>
           <el-radio v-model="currentControlPage" :label="controlPages.brightness">亮度</el-radio>
           <el-radio v-model="currentControlPage" :label="controlPages.getState">状态读取</el-radio>
@@ -102,7 +102,43 @@
           <el-input type="color" v-model="operData.rgb"/>
         </el-form-item>
         <el-form-item label="策略：" prop="StrategyID">
-          <select-strategy-component v-model="operData.StrategyID"></select-strategy-component>
+          <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname" @name="name=operData.strategyname = name"></select-strategy-component>
+        </el-form-item>-->
+        <el-form-item label="指令选择：" prop="controltype">
+          <div>
+            <el-radio v-model="operData.controltype" label=1>开灯</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.controltype" label=2>关灯</el-radio>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.controltype" label=3>调节亮度</el-radio>
+            <div v-if="operData.controltype == 3" style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-slider  v-model="operData.brightness" show-input></el-slider>
+            </div>
+          </div>
+          <div>
+            <el-radio v-model="operData.controltype" label=4>状态读取</el-radio>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.controltype" label=5>下发策略</el-radio>
+            <div v-if="operData.controltype == 5" style="position: absolute; width: 300px; right: 0; top: 5px">
+              <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname" @name="name=operData.strategyname = name"></select-strategy-component>
+            </div>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.controltype" label=6>色温</el-radio>
+            <div v-if="operData.controltype == 6" style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-slider v-model="operData.temperature" show-input>
+              </el-slider>
+            </div>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.controltype" label=7>RGB</el-radio>
+            <div v-if="operData.controltype == 7" style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-input type="color" v-model="operData.rgb"/>
+            </div>
+          </div>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -233,6 +269,17 @@
         data() {
             return {
                 controlDeviceDialogVisible: false,
+                Rules: {
+                    controltype: [
+                        {required: true, message: '请选择指令'}
+                    ],
+                    strategyid: [
+                        {required: true, message: '请选择策略', trigger: 'change'}
+                    ],
+                    rgb: [
+                        {required: true, message: '请选择颜色',trigger: 'change'}
+                    ],
+                },
                 searchParams: {
                     devicename: '',
                     sn: '',
@@ -263,7 +310,11 @@
                     companyid: '',
                     runningstate: '',
                 },
-                operData: {},
+                operData: {
+                    objectid: '',
+                    brightness: '',
+                    strategyid: ''
+                },
                 groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
                 list: [{}],
@@ -303,7 +354,7 @@
                 this.initCompanies();
                 this.initOperData();
                 this.initCommonConstants();
-                this.currentControlPage = this.controlPages.switchState;
+//                this.currentControlPage = this.controlPages.switchState;
             },
             initCommonConstants: function () {
                 this.runningStatus = CommonConstant.runningStatus;
@@ -353,19 +404,20 @@
             dialogControlDevice: function (device) {
                 Services.getLight(device.sn).then(data => {
                     this.resetData();
-                    this.operData = data;
-                    this.operData.brightness = Number(this.operData.brightness);
+                    this.operData.deviceid = data.deviceid;
+                    this.operData.brightness = Number(data.brightness);
+                    this.operData.strategyid = data.strategyid;
                     this.controlDeviceDialogVisible = true;
                 });
             },
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        let data = {};
-                        data.deviceID = this.operData.deviceID;
-                        data.StrategyID = this.operData.StrategyID;
-                        data[this.currentControlPage] = this.operData[this.currentControlPage];
-                        Services.editLight(data).then(res => {
+                       /* let data = {};
+                        data.deviceid = this.operData.deviceid;
+                        data.strategyid = this.operData.strategyid;
+                        data[this.currentControlPage] = this.operData[this.currentControlPage];*/
+                        Services.editLight(this.operData).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });
@@ -376,7 +428,11 @@
                 this.controlDeviceDialogVisible = false;
             },
             resetData: function () {
-                this.operData = {}
+                this.operData = {
+                    objectid: '',
+                    brightness: '',
+                    strategyid: ''
+                };
             }
 
         }

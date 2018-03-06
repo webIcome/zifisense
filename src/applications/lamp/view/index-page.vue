@@ -191,6 +191,10 @@
                 }
                 this.$nextTick(function () {
                     $('.collapse .router-link-active').parent().addClass('in').parent().find('[aria-expanded]').attr('aria-expanded', true);
+                    let dd =  $('.collapse .router-link-active').parent().parent().parent().parent();
+                    if (dd.hasClass('collapse')){
+                        dd.addClass('in');
+                    }
                 })
             },
         },

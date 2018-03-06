@@ -168,12 +168,12 @@ export default {
         })
     },
     runStrategyGroup(body) {
-        return HttpClient.post('groupInfo/sendStrategy', body).then(res => {
+        return HttpClient.post('groupControl/sendStrategy', body).then(res => {
             return res;
         })
     },
     stopStrategyGroup(body) {
-        return HttpClient.post('groupInfo/recallStrategy', body).then(res => {
+        return HttpClient.post('groupControl/recallStrategy', body).then(res => {
             return res;
         })
     },
@@ -214,12 +214,12 @@ export default {
         })
     },
     runStrategyArea(body) {
-        return HttpClient.post('areaInfo/sendStrategy', body).then(res => {
+        return HttpClient.post('areaControl/sendStrategy', body).then(res => {
             return res;
         })
     },
     stopStrategyArea(body) {
-        return HttpClient.post('areaInfo/recallStrategy', body).then(res => {
+        return HttpClient.post('areaControl/recallStrategy', body).then(res => {
             return res;
         })
     },
