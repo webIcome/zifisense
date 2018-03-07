@@ -18,9 +18,9 @@ const CommonConstant = {
         {value: 4, text: '调色温驱动电源'},
     ],
     deviceType: [
-        {value: 1, text: '灯控器'},
-        {value: 2, text: '回路控制器'},
-        {value: 3, text: '控制面板'},
+        {value: 1, text: '灯控器', name: 'light'},
+        {value: 2, text: '回路控制器', name: 'loop'},
+        {value: 3, text: '控制面板', name: 'panel'},
     ],
     deviceState: [
         {value: 1, text: '应用'},

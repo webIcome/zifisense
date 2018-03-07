@@ -61,7 +61,8 @@
           <td>{{item.brightness}}</td>
           <td>{{item.activepower}}</td>
           <td class="td-btns">
-            <div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice(item)" class="set-icon"></span></div>
+            <!--<div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice(item)" class="set-icon"></span></div>-->
+            <control-light-dialog-component :device="item"></control-light-dialog-component>
           </td>
         </tr>
         </tbody>
@@ -70,9 +71,9 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
+<!--    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
       <el-form label-width="120px" :model="operData"  ref="controlDevice" :rules="Rules" class="el-form-default">
-        <!--<el-form-item label="指令选择：" prop="currentControlPage">
+        &lt;!&ndash;<el-form-item label="指令选择：" prop="currentControlPage">
           <el-radio v-model="currentControlPage" :label='controlPages.switchState'>开关</el-radio>
           <el-radio v-model="currentControlPage" :label="controlPages.brightness">亮度</el-radio>
           <el-radio v-model="currentControlPage" :label="controlPages.getState">状态读取</el-radio>
@@ -103,7 +104,7 @@
         </el-form-item>
         <el-form-item label="策略：" prop="StrategyID">
           <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname" @name="name=operData.strategyname = name"></select-strategy-component>
-        </el-form-item>-->
+        </el-form-item>&ndash;&gt;
         <el-form-item label="指令选择：" prop="controltype">
           <div>
             <el-radio v-model="operData.controltype" label=1>开灯</el-radio>
@@ -144,7 +145,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="controlDevice('controlDevice')">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
 
   </div>
 
@@ -261,14 +262,13 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    import selectStrategyComponent from "./select-strategy-component.vue";
     import CommonConstant from "../../../constants/common";
+    import controlLightDialogComponent from './control-light-dialog-component.vue';
     export default {
         name: 'controlSingleLampPage',
-        components: {selectStrategyComponent},
+        components: {controlLightDialogComponent},
         data() {
             return {
-                controlDeviceDialogVisible: false,
                 Rules: {
                     controltype: [
                         {required: true, message: '请选择指令'}
@@ -400,32 +400,6 @@
             },
             showPage:function (page) {
                 this.currentPage = page;
-            },
-            dialogControlDevice: function (device) {
-                Services.getLight(device.sn).then(data => {
-                    this.resetData();
-                    this.operData.deviceid = data.deviceid;
-                    this.operData.brightness = Number(data.brightness);
-                    this.operData.strategyid = data.strategyid;
-                    this.controlDeviceDialogVisible = true;
-                });
-            },
-            controlDevice: function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                       /* let data = {};
-                        data.deviceid = this.operData.deviceid;
-                        data.strategyid = this.operData.strategyid;
-                        data[this.currentControlPage] = this.operData[this.currentControlPage];*/
-                        Services.editLight(this.operData).then(res => {
-                            this.initLamp();
-                            this.hideModal();
-                        });
-                    }
-                })
-            },
-            hideModal: function () {
-                this.controlDeviceDialogVisible = false;
             },
             resetData: function () {
                 this.operData = {

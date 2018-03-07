@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input type="text" :vule="strategyName" placeholder="选择灯控器类型" clearable @focus="dialogSelect" @change="changeSelect"></el-input>
+    <el-input type="text" :vule="strategyName" placeholder="选择策略" clearable @focus="dialogSelect" @change="changeSelect"></el-input>
     <el-dialog title="选择策略类型" :visible.sync="dialogVisible" center :width="'700px'"  append-to-body>
       <el-form :inline="true" label-width="170px" :model="searchParams"  ref="editGroup" class="el-form-default">
         <el-form-item prop="strategyname">
@@ -65,8 +65,8 @@
               this.searchParams.pageNum = pageNumber;
               this.findList(this.searchParams);
           },
-          findList: function () {
-              Services.findStrategy(this.searchParams).then(data => {
+          findList: function (params) {
+              Services.findStrategy(params).then(data => {
                   this.searchParams.pageNum = data.pageNum;
                   this.searchParams.pages = data.pages;
                   this.searchParams.pageSize = data.pageSize;
@@ -79,12 +79,12 @@
           },
           select: function (val) {
               this.dialogVisible = false;
-              this.$emit('select', val.objectid);
+              this.$emit('input', val.objectid);
               this.$emit('name', val.strategyname);
           },
           changeSelect: function (val) {
               if (!val) {
-                  this.$emit('select', '');
+                  this.$emit('input', '');
                   this.$emit('name', '');
               }
           },

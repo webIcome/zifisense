@@ -38,17 +38,18 @@
         <th>操作</th>
         </thead>
         <tbody>
-        <tr v-for="item in list" @click="showDetail($event, item)">
+        <tr v-for="item in list">
           <td>{{item.groupname}}</td>
           <td>{{item.moduletype | deviceTypeNameConverter}}</td>
           <td>{{item.deviceTotal}}</td>
           <td>{{item.strategyName}}</td>
           <td>{{item.state | deviceStateNameConverter}}</td>
           <td class="td-btns">
+            <control-light-dialog-component v-if="item.moduletype == moduleType.light" :device="item"></control-light-dialog-component>
             <div class="icon-item"><span @click="dialogSetGroup(item)" class="set-icon"></span></div>
             <div class="icon-item"><span @click="dialogEditGroup(item)" class="edit-icon"></span></div>
-            <div class="icon-item"><span @click="dialogRepealGroup(item)" class="repeal-icon"></span></div>
-            <div class="icon-item"><span @click="dialogRepealGroup(item)" class="issue-icon"></span></div>
+            <div class="icon-item" v-show="item.strategystate == 2"><span @click="dialogRepealGroup(item)" class="repeal-icon"></span></div>
+            <div class="icon-item" v-show="item.strategystate == 1"><span @click="dialogIssueGroup(item)" class="issue-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteGroup(item)" class="delete-icon"></span></div>
           </td>
         </tr>
@@ -163,11 +164,19 @@
       </span>
     </el-dialog>
     <el-dialog title="策略撤销" :visible.sync="repealGroupDialogVisible" center :width="'600px'">
-      <p class="text-center">您确认要将已生效的策略 <span style="color: #1789e1">“{{repealGroupData.name}}”</span></p>
-      <p class="text-center">从您的选中的组 <span style="color: #1789e1">“{{repealGroupData.name}}”</span> 中撤销吗？</p>
+      <p class="text-center">您确认要将已生效的策略 <span style="color: #1789e1">“{{repealGroupData.strategyname}}”</span></p>
+      <p class="text-center">从您的选中的组 <span style="color: #1789e1">“{{repealGroupData.strategyname}}”</span> 中撤销吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="repealGroup">确认</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="下发策略" :visible.sync="issueGroupDialogVisible" center :width="'600px'">
+      <p class="text-center">您确认要将策略：<span style="color: #1789e1">“{{issueGroupData.strategyname}}”</span></p>
+      <p class="text-center">下发到您的选中的组：<span style="color: #1789e1">“{{issueGroupData.strategyname}}”</span> 吗？</p>
+      <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="issueGroup">确认</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除组" :visible.sync="deleteGroupDialogVisible" center :width="'600px'">
@@ -187,6 +196,7 @@
     import Config from "../../../config";
     import Services from '../services';
     import Common from "../../../constants/common";
+    import controlLightDialogComponent from './control-light-dialog-component.vue';
     let LampContent = {
         switchstate: '',
         brightness: '',
@@ -194,6 +204,9 @@
     };
     export default {
         name: 'controlSingleLampPage',
+        components: {
+            controlLightDialogComponent
+        },
         data() {
             return {
                 addGroupDialogVisible: false,
@@ -226,6 +239,8 @@
                 companies: [],
                 deviceState: [],
                 deviceType: [],
+                moduleType: {
+                },
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
@@ -270,6 +285,9 @@
             initCommonData: function () {
                 this.deviceType = Common.deviceType;
                 this.deviceState = Common.deviceState;
+                this.deviceType.forEach(item => {
+                    this.moduleType[item.name] = item.value;
+                })
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -407,13 +425,13 @@
                 })
             },
             repealGroup:function () {
-                Services.runStrategyGroup({groupID: this.repealGroupData.objectid, strategyID: this.repealGroupData.strategyID}).then(res => {
+                Services.stopStrategyGroup({groupid: this.repealGroupData.objectid, strategyid: this.repealGroupData.strategyid}).then(res => {
                     this.hideModal();
                     this.initList();
                 })
             },
             issueGroup: function () {
-                Services.stopStrategyGroup({groupID: this.repealGroupData.objectid, strategyID: this.repealGroupData.strategyID}).then(res => {
+                Services.runStrategyGroup({groupid: this.issueGroupData.objectid, strategyid: this.issueGroupData.strategyid}).then(res => {
                     this.hideModal();
                     this.initList();
                 })

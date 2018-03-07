@@ -66,11 +66,26 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
+    <el-dialog title="控制控制面板" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
       <el-form label-width="170px" :model="operData"  ref="controlDevice">
-        <el-form-item label="策略：" prop="StrategyID">
-          <select-strategy-component v-model="operData.StrategyID"></select-strategy-component>
+        <el-form-item label="模式选择：" prop="StrategyID">
+          <el-radio-group v-model="operData.controltype">
+            <el-radio-button :label="1">普通模式</el-radio-button>
+            <el-radio-button :label="2">情景模式</el-radio-button>
+          </el-radio-group>
         </el-form-item>
+        <template v-if="operData.controltype != 1">
+          <el-form-item label="面板按钮：" prop="StrategyID">
+            <el-radio-group v-model="operData.button" @change="selectBtn">
+              <el-radio-button :label="1">按钮1</el-radio-button>
+              <el-radio-button :label="2">按钮2</el-radio-button>
+              <el-radio-button :label="3">按钮3</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="情景模式：" prop="StrategyID">
+            <select-scenario-component v-model="operData.scenarioid" :scenarioname="operData.scenarioname" @name="name=operData.scenarioname=name"></select-scenario-component>
+          </el-form-item>
+        </template>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="controlDevice('controlDevice')">确 定</el-button>
@@ -105,11 +120,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">情景模式：</label>
+        <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
-            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
+          <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
@@ -123,10 +136,6 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">
-          <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
-        </div>
         <label class="col-md-3 control-label">运行状态：</label>
         <div class="col-md-3">
           <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
@@ -146,11 +155,11 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    import selectStrategyComponent from "./select-strategy-component.vue";
+    import selectScenarioComponent from "./select-scenario-component.vue";
     import CommonConstant from "../../../constants/common";
     export default {
         name: 'controlSinglePanelPage',
-        components: {selectStrategyComponent},
+        components: {selectScenarioComponent},
         data() {
             return {
                 controlDeviceDialogVisible: false,
@@ -181,7 +190,11 @@
                     runningstate: '',
                     diportstate: ''
                 },
-                operData: {},
+                operData: {
+                    scenarioname: '',
+                    button: '',
+                    controltype: ''
+                },
                 groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
                 list: [{}],
@@ -278,17 +291,48 @@
             showPage:function (page) {
                 this.currentPage = page;
             },
+            selectBtn: function (btn) {
+                let scenarioId;
+                let scenarioName;
+                switch (btn){
+                    case 1:
+                        scenarioName = this.operData.buttonmode1;
+                        scenarioId = this.operData.buttonmodeid1;
+                        break;
+                    case 2:
+                        scenarioName = this.operData.buttonmode2;
+                        scenarioId = this.operData.buttonmodeid2;
+                        break;
+                    case 3:
+                        scenarioName = this.operData.buttonmode3;
+                        scenarioId = this.operData.buttonmodeid3;
+                        break;
+                }
+                let defaultData;
+                if (scenarioName != "普通模式") {
+                    defaultData = {scenarioid: scenarioId, scenarioname: scenarioName}
+                }
+                this.operData = Object.assign({},this.operData,defaultData)
+            },
             dialogControlDevice: function (device) {
-                Services.getPanel(device.sn).then(data => {
-                    this.resetData();
-                    this.operData = data;
-                    this.controlDeviceDialogVisible = true;
-                })
+                this.resetData();
+                this.operData = device;
+                let defaultData = {controltype: 1, button: 1}
+                if (device.buttonmode1 != "普通模式") {
+                    defaultData.scenarioname = device.buttonmode1
+                }
+                this.operData = Object.assign({},this.operData,defaultData);
+                this.controlDeviceDialogVisible = true;
             },
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        Services.editPanel(this.operData).then(res => {
+                        let data = {};
+                        data.deviceid = this.operData.deviceid;
+                        data.controltype = this.operData.controltype;
+                        data.button = this.operData.button;
+                        data.scenarioid = this.operData.scenarioid;
+                        Services.controlPanelSingle(data).then(res => {
                             this.initLamp();
                             this.hideModal();
                         });
