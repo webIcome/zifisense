@@ -6,5 +6,6 @@ export default {
     GET_USER_LOCAL: 'GET_USER_LOCAL',
     TOKEN: 'accessToken',
     SHOW_LOADING: 'SHOW_LOADING',
-    HIDE_LOADING: 'HIDE_LOADING'
+    HIDE_LOADING: 'HIDE_LOADING',
+    APPS: 'APPS'
 };

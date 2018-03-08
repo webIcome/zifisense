@@ -23,7 +23,8 @@
             <el-radio v-model="operData.controltype" :label='5'>下发策略</el-radio>
             <div v-if="operData.controltype == 5" style="position: absolute; width: 300px; right: 0; top: 5px">
               <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname"
-                                         @name="name=operData.strategyname = name"></select-strategy-component>
+                                        :componyid="operData.componyid"
+                                         :modultype="moduleType.light"></select-strategy-component>
             </div>
           </div>
           <div style="position: relative">
@@ -52,6 +53,7 @@
 <script>
     import Services from "../services";
     import selectStrategyComponent from "./select-strategy-component.vue";
+    import CommonContent from "../../../constants/common";
     export default {
         name: 'controlLightDialogComponent',
         components: {selectStrategyComponent},
@@ -74,6 +76,7 @@
                     brightness: '',
                     strategyid: ''
                 },
+                moduleType: {}
             }
         },
         props: {
@@ -87,6 +90,9 @@
         },
         methods: {
             initData: function () {
+                CommonContent.deviceType.forEach(item => {
+                    this.moduleType[item.name] = item.value;
+                })
             },
             dialogControlDevice: function () {
                 this.resetData();
@@ -101,6 +107,7 @@
                                 this.hideModal();
                             })
                         } else {
+                            this.operData.deviceid = this.device.deviceid;
                             Services.controlLightSingle(this.operData).then(res => {
                                 this.hideModal();
                             });

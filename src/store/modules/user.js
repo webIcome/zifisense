@@ -23,6 +23,14 @@ export default {
                 return null;
             }
 
+        },
+        get apps() {
+            let user =  LocalStorage.getItem(MutationTypes.APPS);
+            if (!user) user = [];
+            return user;
+        },
+        set apps(value) {
+            LocalStorage.setItem(MutationTypes.APPS, value);
         }
     },
     getters: {
@@ -31,6 +39,9 @@ export default {
         [MutationTypes.GET_USER] (state, user) {
             state.user = user;
         },
+        [MutationTypes.APPS] (state, apps) {
+            state.apps = apps
+        }
     },
     actions: {
         [MutationTypes.GET_USER] (context, access) {
@@ -38,6 +49,16 @@ export default {
                 if (res.body.data) {
                     context.commit(MutationTypes.GET_USER, res.body.data);
                     return res.body.data;
+                } else {
+                    throw new Error(res.body.msg)
+                }
+            }).catch(err => Promise.reject(err))
+        },
+        [MutationTypes.APPS] (context) {
+            return HttpClient.get('permission/getAppList').then(res => {
+                if (res.body.data) {
+                    context.commit(MutationTypes.APPS, res.body.data.result);
+                    return res.body.data.result;
                 } else {
                     throw new Error(res.body.msg)
                 }

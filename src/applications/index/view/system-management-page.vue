@@ -53,7 +53,15 @@
                         modulecode: 'INETLIGHTCZRZ'
                     },
                 ];
-                this.$globalCache.sysMenus.then(list => {
+                let appid;
+                this.$store.state.UserModule.apps.forEach(app => {
+                    app.children.forEach(child => {
+                        if (child.appcode = 'XTQX') {
+                            appid = child.objectid;
+                        }
+                    })
+                });
+                this.$globalCache.getMenus(appid).then(list => {
                     this.navs = list.filter(nav => {
                         let permission = false;
                         navs.forEach(item => {

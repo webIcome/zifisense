@@ -13,7 +13,7 @@
             <div class="section-manage-container collapse in" :id="app.appcode">
               <div class="section-manage-container-items clearfix">
                 <template v-for="child in app.children">
-                  <a class="section-manage-container-item col-md-4" @click.prevent="goToApplication(child.url, child.appcode)" :class="child.appcode">
+                  <a class="section-manage-container-item col-md-4" @click.prevent="goToApplication(child.url, child.appcode, child.objectid)" :class="child.appcode">
                     <div class="section-manage-container-item-img">
                     </div>
                     <div class="section-manage-container-item-title">{{child.appname}}</div>
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+    import MutationTypes from "../../../store/mutation-types";
+    import {mapActions} from 'vuex';
     export default {
         data() {
             return {
@@ -57,18 +59,21 @@
         },
         methods: {
             getApplications: function () {
-               this.$globalCache.apps.then(apps => {
+               this.getApps().then(apps => {
                    this.applications = apps
                })
             },
-            goToApplication: function (url, appcode) {
+            goToApplication: function (url, appcode, appid) {
                 if (appcode == 'XTQX') {
-                    this.$router.push(url)
+                    this.$router.push({name: url, params: {appid: appid}})
                 } else {
                     window.location.replace(url)
                 }
 
             },
+            ...mapActions({
+                getApps: MutationTypes.APPS
+            })
         },
     }
 </script>

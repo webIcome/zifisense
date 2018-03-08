@@ -177,6 +177,11 @@ export default {
             return res;
         })
     },
+    getSelectedDevicesByGroupId(id) {
+        return HttpClient.post('', {groupid: id}).then(res => {
+            return res.body.data;
+        })
+    },
     //area
     findAreaList(params) {
         return HttpClient.get('areaInfo/getList', {params: params}).then(res => {

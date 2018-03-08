@@ -46,7 +46,8 @@
           <td>{{item.state | deviceStateNameConverter}}</td>
           <td class="td-btns">
             <control-light-dialog-component v-if="item.moduletype == moduleType.light" :device="item"></control-light-dialog-component>
-            <div class="icon-item"><span @click="dialogSetGroup(item)" class="set-icon"></span></div>
+            <control-loop-dialog-component v-if="item.moduletype == moduleType.loop" :device="item"></control-loop-dialog-component>
+            <control-panel-dialog-component v-if="item.moduletype == moduleType.panel" :device="item"></control-panel-dialog-component>
             <div class="icon-item"><span @click="dialogEditGroup(item)" class="edit-icon"></span></div>
             <div class="icon-item" v-show="item.strategystate == 2"><span @click="dialogRepealGroup(item)" class="repeal-icon"></span></div>
             <div class="icon-item" v-show="item.strategystate == 1"><span @click="dialogIssueGroup(item)" class="issue-icon"></span></div>
@@ -88,24 +89,25 @@
     <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'">
       <el-form label-width="100px" :model="editGroupData"  ref="editGroup" class="el-form-default">
         <el-form-item label="名称：" prop="switchstate">
-          <el-input type="text" v-model="editGroupData.devicename" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="editGroupData.groupname" placeholder="输入设备名称"></el-input>
+        </el-form-item>
+        <el-form-item label="企业：" prop="companyid">
+          <tree-select-component v-model="editGroupData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="类型：" prop="deviceType">
-          <el-select v-model="editGroupData.deviceType" placeholder="选择类型" clearable >
+          <el-select v-model="editGroupData.moduletype" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备：" prop="deviceType">
-          <el-row type="flex" justify="space-between">
-            <el-col :span="18" v-if="selectedListArray.length">{{selectedListArray[0].devicename}} 等{{selectedListArray.length}}个设备</el-col>
-            <el-col :span="18" v-else>0个设备</el-col>
-            <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-          </el-row>
+        <el-form-item label="设备：" prop="sn">
+          <edit-light-group-component v-model="editGroupData.sn"
+                                      :groupid="editGroupData.objectid"
+                                      :moduletype="editGroupData.moduletype"
+                                      :companyid="editGroupData.companyid"></edit-light-group-component>
         </el-form-item>
         <el-form-item label="策略：" prop="deviceType">
-          <el-select v-model="editGroupData.deviceType" placeholder="请选择" clearable >
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
+          <select-strategy-component v-model="operData.strategyid" :strategyName="editGroupData.strategyname"
+                                     :modultype="editGroupData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -197,15 +199,22 @@
     import Services from '../services';
     import Common from "../../../constants/common";
     import controlLightDialogComponent from './control-light-dialog-component.vue';
+    import controlLoopDialogComponent from './control-loop-dialog-component.vue';
+    import controlPanelDialogComponent from './control-panel-dialog-component.vue'
+    import EditLightGroupComponent from "./edit-light-group-component";
+    import selectStrategyComponent from './select-strategy-component.vue'
     let LampContent = {
         switchstate: '',
         brightness: '',
         runningstate: ''
     };
     export default {
-        name: 'controlSingleLampPage',
+        name: 'controlGroupPage',
         components: {
-            controlLightDialogComponent
+            EditLightGroupComponent, controlLightDialogComponent,
+            controlLoopDialogComponent,
+            controlPanelDialogComponent,
+            selectStrategyComponent
         },
         data() {
             return {
@@ -245,6 +254,7 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
+                selectedGroups: [],
                 selectedList: {},
                 selectedListCache: {},
             }

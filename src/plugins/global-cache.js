@@ -41,6 +41,18 @@ class GlobalCache {
         this._companies = null;
         return this.companies;
     }
+    getMenus(appid) {
+        if (!this._sysMenus) {
+            this._sysMenus = HttpClient.post('permission/getModuleListByUserid', {appid: appid}).then(res => {
+                if (!res.body.data) {
+                    this._sysMenus = null;
+                } else {
+                    return res.body.data.list;
+                }
+            })
+        }
+        return this._sysMenus;
+    }
     get apps() {
         if (!this._apps) {
              this._apps = HttpClient.get('permission/getAppList').then(res => {
@@ -62,7 +74,7 @@ class GlobalCache {
     }
     get sysMenus() {
         if (!this._sysMenus) {
-            this._sysMenus = HttpClient.get('permission/getModuleListByUserid').then(res => {
+            this._sysMenus = HttpClient.post('permission/getModuleListByUserid').then(res => {
                 if (!res.body.data) {
                     this._sysMenus = null;
                 } else {

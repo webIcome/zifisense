@@ -57,7 +57,7 @@
           <td>{{item.runningstate | runningstateNameConverter }}</td>
           <td>{{item.runningstate}}</td>
           <td class="td-btns">
-            <div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice(item)" class="set-icon"></span></div>
+            <control-panel-dialog-component :device="item"></control-panel-dialog-component>
           </td>
         </tr>
         </tbody>
@@ -65,32 +65,6 @@
     </div>
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-
-    <el-dialog title="控制控制面板" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
-      <el-form label-width="170px" :model="operData"  ref="controlDevice">
-        <el-form-item label="模式选择：" prop="StrategyID">
-          <el-radio-group v-model="operData.controltype">
-            <el-radio-button :label="1">普通模式</el-radio-button>
-            <el-radio-button :label="2">情景模式</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <template v-if="operData.controltype != 1">
-          <el-form-item label="面板按钮：" prop="StrategyID">
-            <el-radio-group v-model="operData.button" @change="selectBtn">
-              <el-radio-button :label="1">按钮1</el-radio-button>
-              <el-radio-button :label="2">按钮2</el-radio-button>
-              <el-radio-button :label="3">按钮3</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="情景模式：" prop="StrategyID">
-            <select-scenario-component v-model="operData.scenarioid" :scenarioname="operData.scenarioname" @name="name=operData.scenarioname=name"></select-scenario-component>
-          </el-form-item>
-        </template>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="controlDevice('controlDevice')">确 定</el-button>
-      </span>
-    </el-dialog>
 
   </div>
 
@@ -155,14 +129,13 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    import selectScenarioComponent from "./select-scenario-component.vue";
+    import controlPanelDialogComponent from "./control-panel-dialog-component.vue";
     import CommonConstant from "../../../constants/common";
     export default {
         name: 'controlSinglePanelPage',
-        components: {selectScenarioComponent},
+        components: {controlPanelDialogComponent},
         data() {
             return {
-                controlDeviceDialogVisible: false,
                 searchParams: {
                     devicename: '',
                     sn: '',
@@ -190,11 +163,11 @@
                     runningstate: '',
                     diportstate: ''
                 },
-                operData: {
+            /*    operData: {
                     scenarioname: '',
                     button: '',
                     controltype: ''
-                },
+                },*/
                 groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
                 list: [{}],
@@ -291,7 +264,7 @@
             showPage:function (page) {
                 this.currentPage = page;
             },
-            selectBtn: function (btn) {
+        /*    selectBtn: function (btn) {
                 let scenarioId;
                 let scenarioName;
                 switch (btn){
@@ -338,10 +311,10 @@
                         });
                     }
                 })
-            },
-            hideModal: function () {
+            },*/
+           /* hideModal: function () {
                 this.controlDeviceDialogVisible = false;
-            },
+            },*/
             resetData: function () {
                 this.operData = {}
             }

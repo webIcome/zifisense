@@ -4,7 +4,8 @@ import Vue from 'vue';
 import App from './app';
 import router from './router';
 import 'bootstrap/dist/css/bootstrap.css';
-import 'element-ui/lib/theme-chalk/index.css';
+// import 'element-ui/lib/theme-chalk/index.css';
+
 import '../../styles/index.less';
 import 'jquery';
 import 'bootstrap/dist/js/bootstrap.min';
