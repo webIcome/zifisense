@@ -2,7 +2,7 @@
   <div class="icon-item">
     <span @click="dialogControlDevice" class="set-icon"></span>
     <el-dialog title="控制回路控制器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
-      <el-form label-width="170px" :model="operData"  ref="controlDevice" class="el-form-default">
+      <el-form label-width="170px" :model="operData" :rules="Rules"  ref="controlDevice" class="el-form-default">
         <el-form-item label="指令选择：" prop="controltype">
           <div>
             <el-radio v-model="operData.controltype" :label="1">开关</el-radio>
@@ -15,19 +15,17 @@
           </div>
           <div>
             <el-radio v-model="operData.controltype" :label="4">下发策略</el-radio>
-            <div v-if="operData.controltype == 4" style="display: inline-block">
-              <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname"
-                                         :componyid="operData.componyid"
+            <el-form-item v-if="operData.controltype == 4" style="display: inline-block"  prop="strategyid">
+              <select-strategy-component v-model="operData.strategyid"
+                                         :strategyName="operData.strategyname"
+                                         @strategyname="operData.strategyname = arguments[0]"
                                          :modultype="moduleType.loop"></select-strategy-component>
-            </div>
+            </el-form-item>
           </div>
         </el-form-item>
         <el-form-item label="控制回路：" prop="loop">
           <template v-for="(item,index) in selectedLoops" >
             <div style="margin-bottom: 10px">
-             <!-- <el-select style="width: 100px; margin-right: 10px" v-model="item.number">
-                <el-option v-for="loop in loopNumber" :key="loop" :value="loop" :label="loop"></el-option>
-              </el-select>-->
               <el-input style="width: 100px; margin-right: 10px" v-model="item.number"></el-input>
               <div style="display: inline-block;" v-if="operData.controltype==1">
                 <el-radio v-model="item.switch" :label='1'>开</el-radio>
@@ -59,11 +57,6 @@
         data() {
             return {
                 controlDeviceDialogVisible: false,
-                Rules: {
-                    controltype: [
-                        {required: true, message: '请选择指令'}
-                    ],
-                },
                 operData: {
                     controltype: 1,
                     strategyid: '',
@@ -79,9 +72,19 @@
             }
         },
         computed: {
-           loopNumber: function () {
-               return this.device.loop
-           }
+            Rules: function () {
+                let rules = {
+                    controltype: [
+                        {required: true, message: '请选择指令'}
+                    ],
+                }
+                if (this.operData.controltype ==4) {
+                    rules.strategyid = [
+                        {required: true, message: '请选择策略'}
+                    ];
+                }
+                return rules;
+            }
         },
         created: function () {
             this.initData()
@@ -128,14 +131,6 @@
                 })
             },
             addLoop: function () {
-                /*if (this.selectedLoops.length < this.loopNumber) {
-                    this.selectedLoops.push({switch: 1, number: this.selectedLoops.length + 1})
-                } else {
-                    this.$message({
-                        message: '不能大于回路控制器的回路数',
-                        type: 'warning',
-                    })
-                }*/
                 this.selectedLoops.push({switch: 1, number: this.selectedLoops.length + 1})
             },
             deleteLoop: function (index) {

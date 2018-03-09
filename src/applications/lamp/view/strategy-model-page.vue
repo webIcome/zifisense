@@ -37,7 +37,7 @@
         <tr v-for="item in list">
           <td>{{item.scenarioname}}</td>
           <td>{{item.groupname}}</td>
-          <td>{{item.task}}</td>
+          <td>{{item.analysistask}}</td>
           <td class="td-btns">
             <div class="icon-item"><span @click="dialogEditStrategy(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteStrategy(item)" class="delete-icon"></span></div>
@@ -92,8 +92,9 @@
       <template v-for="(groupItem,index) in editGroupData">
         <el-form label-width="120px" :model="groupItem" ref="editGroup" :rules="groupRules" class="el-form-default">
           <el-form-item label="应用组：" prop="objectid">
-            <select-group-component v-model="groupItem.objectid" :groupName="groupItem.groupname"
-                                    @name="name = groupItem.groupname = name"></select-group-component>
+            <select-group-component v-model="groupItem.objectid"
+                                    :groupName="groupItem.groupname"
+                                    @groupname="groupItem.groupname = arguments[0]"></select-group-component>
           </el-form-item>
           <el-form-item label="执行功能：" prop="task">
             <div>

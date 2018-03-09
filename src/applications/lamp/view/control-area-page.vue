@@ -5,18 +5,18 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"></el-input>
+            <el-input type="text" v-model="searchParams.areaname" placeholder="输入设备名称"></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
-            <el-select v-model="searchParams.switchstate" placeholder="选择类型" clearable >
+            <el-select v-model="searchParams.moduletype" placeholder="选择类型" clearable >
               <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
             </el-select>
           </div>
           <div class="form-group">
-            <label class="sr-only">应用状态：</label>
-            <el-select v-model="searchParams.switchstate" placeholder="选择应用状态" clearable >
-              <el-option v-for="status in deviceType" :key="status.value" :value="status.value" :label="status.text"></el-option>
+            <label class="sr-only">策略状态：</label>
+            <el-select v-model="searchParams.strategystate" placeholder="选择策略状态" clearable >
+              <el-option v-for="status in strategyState" :key="status.value" :value="status.value" :label="status.text"></el-option>
             </el-select>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
@@ -39,16 +39,19 @@
         </thead>
         <tbody>
         <tr v-for="item in list">
-          <td>{{item.devicename}}</td>
-          <td>{{item.sn}}</td>
-          <td>{{item.position}}</td>
-          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
-          <td>{{item.brightness}}</td>
+          <td>{{item.areaname}}</td>
+          <td>{{item.moduletype | deviceTypeNameConverter}}</td>
+          <td>{{item.groupTotal}}</td>
+          <td>{{item.strategyname}}</td>
+          <td>{{item.strategystate | strategyStateNameConverter}}</td>
           <td class="td-btns">
-            <div class="icon-item"><span @click="dialogSetArea" class="set-icon"></span></div>
-            <div class="icon-item"><span @click="dialogEditArea" class="edit-icon"></span></div>
-            <div class="icon-item"><span @click="dialogRepealArea" class="repeal-icon"></span></div>
-            <div class="icon-item"><span @click="dialogDeleteArea" class="delete-icon"></span></div>
+            <control-light-dialog-component v-if="item.moduletype == moduleType.light" :device="item"></control-light-dialog-component>
+            <control-loop-dialog-component v-if="item.moduletype == moduleType.loop" :device="item"></control-loop-dialog-component>
+            <control-panel-dialog-component v-if="item.moduletype == moduleType.panel" :device="item"></control-panel-dialog-component>
+            <div class="icon-item"><span @click="dialogEditArea(item)" class="edit-icon"></span></div>
+            <div class="icon-item" v-show="item.strategystate == 2"><span @click="dialogRepealArea(item)" class="repeal-icon"></span></div>
+            <div class="icon-item" v-show="item.strategystate == 1"><span @click="dialogIssueArea(item)" class="issue-icon"></span></div>
+            <div class="icon-item"><span @click="dialogDeleteArea(item)" class="delete-icon"></span></div>
           </td>
         </tr>
         </tbody>
@@ -58,25 +61,29 @@
                       @pagingEvent='pagingEvent'></paging-component>
     <el-dialog title="创建区域" :visible.sync="addAreaDialogVisible" center :width="'600px'">
       <el-form label-width="100px" :model="addAreaData"  ref="addArea" class="el-form-default">
-        <el-form-item label="名称：" prop="switchstate">
-          <el-input type="text" v-model="addAreaData.devicename" placeholder="输入设备名称"></el-input>
+        <el-form-item label="名称：" prop="areaname">
+          <el-input type="text" v-model="addAreaData.areaname" placeholder="输入名称"></el-input>
+        </el-form-item>
+        <el-form-item label="企业：" prop="companyid">
+          <tree-select-component v-model="addAreaData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="类型：" prop="deviceType">
-          <el-select v-model="addAreaData.deviceType" placeholder="选择类型" clearable >
+          <el-select v-model="addAreaData.moduletype" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备：" prop="deviceType">
-          <el-row type="flex" justify="space-between">
-            <el-col :span="18" v-if="selectedListArray.length">{{selectedListArray[0].devicename}} 等{{selectedListArray.length}}个设备</el-col>
-            <el-col :span="18" v-else>0个设备</el-col>
-            <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-          </el-row>
+        <el-form-item label="组：" prop="groupid">
+         <edit-area-group-component v-model="addAreaData.groupid"
+                                :groupid="addAreaData.objectid"
+                                :run="addAreaDialogVisible"
+                                :moduletype="addAreaData.moduletype"
+                                :companyid="addAreaData.companyid"></edit-area-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="deviceType">
-          <el-select v-model="addAreaData.deviceType" placeholder="请选择" clearable >
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
+        <el-form-item label="策略：" prop="strategyid">
+          <select-strategy-component v-model="addAreaData.strategyid"
+                                     :strategyName="addAreaData.strategyname"
+                                     @strategyname="addAreaData.strategyname = arguments[0]"
+                                     :modultype="addAreaData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -85,75 +92,33 @@
     </el-dialog>
     <el-dialog title="编辑区域" :visible.sync="editAreaDialogVisible" center :width="'600px'">
       <el-form label-width="100px" :model="editAreaData"  ref="editArea" class="el-form-default">
-        <el-form-item label="名称：" prop="switchstate">
-          <el-input type="text" v-model="editAreaData.devicename" placeholder="输入设备名称"></el-input>
+        <el-form-item label="名称：" prop="areaname">
+          <el-input type="text" v-model="editAreaData.areaname" placeholder="输入名称"></el-input>
         </el-form-item>
-        <el-form-item label="类型：" prop="deviceType">
-          <el-select v-model="editAreaData.deviceType" placeholder="选择类型" clearable >
+        <el-form-item label="企业：" prop="companyid">
+          <tree-select-component v-model="editAreaData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="类型：" prop="moduletype">
+          <el-select v-model="editAreaData.moduletype" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备：" prop="deviceType">
-          <el-row type="flex" justify="space-between">
-            <el-col :span="18" v-if="selectedListArray.length">{{selectedListArray[0].devicename}} 等{{selectedListArray.length}}个设备</el-col>
-            <el-col :span="18" v-else>0个设备</el-col>
-            <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-          </el-row>
+        <el-form-item label="组：" prop="groupid">
+          <edit-area-group-component v-model="editAreaData.groupid"
+                                :groupid="editAreaData.objectid"
+                                :run="editAreaData"
+                                :moduletype="editAreaData.moduletype"
+                                :companyid="editAreaData.companyid"></edit-area-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="deviceType">
-          <el-select v-model="editAreaData.deviceType" placeholder="请选择" clearable >
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
+        <el-form-item label="策略：" prop="strategyid">
+          <select-strategy-component v-model="editAreaData.strategyid"
+                                     :strategyName="editAreaData.strategyname"
+                                     @strategyname="editAreaData.strategyname = arguments[0]"
+                                     :modultype="editAreaData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="editArea('editArea')">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog title="编辑组列表" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
-      <el-form :inline="true" label-width="170px" :model="searchDeviceParams"  ref="editArea" >
-        <el-form-item prop="switchstate">
-          <el-input type="text" v-model="searchDeviceParams.devicename" placeholder="输入组名称"></el-input>
-        </el-form-item>
-        <el-button type="primary" @click="searchDevice()" icon="el-icon-search">筛选</el-button>
-      </el-form>
-      <div>
-        <div style="margin-bottom: 20px">
-          <el-button type="primary" @click="chooseAllDevices(devices)">全选</el-button>
-          <el-button type="primary" @click="chooseAllDevices()">全不选</el-button>
-        </div>
-        <el-table ref="multiplyTable" :data="devices" border class="table" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" align="center"></el-table-column>
-          <el-table-column label="组名称" prop="devicename" align="center"></el-table-column>
-          <el-table-column label="设备数量" prop="sn" align="center"></el-table-column>
-          <el-table-column label="当前策略" prop="type" align="center"></el-table-column>
-        </el-table>
-        <paging-component v-if="searchDeviceParams.pages" :pageNumber="searchDeviceParams.pageNum" :pages="searchDeviceParams.pages"
-                          @pagingEvent='pagingDeviceEvent'></paging-component>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmSelectedList">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog :visible.sync="setAreaDialogVisible" center :width="'500px'">
-      <span slot="title" class="el-dialog__title">控制组：{{}}</span>
-      <el-form label-width="100px" :model="setAreaData"  ref="setArea" class="el-form-default">
-        <el-form-item label="回路：" prop="switchstate">
-          <el-radio v-model="setAreaData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="setAreaData.switchstate" label="2">关</el-radio>
-        </el-form-item>
-        <el-form-item label="DI口：" prop="switchstate">
-          <el-radio v-model="setAreaData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="setAreaData.switchstate" label="2">关</el-radio>
-        </el-form-item>
-        <el-form-item label="电压：" prop="">
-          <el-input type="text" v-model="setAreaData.loopnum"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setArea('setArea')">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="策略撤销" :visible.sync="repealAreaDialogVisible" center :width="'600px'">
@@ -177,82 +142,49 @@
 </template>
 
 <script>
-    import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
+    import controlLightDialogComponent from './control-light-dialog-component.vue';
+    import controlLoopDialogComponent from './control-loop-dialog-component.vue';
+    import controlPanelDialogComponent from './control-panel-dialog-component.vue'
+    import editAreaGroupComponent from "./edit-area-group-component";
+    import selectStrategyComponent from './select-strategy-component.vue'
+    import CommonConstant from "../../../constants/common";
     export default {
         name: 'controlAreaPage',
+        components: {
+            editAreaGroupComponent,
+            controlLightDialogComponent,
+            controlLoopDialogComponent,
+            controlPanelDialogComponent,
+            selectStrategyComponent
+        },
         data() {
             return {
                 addAreaDialogVisible: false,
-                setAreaDialogVisible: false,
                 editAreaDialogVisible: false,
-                editDeviceDialogVisible: false,
                 repealAreaDialogVisible: false,
                 issueAreaDialogVisible: false,
                 deleteAreaDialogVisible: false,
                 searchParams: {
-                    devicename: '',
-                    sn: '',
-                    type: '',
+                    areaname: '',
+                    moduletype: '',
+                    strategystate: '',
                 },
-                searchDeviceParams: {
-                    devicename: '',
-                    sn: '',
-                    pages: 1,
-                    pageNum: 1
-                },
-                setAreaData: {},
                 addAreaData: {},
                 editAreaData:{},
                 repealAreaData:{},
                 issueAreaData:{},
                 deleteAreaData:{},
-                devices: [{devicename: 'ddddd', sn: '', type:''},{devicename: 'ddddd', sn: '', type:''}],
-                groups: [{name: '分组1'}, {name: '分组2'}],
-                isSearchPage: false,
                 list: [{}],
                 companies: [],
-                deviceType: [
-                    {value: '', text: '全部'},
-                    {value: 1, text: '灯控器'},
-                    {value: 2, text: '回路控制器'},
-                    {value: 3, text: '控制面板'},
-                ],
-                switchStatus: [
-                    {value: 1, text: '开'},
-                    {value: 2, text: '关'},
-                ],
-                sensorType: [
-                    {value: 1, text: '无'},
-                    {value: 2, text: '光感'},
-                    {value: 3, text: '微波'},
-                ],
-                runningStatus: [
-                    {value: 1, text: '正常'},
-                    {value: 2, text: '欠流'},
-                    {value: 3, text: '过流'},
-                    {value: 4, text: '欠压'},
-                    {value: 5, text: '过压'},
-                ],
+                deviceType: [],
+                moduleType: {},
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
-                selectedList: {},
-                selectedListCache: {},
-            }
-        },
-        computed: {
-            selectedListArray: function () {
-                return Object.keys(this.selectedList).map(key => {
-                    return this.selectedList[key];
-                })
-            },
-            selectedListCacheArray: function () {
-                return Object.keys(this.selectedListCache).map(key => {
-                    return this.selectedListCache[key];
-                })
+                strategyState: [],
             }
         },
         created: function () {
@@ -260,11 +192,12 @@
         },
         methods: {
             initData: function () {
-                this.initLamp();
+                this.initList();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonData();
             },
-            initLamp: function () {
+            initList: function () {
                 this.findList(this.defaultPaging)
             },
             initCompanies: function () {
@@ -275,145 +208,110 @@
             initOperData: function () {
 
             },
+            initCommonData: function () {
+                this.deviceType = CommonConstant.deviceType;
+                this.strategyState = CommonConstant.strategyState;
+                this.deviceType.forEach(item => {
+                    this.moduleType[item.name] = item.value;
+                })
+            },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
                 this.findList(this.searchParams);
             },
             findList: function (params) {
-                this.$http.get('lightController/getList', {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
-                    this.list = res.body.data.list;
-                }).catch(err => {
-
-                })
-            },
-            pagingDeviceEvent: function (pageNumber) {
-                this.searchDeviceParams.pageNum = pageNumber;
-                this.findDeviceList(this.searchDeviceParams);
-            },
-            findDeviceList: function (params) {
-                Services.findGroupList(params).then(data => {
-                    this.searchDeviceParams.pageNum = data.pageNum;
-                    this.searchDeviceParams.pages = data.pages;
-                    this.searchDeviceParams.pageSize = data.pageSize;
-                    this.devices = data.list;
-                    this.$nextTick(() => {
-                        this.chooseAllDevices(this.getNewSelectedList(data.list))
-                    })
-                });
-            },
-            getNewSelectedList: function (list) {
-                return list.filter(item => {
-                    if (this.selectedList[item.sn]){
-                        return true;
-                    }
+                Services.findAreaList(params).then(data => {
+                    this.searchParams.pageNum = data.pageNum;
+                    this.searchParams.pages = data.pages;
+                    this.searchParams.pageSize = data.pageSize;
+                    this.list = data.list;
                 })
             },
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
-            searchDevice: function () {
-                this.findList(Object.assign(this.searchDeviceParams, this.defaultPaging));
-            },
-            chooseAllDevices: function (devices) {
-                if (devices) {
-                    devices.forEach(item => {
-                        this.$refs.multiplyTable.toggleRowSelection(item, true);
-                    })
-                } else {
-                    this.$refs.multiplyTable.clearSelection();
-                }
-            },
-            handleSelectionChange: function (val) {
-                this.devices.forEach(item => {
-                    if (this.selectedListCache[item.sn]) {
-                        delete this.selectedListCache[item.sn];
-                    }
-                });
-                val.forEach(item => {
-                    this.selectedListCache[item.sn] = item;
-                });
-            },
-            confirmSelectedList: function () {
-                this.selectedList = this.selectedListCache;
-                this.hideSecondModal();
-            },
             dialogAddArea: function () {
                 this.resetData();
                 this.addAreaDialogVisible = true;
             },
-            dialogSetArea: function () {
+            dialogEditArea: function (item) {
                 this.resetData();
-                this.setAreaDialogVisible = true;
-            },
-            dialogEditArea: function () {
-                this.resetData();
+                this.editAreaData = {
+                    objectid: item.objectid,
+                    companyid: item.companyid,
+                    areaname: item.areaname,
+                    moduletype: item.moduletype,
+                    strategyid: item.strategyid,
+                    strategyname: item.strategyname
+                };
                 this.editAreaDialogVisible = true;
             },
-            dialogEditDevice: function () {
-                this.findDeviceList(this.defaultPaging);
-                this.editDeviceDialogVisible = true;
-            },
-            dialogRepealArea: function () {
+            dialogRepealArea: function (item) {
                 this.resetData();
+                this.repealRepealData = item;
                 this.repealAreaDialogVisible = true;
             },
-            dialogDeleteArea: function () {
+            dialogIssueArea: function (item) {
                 this.resetData();
+                this.issueAreaData = item;
+                this.issueAreaDialogVisible = true;
+            },
+            dialogDeleteArea: function (item) {
+                this.resetData();
+                this.deleteAreaData = item;
                 this.deleteAreaDialogVisible = true;
             },
             addArea:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-
-                    }
-                })
-            },
-            setArea:function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-
+                        Services.addArea(this.addAreaData).then(res => {
+                            this.hideModal();
+                            this.initList();
+                        })
                     }
                 })
             },
             editArea:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-
+                        Services.editArea(this.editAreaData).then(res => {
+                            this.hideModal();
+                            this.initList();
+                        })
                     }
                 })
             },
             repealArea:function () {
+                Services.stopStrategyArea({areaid: this.repealAreaData.objectid, strategyid: this.repealAreaData.strategyid}).then(res => {
+                    this.hideModal();
+                    this.initList();
+                })
+            },
+            issueArea: function () {
+                Services.runStrategyArea({areaid: this.issueAreaData.objectid, strategyid: this.issueAreaData.strategyid}).then(res => {
+                    this.hideModal();
+                    this.initList();
+                })
             },
             deleteArea:function () {
-            },
-            getDevice: function (id) {
-                return this.$http.post('lightController/getDetailsBySn', {sn: id}).then(res => {
-                    return res.body.data
-                }).catch()
+                Services.deleteArea(this.deleteAreaData.objectid).then(res => {
+                    this.hideModal();
+                    this.initList();
+                })
             },
             hideModal: function () {
                 this.addAreaDialogVisible = false;
-                this.setAreaDialogVisible = false;
                 this.editAreaDialogVisible = false;
                 this.repealAreaDialogVisible = false;
                 this.issueAreaDialogVisible = false;
                 this.deleteAreaDialogVisible = false;
             },
-            hideSecondModal: function () {
-                this.editDeviceDialogVisible = false;
-            },
             resetData: function () {
-                this.setAreaData = {};
                 this.addAreaData = {};
                 this.editAreaData = {};
                 this.repealAreaData = {};
                 this.issueAreaData = {};
                 this.deleteAreaData = {};
-                this.selectedList = {};
-                this.selectedListCache = {};
             }
 
         }

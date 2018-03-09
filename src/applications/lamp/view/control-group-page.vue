@@ -61,25 +61,29 @@
                       @pagingEvent='pagingEvent'></paging-component>
     <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'">
       <el-form label-width="100px" :model="addGroupData"  ref="addGroup" class="el-form-default">
-        <el-form-item label="名称：" prop="switchstate">
-          <el-input type="text" v-model="addGroupData.devicename" placeholder="输入设备名称"></el-input>
+        <el-form-item label="名称：" prop="groupname">
+          <el-input type="text" v-model="addGroupData.groupname" placeholder="输入设备名称"></el-input>
         </el-form-item>
-        <el-form-item label="类型：" prop="deviceType">
-          <el-select v-model="addGroupData.deviceType" placeholder="选择类型" clearable >
+        <el-form-item label="企业：" prop="companyid">
+          <tree-select-component v-model="addGroupData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
+        <el-form-item label="类型：" prop="moduletype">
+          <el-select v-model="addGroupData.moduletype" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备：" prop="deviceType">
-          <el-row type="flex" justify="space-between">
-            <el-col :span="18" v-if="selectedListArray.length">{{selectedListArray[0].devicename}} 等{{selectedListArray.length}}个设备</el-col>
-            <el-col :span="18" v-else>0个设备</el-col>
-            <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-          </el-row>
+        <el-form-item label="设备：" prop="sn">
+          <edit-group-component v-model="addGroupData.sn"
+                                :groupid="addGroupData.objectid"
+                                :run="addGroupDialogVisible"
+                                :moduletype="addGroupData.moduletype"
+                                :companyid="addGroupData.companyid"></edit-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="deviceType">
-          <el-select v-model="addGroupData.deviceType" placeholder="请选择" clearable >
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
+        <el-form-item label="策略：" prop="strategyid">
+          <select-strategy-component v-model="addGroupData.strategyid"
+                                     :strategyName="addGroupData.strategyname"
+                                     @strategyname="addGroupData.strategyname = arguments[0]"
+                                     :modultype="addGroupData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -100,69 +104,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="设备：" prop="sn">
-          <edit-light-group-component v-model="editGroupData.sn"
+
+          <edit-group-component v-model="editGroupData.sn"
                                       :groupid="editGroupData.objectid"
+                                :run="editGroupDialogVisible"
                                       :moduletype="editGroupData.moduletype"
-                                      :companyid="editGroupData.companyid"></edit-light-group-component>
+                                      :companyid="editGroupData.companyid"></edit-group-component>
         </el-form-item>
         <el-form-item label="策略：" prop="deviceType">
-          <select-strategy-component v-model="operData.strategyid" :strategyName="editGroupData.strategyname"
+          <select-strategy-component v-model="editGroupData.strategyid"
+                                     :strategyName="editGroupData.strategyname"
+                                     @strategyname="editGroupData.strategyname = arguments[0]"
                                      :modultype="editGroupData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="editGroup('editGroup')">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog title="编辑设备列表" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
-      <el-form :inline="true" label-width="170px" :model="searchDeviceParams"  ref="editGroup" >
-        <el-form-item prop="switchstate">
-          <el-input type="text" v-model="searchDeviceParams.devicename" placeholder="输入设备名称"></el-input>
-        </el-form-item>
-        <el-form-item prop="deviceType">
-          <el-select v-model="searchDeviceParams.deviceType" placeholder="选择类型" clearable >
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-button type="primary" @click="searchDevice()" icon="el-icon-search">筛选</el-button>
-      </el-form>
-      <div>
-        <div style="margin-bottom: 20px">
-          <el-button type="primary" @click="chooseAllDevices(devices)">全选</el-button>
-          <el-button type="primary" @click="chooseAllDevices()">全不选</el-button>
-        </div>
-        <el-table ref="multiplyTable" :data="devices" border class="table" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" align="center"></el-table-column>
-          <el-table-column label="组名称" prop="devicename" align="center"></el-table-column>
-          <el-table-column label="设备ID" prop="sn" align="center"></el-table-column>
-          <el-table-column label="类型" prop="type" align="center"></el-table-column>
-        </el-table>
-        <paging-component v-if="searchDeviceParams.pages" :pageNumber="searchDeviceParams.pageNum" :pages="searchDeviceParams.pages"
-                          @pagingEvent='pagingDeviceEvent'></paging-component>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmSelectedList">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog :visible.sync="setGroupDialogVisible" center :width="'500px'">
-      <span slot="title" class="el-dialog__title">控制组：{{}}</span>
-      <el-form label-width="100px" :model="setGroupData"  ref="setGroup" class="el-form-default">
-        <el-form-item label="回路：" prop="switchstate">
-          <el-radio v-model="setGroupData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="setGroupData.switchstate" label="2">关</el-radio>
-        </el-form-item>
-        <el-form-item label="DI口：" prop="switchstate">
-          <el-radio v-model="setGroupData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="setGroupData.switchstate" label="2">关</el-radio>
-        </el-form-item>
-        <el-form-item label="电压：" prop="">
-          <el-input type="text" v-model="setGroupData.loopnum"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setGroup('setGroup')">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="策略撤销" :visible.sync="repealGroupDialogVisible" center :width="'600px'">
@@ -175,14 +132,14 @@
     </el-dialog>
     <el-dialog title="下发策略" :visible.sync="issueGroupDialogVisible" center :width="'600px'">
       <p class="text-center">您确认要将策略：<span style="color: #1789e1">“{{issueGroupData.strategyname}}”</span></p>
-      <p class="text-center">下发到您的选中的组：<span style="color: #1789e1">“{{issueGroupData.strategyname}}”</span> 吗？</p>
+      <p class="text-center">下发到您的选中的组：<span style="color: #1789e1">“{{issueGroupData.groupname}}”</span> 吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="issueGroup">确认</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除组" :visible.sync="deleteGroupDialogVisible" center :width="'600px'">
-      <p class="text-center">您确认要删除您选中的组 <span style="color: #1789e1">“{{deleteGroupData.name}}”</span>吗？</p>
+      <p class="text-center">您确认要删除您选中的组 <span style="color: #1789e1">“{{deleteGroupData.groupname}}”</span>吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="deleteGroup">确认</el-button>
@@ -194,24 +151,19 @@
 </template>
 
 <script>
-    import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from '../services';
     import Common from "../../../constants/common";
     import controlLightDialogComponent from './control-light-dialog-component.vue';
     import controlLoopDialogComponent from './control-loop-dialog-component.vue';
     import controlPanelDialogComponent from './control-panel-dialog-component.vue'
-    import EditLightGroupComponent from "./edit-light-group-component";
+    import editGroupComponent from "./edit-group-component";
     import selectStrategyComponent from './select-strategy-component.vue'
-    let LampContent = {
-        switchstate: '',
-        brightness: '',
-        runningstate: ''
-    };
     export default {
         name: 'controlGroupPage',
         components: {
-            EditLightGroupComponent, controlLightDialogComponent,
+            editGroupComponent,
+            controlLightDialogComponent,
             controlLoopDialogComponent,
             controlPanelDialogComponent,
             selectStrategyComponent
@@ -219,9 +171,7 @@
         data() {
             return {
                 addGroupDialogVisible: false,
-                setGroupDialogVisible: false,
                 editGroupDialogVisible: false,
-                editDeviceDialogVisible: false,
                 repealGroupDialogVisible: false,
                 issueGroupDialogVisible: false,
                 deleteGroupDialogVisible: false,
@@ -230,20 +180,12 @@
                     sn: '',
                     type: '',
                 },
-                searchDeviceParams: {
-                    devicename: '',
-                    sn: '',
-                    pages: 1,
-                    pageNum: 1
-                },
                 setGroupData: {},
                 addGroupData: {},
                 editGroupData:{},
                 repealGroupData:{},
                 issueGroupData:{},
                 deleteGroupData:{},
-                devices: [],
-                isSearchPage: false,
                 list: [{}],
                 companies: [],
                 deviceState: [],
@@ -254,21 +196,6 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
-                selectedGroups: [],
-                selectedList: {},
-                selectedListCache: {},
-            }
-        },
-        computed: {
-            selectedListArray: function () {
-                return Object.keys(this.selectedList).map(key => {
-                    return this.selectedList[key];
-                })
-            },
-            selectedListCacheArray: function () {
-                return Object.keys(this.selectedListCache).map(key => {
-                    return this.selectedListCache[key];
-                })
             }
         },
         created: function () {
@@ -290,7 +217,6 @@
                 })
             },
             initOperData: function () {
-                this.operData = this.$common.copyObj(LampContent);
             },
             initCommonData: function () {
                 this.deviceType = Common.deviceType;
@@ -311,90 +237,24 @@
                     this.list = data.list;
                 })
             },
-            pagingDeviceEvent: function (pageNumber) {
-                this.searchDeviceParams.pageNum = pageNumber;
-                this.findDeviceList(this.searchDeviceParams);
-            },
-            findDeviceList: function (params) {
-                let findList;
-                switch (Number(this.addGroupData.deviceType || this.editGroupData.deviceType)) {
-                    case 1:
-                        findList = Services.findLightList;
-                        break;
-                    case 2:
-                        findList = Services.findLoopList;
-                        break;
-                    case 3:
-                        findList = Services.findPanelList;
-                        break;
-                    default:
-                        this.$message({
-                            message: '请先选择类型',
-                            type: 'warning'
-                        });
-                }
-                findList(params).then(data => {
-                    this.searchDeviceParams.pageNum = data.pageNum;
-                    this.searchDeviceParams.pages = data.pages;
-                    this.searchDeviceParams.pageSize = data.pageSize;
-                    this.devices = data.list;
-                    this.$nextTick(() => {
-                        this.chooseAllDevices(this.getNewSelectedList(data.list))
-                    })
-                });
-            },
-            getNewSelectedList: function (list) {
-                return list.filter(item => {
-                    if (this.selectedList[item.sn]){
-                        return true;
-                    }
-                })
-            },
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
-            },
-            searchDevice: function () {
-                this.findList(Object.assign(this.searchDeviceParams, this.defaultPaging));
-            },
-            chooseAllDevices: function (devices) {
-                if (devices) {
-                    devices.forEach(item => {
-                        this.$refs.multiplyTable.toggleRowSelection(item, true);
-                    })
-                } else {
-                    this.$refs.multiplyTable.clearSelection();
-                }
-            },
-            handleSelectionChange: function (val) {
-                this.devices.forEach(item => {
-                    if (this.selectedListCache[item.sn]) {
-                        delete this.selectedListCache[item.sn];
-                    }
-                });
-                val.forEach(item => {
-                    this.selectedListCache[item.sn] = item;
-                });
-            },
-            confirmSelectedList: function () {
-                this.selectedList = this.selectedListCache;
-                this.hideSecondModal();
             },
             dialogAddGroup: function () {
                 this.resetData();
                 this.addGroupDialogVisible = true;
             },
-            dialogSetGroup: function (item) {
-                this.resetData();
-                this.setGroupDialogVisible = true;
-            },
             dialogEditGroup: function (item) {
                 this.resetData();
-                this.editGroupData = item;
+                this.editGroupData = {
+                    objectid: item.objectid,
+                    companyid: item.companyid,
+                    groupname: item.groupname,
+                    moduletype: item.moduletype,
+                    strategyid: item.strategyid,
+                    strategyname: item.strategyname
+                };
                 this.editGroupDialogVisible = true;
-            },
-            dialogEditDevice: function (item) {
-                this.findDeviceList(this.defaultPaging);
-                this.editDeviceDialogVisible = true;
             },
             dialogRepealGroup: function (item) {
                 this.resetData();
@@ -408,19 +268,16 @@
             },
             dialogDeleteGroup: function (item) {
                 this.resetData();
+                this.deleteGroupData = item;
                 this.deleteGroupDialogVisible = true;
             },
             addGroup:function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-
-                    }
-                })
-            },
-            setGroup:function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-
+                        Services.addGroup(this.addGroupData).then(res => {
+                            this.hideModal();
+                            this.initList();
+                        })
                     }
                 })
             },
@@ -454,28 +311,17 @@
             },
             hideModal: function () {
                 this.addGroupDialogVisible = false;
-                this.setGroupDialogVisible = false;
                 this.editGroupDialogVisible = false;
                 this.repealGroupDialogVisible = false;
                 this.issueGroupDialogVisible = false;
                 this.deleteGroupDialogVisible = false;
             },
-            hideSecondModal: function () {
-                this.editDeviceDialogVisible = false;
-            },
             resetData: function () {
-                this.setGroupData = {};
                 this.addGroupData = {};
                 this.editGroupData = {};
                 this.repealGroupData = {};
                 this.issueGroupData = {};
-                this.deleteGroupData = {};
-                this.selectedList = {};
-                this.selectedListCache = {};
             },
-            resetSecondModal: function () {
-                this.devices = [];
-            }
         }
     }
 </script>

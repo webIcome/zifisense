@@ -11,6 +11,7 @@ export default {
     deviceStateNameConverter: _deviceStateNameConverter,
     runningstateNameConverter: _runningstateNameConverter,
     switchStateNameConverter: _switchStateNameConverter,
+    strategyStateNameConverter: _strategyStateNameConverter
 }
 function _formDate(date, pattern) {
     if (!pattern) pattern = 'YYYY-MM-DD HH:mm:ss';
@@ -65,6 +66,15 @@ function _runningstateNameConverter(value) {
 function _switchStateNameConverter(value) {
     let name = value;
     Common.switchState.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
+}
+function _strategyStateNameConverter(value) {
+    let name = value;
+    Common.strategyState.forEach(item => {
         if (Number(value) == item.value) {
             name = item.text;
         }

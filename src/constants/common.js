@@ -50,6 +50,10 @@ const CommonConstant = {
         {value: 2, text: '光感'},
         {value: 3, text: '微波'},
     ],
+    strategyState: [
+        {value: 1, text: '未下发'},
+        {value: 2, text: '已下发'},
+    ],
 };
 
 export default CommonConstant;

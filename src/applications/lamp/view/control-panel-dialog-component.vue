@@ -2,25 +2,27 @@
   <div class="icon-item">
     <span @click="dialogControlDevice" class="set-icon"></span>
     <el-dialog title="控制控制面板" :visible.sync="controlDeviceDialogVisible" center :width="'600px'">
-      <el-form label-width="170px" :model="operData"  ref="controlDevice">
-        <el-form-item label="模式选择：" prop="StrategyID">
+      <el-form label-width="170px" :model="operData" :rules="Rules"  ref="controlDevice">
+        <el-form-item label="模式选择：" prop="controltype">
           <el-radio-group v-model="operData.controltype">
             <el-radio-button :label="1">普通模式</el-radio-button>
             <el-radio-button :label="2">情景模式</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <template v-if="operData.controltype != 1">
-          <el-form-item label="面板按钮：" prop="StrategyID">
+          <el-form-item label="面板按钮：" prop="button">
             <el-radio-group v-model="operData.button" @change="selectBtn">
               <el-radio-button :label="1">按钮1</el-radio-button>
               <el-radio-button :label="2">按钮2</el-radio-button>
               <el-radio-button :label="3">按钮3</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="情景模式：" prop="StrategyID">
-            <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname"
+          <el-form-item label="情景模式：" prop="scenarioid">
+            <select-scenario-component v-model="operData.scenarioid"
+                                       :scenarioname="operData.scenarioname"
+                                       @scenarioname="operData.scenarioname=arguments[0]"
                                        :componyid="operData.componyid"
-                                       :modultype="moduleType.panel"></select-strategy-component>
+                                       :modultype="moduleType.panel"></select-scenario-component>
           </el-form-item>
         </template>
       </el-form>
@@ -42,11 +44,6 @@
         data() {
             return {
                 controlDeviceDialogVisible: false,
-                Rules: {
-                    controltype: [
-                        {required: true, message: '请选择指令'}
-                    ],
-                },
                 operData: {
                     controltype: 1,
                 },
@@ -57,6 +54,24 @@
             device: {
                 default: {},
                 type: Object
+            }
+        },
+        computed: {
+            Rules: function () {
+                let rules = {
+                    controltype: [
+                        {required: true, message: '请选择模式'}
+                    ],
+                }
+                if (this.operData.controltype !=1) {
+                    rules.scenarioid = [
+                        {required: true, message: '请选择模式'}
+                    ];
+                    rules.button = [
+                        {required: true, message: '请选择按钮'}
+                    ];
+                }
+                return rules;
             }
         },
         created: function () {
@@ -117,8 +132,8 @@
             },
             resetData: function () {
                 this.operData = {
-                    brightness: '',
-                    strategyid: '',
+                    button: '',
+                    scenarioid: '',
                     controltype: 1,
                 };
             }

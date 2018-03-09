@@ -21,24 +21,25 @@
           </div>
           <div style="position: relative">
             <el-radio v-model="operData.controltype" :label='5'>下发策略</el-radio>
-            <div v-if="operData.controltype == 5" style="position: absolute; width: 300px; right: 0; top: 5px">
-              <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname"
-                                        :componyid="operData.componyid"
+            <el-form-item v-if="operData.controltype == 5" style="position: absolute; width: 300px; right: 0; top: 5px" prop="strategyid">
+              <select-strategy-component v-model="operData.strategyid"
+                                         :strategyName="operData.strategyname"
+                                         @strategyname="operData.strategyname = arguments[0]"
                                          :modultype="moduleType.light"></select-strategy-component>
-            </div>
+            </el-form-item>
           </div>
           <div style="position: relative">
             <el-radio v-model="operData.controltype" :label='6'>色温</el-radio>
-            <div v-if="operData.controltype == 6" style="position: absolute; width: 300px; right: 0; top: 5px">
+            <el-form-item v-if="operData.controltype == 6" style="position: absolute; width: 300px; right: 0; top: 5px" prop="temperature">
               <el-slider v-model="operData.temperature" show-input>
               </el-slider>
-            </div>
+            </el-form-item>
           </div>
           <div style="position: relative">
             <el-radio v-model="operData.controltype" label=7>RGB</el-radio>
-            <div v-if="operData.controltype == 7" style="position: absolute; width: 300px; right: 0; top: 5px">
+            <el-form-item v-if="operData.controltype == 7" style="position: absolute; width: 300px; right: 0; top: 5px" prop="rgb">
               <el-input type="color" v-model="operData.rgb"/>
-            </div>
+            </el-form-item>
           </div>
         </el-form-item>
       </el-form>
@@ -60,17 +61,6 @@
         data() {
             return {
                 controlDeviceDialogVisible: false,
-                Rules: {
-                    controltype: [
-                        {required: true, message: '请选择指令'}
-                    ],
-                    strategyid: [
-                        {required: true, message: '请选择策略', trigger: 'change'}
-                    ],
-                    rgb: [
-                        {required: true, message: '请选择颜色', trigger: 'change'}
-                    ],
-                },
                 operData: {
                     controltype: 1,
                     brightness: '',
@@ -83,6 +73,31 @@
             device: {
                 default: {},
                 type: Object
+            }
+        },
+        computed: {
+            Rules: function () {
+                let rules = {
+                    controltype: [
+                        {required: true, message: '请选择指令'}
+                    ],
+                }
+                if (this.operData.controltype == 5) {
+                    rules.strategyid = [
+                        {required: true, message: '请选择策略'}
+                    ];
+                }
+                if (this.operData.controltype == 6) {
+                    rules.temperature = [
+                        {required: true, message: '请选择色温'}
+                    ];
+                }
+                if (this.operData.controltype == 7) {
+                    rules.rgb = [
+                        {required: true, message: '请选择颜色'}
+                    ];
+                }
+                return rules;
             }
         },
         created: function () {

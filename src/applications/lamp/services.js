@@ -177,9 +177,14 @@ export default {
             return res;
         })
     },
-    getSelectedDevicesByGroupId(id) {
-        return HttpClient.post('', {groupid: id}).then(res => {
+    getSelectedDevicesGroupList(params) {
+        return HttpClient.get('groupInfo/getDeviceGroupedList', {params: params}).then(res => {
             return res.body.data;
+        })
+    },
+    findDevicesGroupList(params) {
+        return HttpClient.get('groupInfo/getDeviceNoGroupedList', {params: params}).then(res => {
+            return res.body.data
         })
     },
     //area

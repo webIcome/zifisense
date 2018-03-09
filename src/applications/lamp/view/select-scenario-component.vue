@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input type="text" :value="scenarioname" placeholder="选择情景模式" clearable @focus="dialogSelect" @change="changeSelect"></el-input>
+    <el-input type="text" :value="scenarioname" placeholder="选择情景模式" @focus="dialogSelect" @change="changeSelect"></el-input>
     <el-dialog title="选择情景模式" :visible.sync="dialogVisible" center :width="'600px'"  append-to-body>
       <el-form :inline="true" label-width="170px" :model="searchParams"  ref="editGroup" class="el-form-default">
         <el-form-item prop="strategyname">
@@ -9,8 +9,8 @@
         <el-button type="primary" @click="findList" icon="el-icon-search">筛选</el-button>
       </el-form>
       <div>
-        <el-table ref="singleTable" :data="list" border class="table" @current-change="select" highlight-current-row>
-          <el-table-column label="名称" prop="scenarioname" align="center"></el-table-column>
+        <el-table ref="singleTable" :data="list" border class="table" @row-click="select" highlight-current-row>
+          <el-table-column with="50" label="名称" prop="scenarioname" align="center"></el-table-column>
           <el-table-column label="模式功能" prop="analysistask" align="center"></el-table-column>
         </el-table>
         <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
@@ -44,7 +44,6 @@
         },
         props: {
             scenarioname: {
-                type: String,
                 default: ''
             }
         },
@@ -73,12 +72,12 @@
             select: function (val) {
                 this.dialogVisible = false;
                 this.$emit('input', val.objectid);
-                this.$emit('name', val.scenarioname);
+                this.$emit('scenarioname', val.scenarioname);
             },
             changeSelect: function (val) {
                 if (!val) {
                     this.$emit('input', '');
-                    this.$emit('name', '');
+                    this.$emit('scenarioname', '');
                 }
             },
         }
