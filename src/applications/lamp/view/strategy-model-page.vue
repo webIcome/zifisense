@@ -8,13 +8,6 @@
             <el-input style="width: 180px" type="text" v-model="searchParams.scenarioname"
                       placeholder="输入情景名称"></el-input>
           </div>
-          <!-- <div class="form-group">
-             <label>情景类别：</label>
-             <el-select v-model="searchParams.moduleTypeID" placeholder="选择情景类别" clearable>
-               <el-option v-for="status in deviceType" :key="status.value" :value="status.value"
-                          :label="status.text"></el-option>
-             </el-select>
-           </div>-->
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选
 
           </div>
@@ -59,9 +52,11 @@
         </el-form-item>
         <el-form-item label="应用范围：" prop="groups">
           <el-row type="flex" justify="space-between">
-            <el-col :span="18">{{operData.groups[0]?operData.groups[0].groupname: '' }} 等{{operData.groups.length}}个组</el-col>
+            <el-col :span="18">{{operData.groups.length}}个组</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditGroup">编辑</el-button>
           </el-row>
+          <input v-show="false" v-model="operData.groups"/>
+          <!--<add-scenario-group-component v-model="operData.groups"></add-scenario-group-component>-->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -69,7 +64,7 @@
       </span>
     </el-dialog>
     <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="operData" ref="editStrategy" class="el-form-default">
+      <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
           <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
         </el-form-item>
@@ -81,6 +76,8 @@
             <el-col :span="18">{{operData.groups[0]?operData.groups[0].groupname: '' }} 等{{operData.groups.length}}个组</el-col>
             <el-button :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditGroup">编辑</el-button>
           </el-row>
+          <input v-show="false" v-model="operData.groups"/>
+          <!--<add-scenario-group-component v-model="operData.groups"></add-scenario-group-component>-->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -145,9 +142,10 @@
     import Config from "../../../config";
     import Services from "../services";
     import selectGroupComponent from './select-group-component.vue';
+    import addScenarioGroupComponent from './add-scenario-group-component.vue';
     export default {
         name: 'strategyTimePage',
-        components: {selectGroupComponent},
+        components: {selectGroupComponent, addScenarioGroupComponent},
         data() {
             return {
                 addStrategyDialogVisible: false,
@@ -170,7 +168,7 @@
                         {required: true, message: '请输入情景名称'}
                     ],
                     groups: [
-                        {required: true, message: '请选择组'}
+                        {required: true, message: '请选择组', trigger: 'change'}
                     ],
                 },
                 searchParams: {
@@ -180,7 +178,6 @@
                 group: [],
                 strategy: [{}],
                 editGroupData: [{}],
-                selectedGroupData: [],
                 list: [],
                 companies: [],
                 sensorType: [
@@ -263,6 +260,8 @@
                     if (tasks[index].indexOf('|') != -1) {
                         task = tasks[index].split('|')[0];
                         brightness = Number(tasks[index].split('|')[1]);
+                    } else {
+                        task = tasks[index];
                     }
                     return {objectid: id, groupname: groupsName[index], task: task, brightness: brightness}
                 });
@@ -273,6 +272,7 @@
                 let operData = {};
                 let groupsId = [];
                 let tasks = [];
+                let groupname = [];
                 data.groups.forEach(item => {
                     groupsId.push(item.objectid);
                     let task = item.task;
@@ -280,6 +280,7 @@
                         task = task + "|" + item.brightness;
                     }
                     tasks.push(task);
+                    groupname.push(item.groupname)
                 });
                 if (data.objectid) {
                     operData.objectid = data.objectid;
@@ -288,6 +289,7 @@
                 operData.groupid = groupsId.join();
                 operData.task = tasks.join();
                 operData.companyid = data.companyid;
+                operData.groupname = groupname.join();
                 return operData;
             },
             dialogAddStrategy: function () {
@@ -298,10 +300,11 @@
                 this.resetData();
                 this.operData = this.transformDataToUse(strategy);
                 this.editStrategyDialogVisible = true;
+                this.validateGroups();
             },
             dialogDeleteStrategy: function (strategy) {
                 this.resetData();
-                this.operData = strategy;
+                this.operData.objectid = strategy.objectid;
                 this.deleteStrategyDialogVisible = true;
             },
             dialogEditGroup: function () {
@@ -330,6 +333,7 @@
                     this.resetEditGroupData();
                     this.hideSecondModal();
                 }
+                this.validateGroups();
             },
             addStrategy: function (formName) {
                 this.$refs[formName].validate(valid => {
@@ -372,6 +376,13 @@
             resetEditGroupData: function () {
                 this.editGroupData = [{}];
             },
+            validateGroups: function () {
+                if (this.addStrategyDialogVisible) {
+                    this.$refs.addStrategy.validateField('groups');
+                } else {
+                    this.$refs.editStrategy.validateField('groups');
+                }
+            }
 
         }
     }

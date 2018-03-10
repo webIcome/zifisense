@@ -233,6 +233,16 @@ export default {
             return res;
         })
     },
+    getSelectedDevicesAreaList(params) {
+        return HttpClient.get('areaInfo/getGroupDevicedList', {params: params}).then(res => {
+            return res.body.data.list;
+        })
+    },
+    findDevicesAreaList(params) {
+        return HttpClient.get('areaInfo/getGroupNoDevicedList', {params: params}).then(res => {
+            return res.body.data;
+        })
+    },
     //strategy
     findStrategy(params) {
         return HttpClient.get('strategy/getList', {params: params}).then(res => {

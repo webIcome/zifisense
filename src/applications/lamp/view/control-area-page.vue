@@ -60,21 +60,21 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
     <el-dialog title="创建区域" :visible.sync="addAreaDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="addAreaData"  ref="addArea" class="el-form-default">
+      <el-form label-width="100px" :model="addAreaData" :rules="Rules"  ref="addArea" class="el-form-default">
         <el-form-item label="名称：" prop="areaname">
           <el-input type="text" v-model="addAreaData.areaname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="addAreaData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
-        <el-form-item label="类型：" prop="deviceType">
+        <el-form-item label="类型：" prop="moduletype">
           <el-select v-model="addAreaData.moduletype" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="组：" prop="groupid">
          <edit-area-group-component v-model="addAreaData.groupid"
-                                :groupid="addAreaData.objectid"
+                                :areaid="addAreaData.objectid"
                                 :run="addAreaDialogVisible"
                                 :moduletype="addAreaData.moduletype"
                                 :companyid="addAreaData.companyid"></edit-area-group-component>
@@ -91,7 +91,7 @@
       </span>
     </el-dialog>
     <el-dialog title="编辑区域" :visible.sync="editAreaDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="editAreaData"  ref="editArea" class="el-form-default">
+      <el-form label-width="100px" :model="editAreaData" :rules="Rules" ref="editArea" class="el-form-default">
         <el-form-item label="名称：" prop="areaname">
           <el-input type="text" v-model="editAreaData.areaname" placeholder="输入名称"></el-input>
         </el-form-item>
@@ -105,8 +105,8 @@
         </el-form-item>
         <el-form-item label="组：" prop="groupid">
           <edit-area-group-component v-model="editAreaData.groupid"
-                                :groupid="editAreaData.objectid"
-                                :run="editAreaData"
+                                :areaid="editAreaData.objectid"
+                                :run="editAreaDialogVisible"
                                 :moduletype="editAreaData.moduletype"
                                 :companyid="editAreaData.companyid"></edit-area-group-component>
         </el-form-item>
@@ -122,15 +122,23 @@
       </span>
     </el-dialog>
     <el-dialog title="策略撤销" :visible.sync="repealAreaDialogVisible" center :width="'600px'">
-      <p class="text-center">您确认要将已生效的策略 <span style="color: #1789e1">“{{repealAreaData.name}}”</span></p>
-      <p class="text-center">从您的选中的组 <span style="color: #1789e1">“{{repealAreaData.name}}”</span> 中撤销吗？</p>
+      <p class="text-center">您确认要将已生效的策略 <span style="color: #1789e1">“{{repealAreaData.strategyname}}”</span></p>
+      <p class="text-center">从您的选中的区域 <span style="color: #1789e1">“{{repealAreaData.areaname}}”</span> 中撤销吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="repealArea">确认</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="下发策略" :visible.sync="issueAreaDialogVisible" center :width="'600px'">
+      <p class="text-center">您确认要将策略：<span style="color: #1789e1">“{{issueAreaData.strategyname}}”</span></p>
+      <p class="text-center">下发到您的选中的区域：<span style="color: #1789e1">“{{issueAreaData.areaname}}”</span> 吗？</p>
+      <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="issueGroup">确认</el-button>
+      </span>
+    </el-dialog>
     <el-dialog title="删除区域" :visible.sync="deleteAreaDialogVisible" center :width="'600px'">
-      <p class="text-center">您确认要删除您选中的区域 <span style="color: #1789e1">“{{deleteAreaData.name}}”</span>吗？</p>
+      <p class="text-center">您确认要删除您选中的区域 <span style="color: #1789e1">“{{deleteAreaData.areaname}}”</span>吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="deleteArea">确认</el-button>
@@ -166,6 +174,23 @@
                 repealAreaDialogVisible: false,
                 issueAreaDialogVisible: false,
                 deleteAreaDialogVisible: false,
+                Rules: {
+                    areaname: [
+                        {required: true, message: '请输入名称'}
+                    ],
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                    moduletype: [
+                        {required: true, message: '请选择类型'}
+                    ],
+                    groupid: [
+                        {required: true, message: '请选择组'}
+                    ],
+                    strategyid: [
+                        {required: true, message: '请选择策略'}
+                    ],
+                },
                 searchParams: {
                     areaname: '',
                     moduletype: '',
@@ -248,7 +273,7 @@
             },
             dialogRepealArea: function (item) {
                 this.resetData();
-                this.repealRepealData = item;
+                this.repealAreaData = item;
                 this.repealAreaDialogVisible = true;
             },
             dialogIssueArea: function (item) {

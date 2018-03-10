@@ -60,7 +60,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
     <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="addGroupData"  ref="addGroup" class="el-form-default">
+      <el-form label-width="100px" :model="addGroupData" :rules="Rules"  ref="addGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
           <el-input type="text" v-model="addGroupData.groupname" placeholder="输入设备名称"></el-input>
         </el-form-item>
@@ -91,8 +91,8 @@
       </span>
     </el-dialog>
     <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'">
-      <el-form label-width="100px" :model="editGroupData"  ref="editGroup" class="el-form-default">
-        <el-form-item label="名称：" prop="switchstate">
+      <el-form label-width="100px" :model="editGroupData" :rules="Rules"  ref="editGroup" class="el-form-default">
+        <el-form-item label="名称：" prop="groupname">
           <el-input type="text" v-model="editGroupData.groupname" placeholder="输入设备名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
@@ -111,7 +111,7 @@
                                       :moduletype="editGroupData.moduletype"
                                       :companyid="editGroupData.companyid"></edit-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="deviceType">
+        <el-form-item label="策略：" prop="strategyid">
           <select-strategy-component v-model="editGroupData.strategyid"
                                      :strategyName="editGroupData.strategyname"
                                      @strategyname="editGroupData.strategyname = arguments[0]"
@@ -175,6 +175,23 @@
                 repealGroupDialogVisible: false,
                 issueGroupDialogVisible: false,
                 deleteGroupDialogVisible: false,
+                Rules: {
+                    groupname: [
+                        {required: true, message: '请输入名称'}
+                    ],
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                    moduletype: [
+                        {required: true, message: '请选择类型'}
+                    ],
+                    sn: [
+                        {required: true, message: '请选择设备'}
+                    ],
+                    strategyid: [
+                        {required: true, message: '请选择策略'}
+                    ],
+                },
                 searchParams: {
                     devicename: '',
                     sn: '',
