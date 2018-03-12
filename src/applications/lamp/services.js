@@ -303,8 +303,28 @@ export default {
     },
     //energy
     findChartData(params) {
-        return HttpClient.get('', {params: params}).then(res => {
+        return HttpClient.get('consumption/getResult', {params: params}).then(res => {
             return res.body.data;
         })
-    }
+    },
+    findDevicesListForEnergy(params) {
+        return HttpClient.get('consumption/getDeviceListByModuleType', {params: params}).then(res => {
+            return res.body.data;
+        })
+    },
+    findCompaniesListForEnergy(params) {
+        return HttpClient.get('company/getCompanyList', {params: params, root: Config.URL_API}).then(res => {
+            return res.body.data;
+        })
+    },
+    findGroupsListForEnergy(params) {
+        return HttpClient.get('consumption/getGroupListByModuleType', {params: params}).then(res => {
+            return res.body.data;
+        })
+    },
+    findAreasListForEnergy(params) {
+        return HttpClient.get('consumption/getAreaListByModuleType', {params: params}).then(res => {
+            return res.body.data;
+        })
+    },
 }

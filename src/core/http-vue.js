@@ -50,6 +50,13 @@ Vue.http.interceptors.push(function (request, next) {
                 duration: 1500
             })
         }
+        else if(response.body.code == 500) {
+            Message({
+                message: '服务器500错误',
+                type: 'warning',
+                duration: 1500
+            })
+        }
         if (!(response.status == 200 || response.status == 304)) {
             Message({
                 message: '服务器网络问题，请联系管理员',

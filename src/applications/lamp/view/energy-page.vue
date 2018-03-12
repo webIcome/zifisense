@@ -28,19 +28,15 @@
             }
         },
         created: function () {
-//            this.$http.post('accounts/login',{account: 'admin', password: '111111'}, {root: 'http://192.168.0.152:8091/'})
         },
         mounted: function () {
         },
         methods: {
-            findList: function (params) {
-                Services.findChartData(params).then(data => {
-                    this.list = data;
-                })
-            },
             search: function (searchParams) {
-                this.findList(Object.assign(searchParams, this.defaultPaging));
-                this.currentPage = this.pages.eChart;
+                Services.findChartData(searchParams).then(data => {
+                    this.list = data.list;
+                    this.currentPage = this.pages.eChart;
+                }).catch(err => console.log(err)) ;
             }
         }
     }
