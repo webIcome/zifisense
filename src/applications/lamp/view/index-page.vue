@@ -82,7 +82,7 @@
                     {
                         modulename: '设备管理',
                         ename: 'device',
-                        modulecode: '',
+                        modulecode: 'INETLIGHTSBGL',
                         children: [
                             {modulename: '灯控器', modulecode: '', url: '/device/lamp'},
                             {modulename: '回路控制器', modulecode: '', url: '/device/loop'},
@@ -93,7 +93,7 @@
                     {
                         modulename: '控制管理',
                         ename: 'control',
-
+                        modulecode: 'INETLIGHTKZGL',
                         children: [
                             {modulename: '单控', ename: 'single', modulecode: '', children: [
                                 {modulename: '灯控器', modulecode: '', url: '/control/single/lamp'},
@@ -107,12 +107,19 @@
                     {
                         modulename: '策略管理',
                         ename: 'strategy',
-                        url: '/management/control',
-
+                        modulecode: 'INETLIGHTCLGL',
                         children: [
-                            {modulename: '灯控器', modulecode: '', url: '/management/device'},
-                            {modulename: '回路控制器', modulecode: '', url: '/management/device'}
+                            {modulename: '时序控制', modulecode: '', url: '/strategy/time'},
+                            {modulename: '情景模式', modulecode: '', url: '/strategy/model'}
                         ]
+                    },
+                    {
+                        modulename: '能耗分析',
+                        ename: 'energy',
+                        modulecode: 'INETLIGHTNHFX',
+                        url: '/energy',
+
+                        children: []
                     },
                 ]
             }
@@ -122,68 +129,30 @@
         },
         methods: {
             getSysMenus: function () {
-                let navs = [
-                    {
-                        modulename: '设备管理',
-                        ename: 'device',
-                        modulecode: '',
-                        children: [
-                            {modulename: '灯控器', modulecode: '', url: '/device/lamp'},
-                            {modulename: '回路控制器', modulecode: '', url: '/device/loop'},
-                            {modulename: '控制面板', modulecode: '', url: '/device/panel'},
-                            {modulename: '灯具', modulecode: '', url: '/device/lamps'},
-                        ]
-                    },
-                    {
-                        modulename: '控制管理',
-                        ename: 'control',
-
-                        children: [
-                            {modulename: '单控', ename: 'single', modulecode: '', children: [
-                                {modulename: '灯控器', modulecode: '', url: '/control/single/lamp'},
-                                {modulename: '回路控制器', modulecode: '', url: '/control/single/loop'},
-                                {modulename: '控制面板', modulecode: '', url: '/control/single/panel'},
-                            ]},
-                            {modulename: '组控', modulecode: '', url: '/control/group'},
-                            {modulename: '区域控制', modulecode: '', url: '/control/area'},
-                        ]
-                    },
-                    {
-                        modulename: '策略管理',
-                        ename: 'strategy',
-
-                        children: [
-                            {modulename: '时序控制', modulecode: '', url: '/strategy/time'},
-                            {modulename: '情景模式', modulecode: '', url: '/strategy/model'}
-                        ]
-                    },
-                    {
-                        modulename: '能耗分析',
-                        ename: 'energy',
-                        modulecode: '',
-                        url: '/energy',
-
-                        children: []
-                    },
-                ];
-                this.navs = navs;
-               /* this.$globalCache.managementMenus.then(list => {
-                    this.navs = list.forEach(item => {
-                        navs.forEach(nav => {
-                            if (nav.modulecode == item.modulecode) {
-                                list.ename = nav.ename ;
-                                item.children.forEach(child => {
-                                    nav.children.forEach(local => {
-                                        if (local.modulecode == child.modulecode) {
-                                            child.url = local.url;
-                                        }
-                                    })
-                                })
+                let appid;
+                this.$store.state.UserModule.apps.forEach(app => {
+                    app.children.forEach(child => {
+                        if (child.appcode == 'INTELLIGENTLIGHTING') {
+                            appid = child.objectid;
+                        }
+                    })
+                });
+                this.$globalCache.getMenus(appid).then(list => {
+                    this.navs = list.map(item => {
+                        let children = [];
+                        this.localNavs.forEach(nav => {
+                            if (item.modulecode == nav.modulecode) {
+                                children = nav.children;
+                                item.ename = nav.ename;
+                                if (!children.length) {
+                                    item.url = nav.url;
+                                }
                             }
                         });
-
+                        item.children = children;
+                        return item;
                     })
-                })*/
+                })
             },
             initMenus: function () {
                 if (window.location.hash == '#/'  /*|| window.location.pathname == '/lamp' || window.location.pathname == '/lamp/'*/) {
@@ -198,7 +167,7 @@
                 })
             },
         },
-        mounted: function () {
+        updated: function () {
             this.initMenus();
         }
     }
@@ -209,7 +178,6 @@
   @navBackgroundColor: #071627;
   .content-view-bg {
     position: relative;
-    min-width: 1400px;
     &:before {
       position: absolute;
       content: '';

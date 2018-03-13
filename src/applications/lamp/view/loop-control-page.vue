@@ -62,7 +62,7 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runningstate}}</td>
+          <td>{{item.runningstate | runningstateNameConverter}}</td>
           <td>{{item.loopnum}}</td>
           <td>{{item.position}}</td>
           <td>{{item.loopcontrol + '、' + item.diportstate}}</td>
@@ -80,104 +80,6 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-<!--    <dialog-component id="add-device">
-      <div slot="body">
-        <div class="dialog-title">创建回路控制器</div>
-        <form class="form-horizontal default-form">
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备名称：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.devicename"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备ID：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.sn"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属组：</label>
-            <div class="col-md-8 group-lamp">
-              <template v-for="group in groups">
-                <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-              </template>
-              <div @click="addGroup" class="group-add"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">回路数：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.loopnum"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">地理位置：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属企业：</label>
-            <div class="col-md-8">
-              <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
-            </div>
-          </div>
-          <div class="dialog-btn">
-            <span @click="addDevice" class="dialog-btn-icon">确认</span>
-          </div>
-        </form>
-      </div>
-    </dialog-component>
-    <dialog-component id="edit-device">
-      <div slot="body">
-        <div class="dialog-title">创建灯控器</div>
-        <form class="form-horizontal default-form">
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备名称：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.devicename"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备ID：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.sn"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属组：</label>
-            <div class="col-md-8 group-lamp">
-              <template v-for="group in groups">
-                <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-              </template>
-              <div @click="addGroup" class="group-add"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">回路数：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.loopnum"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">地理位置：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.company" placeholder="请输入地理位置"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属企业：</label>
-            <div class="col-md-8">
-              <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
-            </div>
-          </div>
-          <div class="dialog-btn">
-            <span @click="editDevice" class="dialog-btn-icon">确认</span>
-          </div>
-        </form>
-      </div>
-    </dialog-component>-->
     <el-dialog title="创建回路控制器" :visible.sync="addDeviceDialogVisible" center :width="'600px'">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
         <el-form-item label="设备名称：" prop="devicename">
@@ -186,22 +88,21 @@
         <el-form-item label="设备ID：" prop="sn">
           <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
         <el-form-item label="归属组：">
-          <div class="group-lamp">
-            <template v-for="group in groups">
-              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-            </template>
-            <div @click="addGroup" class="group-add"></div>
-          </div>
+          <edit-group-max-component v-model="operData.groupid"
+                                    :companyid="operData.companyid"
+                                    :groupname="operData.groupname"
+                                    :run="addDeviceDialogVisible"
+                                    :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
           <el-input type="text" v-model="operData.loopnum"/>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
-        </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="归属厂商：" prop="vendor">
           <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
@@ -221,22 +122,21 @@
         <el-form-item label="设备ID：" prop="sn">
           <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
         <el-form-item label="归属组：">
-          <div class="group-lamp">
-            <template v-for="group in groups">
-              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-            </template>
-            <div @click="addGroup" class="group-add"></div>
-          </div>
+          <edit-group-max-component v-model="operData.groupid"
+                                    :companyid="operData.companyid"
+                                    :groupname="operData.groupname"
+                                    :run="editDeviceDialogVisible"
+                                    :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
           <el-input type="text" v-model="operData.loopnum"/>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
-        </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="归属厂商：" prop="vendor">
           <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
@@ -266,17 +166,17 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
         </div>
         <label class="col-md-3 control-label">有功电能累加：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerLow"/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerHigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerLow"  placeholder=""/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerHigh"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn"  placeholder="输入设备ID"/>
         </div>
         <label class="col-md-3 control-label">无功电能累加：</label>
         <div class="col-md-3">
@@ -287,19 +187,17 @@
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
-            <el-option v-for="type in groups" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
+          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">回路数：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.loopnum"/>
+          <el-input type="text" v-model="advancedSearchParams.loopnum" placeholder="输入回路数"/>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
@@ -357,6 +255,8 @@
     import Config from "../../../config";
     import detailLoopControlPage from './detail-loop-control-page.vue'
     import Services from "../services";
+    import CommonConstant from "../../../constants/common";
+    import editGroupMaxComponent from './edit-group-max-component.vue';
     export default {
         name: 'loopControlPage',
         data() {
@@ -383,6 +283,9 @@
                     vendor: [
                         {required: true, message: '请选择厂商'}
                     ],
+                    groupid: [
+                        {required: true, message: '请选择组'}
+                    ],
                 },
                 searchParams: {
                     devicename: '',
@@ -395,7 +298,7 @@
                 advancedSearchParams: {
                     devicename: '',
                     sn: '',
-                    groupid: '',
+                    groupname: '',
                     loopnum: '',
                     threeVoltageLow: '',
                     threeVoltageHigh: '',
@@ -412,7 +315,6 @@
                     diportstate: ''
                 },
                 operData: {},
-                groups: [{name: '分组1'}, {name: '分组2'}],
                 list: [{}],
                 companies: [],
                 isSearchPage: false,
@@ -427,9 +329,8 @@
                     {value: 4, text: '欠压'},
                     {value: 5, text: '过压'},
                 ],
-                vendor: [
-                    {value: 1, text: '1-纵行zeta'},
-                ],
+                vendor: [],
+                moduleType: {},
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
@@ -447,13 +348,15 @@
             this.initData();
         },
         components: {
-            detailLoopControlPage
+            detailLoopControlPage,
+            editGroupMaxComponent
         },
         methods: {
             initData: function () {
                 this.initLoop();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonData();
             },
             initLoop: function () {
                 this.findList(this.defaultPaging)
@@ -466,6 +369,12 @@
             initOperData: function () {
                 this.operData = this.$common.copyObj(ContentLoop);
             },
+            initCommonData: function () {
+                CommonConstant.deviceType.forEach(item => {
+                    this.moduleType[item.name] = item.value;
+                });
+                this.vendor = CommonConstant.vendor;
+            },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
                 this.findList(this.searchParams);
@@ -477,9 +386,6 @@
                     this.searchParams.pageSize = data.pageSize;
                     this.list = data.list;
                 });
-            },
-            addGroup: function () {
-
             },
             dialogHighSearch: function () {
                 this.showPage(this.pages.search)

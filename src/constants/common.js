@@ -54,6 +54,15 @@ const CommonConstant = {
         {value: 1, text: '未下发'},
         {value: 2, text: '已下发'},
     ],
+    apps: [
+        {appcode: 'LAMP', appname: '路灯', name: 'lamp'},
+        {appcode: 'INTELLIGENTLIGHTING', appname: '智慧照明', name: 'light'},
+        {appcode: 'JLLPROPERTY', appname: '智慧物业', name: 'property'},
+        {appcode: 'XTQX', appname: '系统管理', name: 'sys'},
+    ],
+    vendor: [
+        {value: 1, text: '1-纵行zeta'},
+    ]
 };
 
 export default CommonConstant;

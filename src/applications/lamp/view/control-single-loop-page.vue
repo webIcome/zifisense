@@ -57,7 +57,7 @@
           <td>{{item.position}}</td>
           <td>{{item.runningstate | runningstateNameConverter}}</td>
           <td>{{item.loopcontrol}}</td>
-          <td>{{item.loopcontrol}}</td>
+          <td>{{item.strategyname}}</td>
           <td class="td-btns">
             <control-loop-dialog-component :device="item"></control-loop-dialog-component>
           </td>
@@ -77,17 +77,17 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
         </div>
         <label class="col-md-3 control-label">有功电能累加：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerLow"/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerHigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerLow"  placeholder=""/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerHigh"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn"  placeholder="输入设备ID"/>
         </div>
         <label class="col-md-3 control-label">无功电能累加：</label>
         <div class="col-md-3">
@@ -98,19 +98,17 @@
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
-            <el-option v-for="type in groups" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
+          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">回路数：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.loopnum"/>
+          <el-input type="text" v-model="advancedSearchParams.loopnum" placeholder="输入回路数"/>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">

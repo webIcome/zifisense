@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 1400px">
     <div class="energy-title">
       <div @click="choosePage(pages.excel)" class="energy-title-excel" :class="{active: currentPage == pages.excel}"><span class="icon"></span>表格</div>
       <div @click="choosePage(pages.echart)" class="energy-title-chart" :class="{active: currentPage == pages.echart}"><span class="icon"></span>柱状图</div>
@@ -77,24 +77,25 @@
         },
         computed: {
             data: function () {
-                this.list = [{according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
-                    {timepoint: '2018-03-01', consumption: '20'}]},
-                    {according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
-                        {timepoint: '2018-03-01', consumption: '20'}]}]
+                let list = [{according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
+                    {timepoint: '2018-03-01', consumption: '21'}]},
+                    {according: '组2', result: [{timepoint: '2018-02-28', consumption: '20'},
+                        {timepoint: '2018-03-01', consumption: '21'}]}]
                 let titles = [];
                 let data = [];
                 titles.push('unit');
-                this.list.forEach(item => {
+                list.forEach((item,index) => {
                    titles.push(item.according);
                     let result = [];
-                   item.result.forEach(child => {
-                       if (result.length) {
-                           result.push(child.consumption);
-                       } else {
-                           result.push(child.timepoint);
+                    let title;
+                   item.result.forEach((child, childIndex) => {
+                       result.push(child.consumption);
+                       if (index == childIndex) {
+                           title = child.timepoint
                        }
                    });
-                    data.push(result);
+                   result.unshift(title);
+                   data.push(result);
                 });
                 data.unshift(titles);
                 return data;

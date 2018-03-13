@@ -62,9 +62,9 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runnintstate}}</td>
+          <td>{{item.runningstate | runningstateNameConverter}}</td>
           <td>{{item.position}}</td>
-          <td>{{(item.switchstate == 1)? '开':'关'}}</td>
+          <td>{{item.switchstate | switchStateNameConverter}}</td>
           <td>{{item.brightness}}</td>
           <td>{{item.voltagelow}}</td>
           <td>{{item.oldpwd}}</td>
@@ -90,13 +90,15 @@
         <el-form-item label="设备ID：" prop="sn">
           <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
         <el-form-item label="归属组：">
-          <div class="group-lamp">
-            <template v-for="group in groups">
-              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-            </template>
-            <div @click="addGroup" class="group-add"></div>
-          </div>
+          <edit-group-max-component v-model="operData.groupid"
+                                    :companyid="operData.companyid"
+                                    :groupname="operData.groupname"
+                                    :run="addDeviceDialogVisible"
+                                    :moduletype="moduleType.light"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="归属回路控制器：" prop="loopcontrollersn">
           <el-input type="text" v-model="showSelectedLoopName" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
@@ -115,19 +117,17 @@
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
         </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
-        </el-form-item>
         <el-form-item label="归属厂商：" prop="vendor">
           <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
             <el-option v-for="type in vendor" :value="type.value" :key="type.value" :label="type.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="灯控器类型：" prop="lampTypeID">
-          <el-input type="text" v-model="showSelectedLampName" placeholder="选择灯控器类型" clearable @focus="dialogSelectLamp" @change="changeSelectLamp"></el-input>
-          <el-input type="text"v-show="false" v-model="operData.lampTypeID"></el-input>
+        <el-form-item label="灯具类型：" prop="lampTypeID">
+          <select-lamps-component v-model="operData.lampTypeID"
+                                  @name="operData.lampType=arguments[0]"
+                                  :modelnum="operData.lampType"></select-lamps-component>
         </el-form-item>
-        <el-form-item label="归属某一回路：" prop="position">
+        <el-form-item label="归属某一回路：" prop="toloopnum">
           <el-input type="text" v-model="operData.toloopnum" placeholder="请输回路控制器的某一回路"/>
         </el-form-item>
       </el-form>
@@ -143,13 +143,15 @@
         <el-form-item label="设备ID：" prop="sn">
           <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        </el-form-item>
         <el-form-item label="归属组：">
-          <div class="group-lamp">
-            <template v-for="group in groups">
-              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-            </template>
-            <div @click="addGroup" class="group-add"></div>
-          </div>
+          <edit-group-max-component v-model="operData.groupid"
+                                    :companyid="operData.companyid"
+                                    :groupname="operData.groupname"
+                                    :run="editDeviceDialogVisible"
+                                    :moduletype="moduleType.light"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="归属回路控制器：" prop="loopcontrollersn">
           <el-input type="text" v-model="showSelectedLoopName" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
@@ -167,9 +169,6 @@
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
-        </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="归属厂商：" prop="vendor">
           <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
@@ -218,7 +217,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="选择灯具类型" :visible.sync="selectLampDialogVisible" center :width="'600px'">
+<!--    <el-dialog title="选择灯具类型" :visible.sync="selectLampDialogVisible" center :width="'600px'">
       <el-form :inline="true" label-width="170px" :model="searchLampParams"  ref="editGroup" >
         <el-form-item prop="switchstate">
           <el-input type="text" v-model="searchLampParams.devicename" placeholder="输入设备名称"></el-input>
@@ -236,7 +235,7 @@
         <paging-component v-if="searchLampParams.pages" :pageNumber="searchLampParams.pageNum" :pages="searchLampParams.pages"
                           @pagingEvent='pagingLampEvent'></paging-component>
       </div>
-    </el-dialog>
+    </el-dialog>-->
 
   </div>
 
@@ -246,36 +245,34 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
         </div>
-        <label class="col-md-3 control-label">电压：</label>
+        <label class="col-md-3 control-label">电压/v：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.voltagelow"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.voltagehigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.voltagelow" placeholder="输入电压"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.voltagehigh"  placeholder="输入电压"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn" placeholder="输入设备ID"/>
         </div>
-        <label class="col-md-3 control-label">电流：</label>
+        <label class="col-md-3 control-label">电流/A：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow"/>到<el-input
-            v-model="advancedSearchParams.currenthigh" type="text" class="input-two"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow" placeholder="输入电流"/>到<el-input
+            v-model="advancedSearchParams.currenthigh" type="text" class="input-two" placeholder="输入电流"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
-            <el-option></el-option>
-          </el-select>
+          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
         </div>
         <label class="col-md-3 control-label">有功电能：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow" placeholder="输入有功电能"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh" placeholder="输入有功电能"/>
         </div>
       </div>
       <div class="form-group">
@@ -287,7 +284,7 @@
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
         </div>
       </div>
       <div class="form-group">
@@ -337,8 +334,8 @@
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.brightnesshigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow" placeholder="输入亮度"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.brightnesshigh" placeholder="输入亮度"/>
         </div>
       </div>
       <div class="search-btn">
@@ -356,6 +353,9 @@
     import {ContentLamp} from '../models';
     import detailLampControlPage from './detail-lamp-control-page.vue'
     import Services from '../services';
+    import CommonConstant from "../../../constants/common";
+    import editGroupMaxComponent from './edit-group-max-component.vue';
+    import selectLampsComponent from './select-lamps-component.vue';
     export default {
         name: 'lampControlPage',
         data() {
@@ -393,6 +393,9 @@
                     toloopnum: [
                         {required: true, message: '请填写归属回路控制器的某一回路'}
                     ],
+                    lampTypeID: [
+                        {required: true, message: '请选择灯具类型'}
+                    ],
                 },
                 searchParams: {
                     devicename: '',
@@ -417,7 +420,7 @@
                 advancedSearchParams: {
                     devicename: '',
                     sn: '',
-                    groupid: '',
+                    groupname: '',
                     loopcontrollerSn: '',
                     lightcontrollerType: '',
                     sensortype: '',
@@ -465,9 +468,8 @@
                     {value: 4, text: '欠压'},
                     {value: 5, text: '过压'},
                 ],
-                vendor: [
-                    {value: 1, text: '1-纵行zeta'},
-                ],
+                vendor: [],
+                moduleType: {},
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
@@ -483,6 +485,8 @@
         },
         components: {
             detailLampControlPage,
+            editGroupMaxComponent,
+            selectLampsComponent
         },
         created: function () {
             this.initData()
@@ -492,6 +496,7 @@
                 this.initLamp();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonData();
             },
             initLamp: function () {
                 this.findList(this.defaultPaging)
@@ -503,6 +508,12 @@
             },
             initOperData: function () {
               this.operData = this.$common.copyObj(ContentLamp);
+            },
+            initCommonData: function () {
+                CommonConstant.deviceType.forEach(item => {
+                    this.moduleType[item.name] = item.value;
+                });
+                this.vendor = CommonConstant.vendor;
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;

@@ -46,7 +46,9 @@
         <th>设备ID</th>
         <th>地理位置</th>
         <th>开关状态</th>
-        <th>执行策略</th>
+        <th>按钮1情景模式</th>
+        <th>按钮2情景模式</th>
+        <th>按钮3情景模式</th>
         <th>操作</th>
         </thead>
         <tbody>
@@ -55,7 +57,9 @@
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
           <td>{{item.runningstate | runningstateNameConverter }}</td>
-          <td>{{item.runningstate}}</td>
+          <td>{{item.buttonmode1}}</td>
+          <td>{{item.buttonmode2}}</td>
+          <td>{{item.buttonmode3}}</td>
           <td class="td-btns">
             <control-panel-dialog-component :device="item"></control-panel-dialog-component>
           </td>

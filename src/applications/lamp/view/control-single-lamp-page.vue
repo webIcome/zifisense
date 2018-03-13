@@ -61,7 +61,6 @@
           <td>{{item.brightness}}</td>
           <td>{{item.activepower}}</td>
           <td class="td-btns">
-            <!--<div class="icon-item"><span data-toggle="modal" data-target="#set-device" @click="dialogControlDevice(item)" class="set-icon"></span></div>-->
             <control-light-dialog-component :device="item"></control-light-dialog-component>
           </td>
         </tr>
@@ -71,82 +70,6 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-<!--    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="operData"  ref="controlDevice" :rules="Rules" class="el-form-default">
-        &lt;!&ndash;<el-form-item label="指令选择：" prop="currentControlPage">
-          <el-radio v-model="currentControlPage" :label='controlPages.switchState'>开关</el-radio>
-          <el-radio v-model="currentControlPage" :label="controlPages.brightness">亮度</el-radio>
-          <el-radio v-model="currentControlPage" :label="controlPages.getState">状态读取</el-radio>
-          <el-radio v-model="currentControlPage" :label="controlPages.temperature">色温</el-radio>
-          <el-radio v-model="currentControlPage" :label="controlPages.rgb">RGB</el-radio>
-        </el-form-item>
-        <el-form-item v-show="currentControlPage == controlPages.switchState" label="开关：" prop="switchstate">
-          <el-radio v-model="operData.switchstate" label="1">开</el-radio>
-          <el-radio v-model="operData.switchstate" label="2">关</el-radio>
-        </el-form-item>
-        <el-form-item  v-show="currentControlPage == controlPages.brightness" label="亮度：" prop="brightness">
-          <el-slider
-              v-model="operData.brightness"
-              show-input>
-          </el-slider>
-        </el-form-item>
-        <el-form-item v-show="currentControlPage == controlPages.getState" label="" prop="switchstate">
-          <el-checkbox v-model="operData.getState" label="状态读取"></el-checkbox>
-        </el-form-item>
-        <el-form-item  v-show="currentControlPage == controlPages.temperature" label="色温：" prop="temperature">
-          <el-slider
-              v-model="operData.temperature"
-              show-input>
-          </el-slider>
-        </el-form-item>
-        <el-form-item  v-show="currentControlPage == controlPages.rgb" label="RGB：" prop="color">
-          <el-input type="color" v-model="operData.rgb"/>
-        </el-form-item>
-        <el-form-item label="策略：" prop="StrategyID">
-          <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname" @name="name=operData.strategyname = name"></select-strategy-component>
-        </el-form-item>&ndash;&gt;
-        <el-form-item label="指令选择：" prop="controltype">
-          <div>
-            <el-radio v-model="operData.controltype" label=1>开灯</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" label=2>关灯</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" label=3>调节亮度</el-radio>
-            <div v-if="operData.controltype == 3" style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-slider  v-model="operData.brightness" show-input></el-slider>
-            </div>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" label=4>状态读取</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" label=5>下发策略</el-radio>
-            <div v-if="operData.controltype == 5" style="position: absolute; width: 300px; right: 0; top: 5px">
-              <select-strategy-component v-model="operData.strategyid" :strategyName="operData.strategyname" @name="name=operData.strategyname = name"></select-strategy-component>
-            </div>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" label=6>色温</el-radio>
-            <div v-if="operData.controltype == 6" style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-slider v-model="operData.temperature" show-input>
-              </el-slider>
-            </div>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" label=7>RGB</el-radio>
-            <div v-if="operData.controltype == 7" style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-input type="color" v-model="operData.rgb"/>
-            </div>
-          </div>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="controlDevice('controlDevice')">确 定</el-button>
-      </span>
-    </el-dialog>-->
-
   </div>
 
   <div v-else-if="currentPage == pages.search" class="content-right">
@@ -155,36 +78,34 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
         </div>
-        <label class="col-md-3 control-label">电压：</label>
+        <label class="col-md-3 control-label">电压/v：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.voltagelow"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.voltagehigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.voltagelow" placeholder="输入电压"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.voltagehigh"  placeholder="输入电压"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn" placeholder="输入设备ID"/>
         </div>
-        <label class="col-md-3 control-label">电流：</label>
+        <label class="col-md-3 control-label">电流/A：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow"/>到<el-input
-            v-model="advancedSearchParams.currenthigh" type="text" class="input-two"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow" placeholder="输入电流"/>到<el-input
+            v-model="advancedSearchParams.currenthigh" type="text" class="input-two" placeholder="输入电流"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
-            <el-option></el-option>
-          </el-select>
+          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
         </div>
         <label class="col-md-3 control-label">有功电能：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow" placeholder="输入有功电能"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh" placeholder="输入有功电能"/>
         </div>
       </div>
       <div class="form-group">
@@ -196,13 +117,13 @@
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">灯控器类型：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.lightcontrollerType" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+          <el-select v-model="advancedSearchParams.lightControllerType" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
             <el-option v-for="type in lightControllerType" :key="type.value" :value="type.value" :label="type.text"></el-option>
           </el-select>
         </div>
@@ -246,8 +167,8 @@
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.brightnesshigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow" placeholder="输入亮度"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.brightnesshigh" placeholder="输入亮度"/>
         </div>
       </div>
       <div class="search-btn">

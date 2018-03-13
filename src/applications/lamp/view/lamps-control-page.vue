@@ -158,7 +158,7 @@
       <div class="form-group">
         <label class="col-md-3 control-label">灯具型号：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.modelnum"/>
+          <el-input type="text" v-model="advancedSearchParams.modelnum" placeholder="输入灯具型号"/>
         </div>
         <label class="col-md-3 control-label">灯具寿命：</label>
         <div class="col-md-3">

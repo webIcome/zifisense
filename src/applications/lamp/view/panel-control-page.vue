@@ -32,7 +32,9 @@
         <th>设备名称</th>
         <th>设备ID</th>
         <th>运行状态</th>
-        <th>情景模式</th>
+        <th>按钮1情景模式</th>
+        <th>按钮2情景模式</th>
+        <th>按钮3情景模式</th>
         <th>地理位置</th>
         <th>操作</th>
         </thead>
@@ -40,8 +42,10 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runningstate}}</td>
-          <td>{{item.controlmode}}</td>
+          <td>{{item.runningstate | runningstateNameConverter}}</td>
+          <td>{{item.buttonmode1}}</td>
+          <td>{{item.buttonmode2}}</td>
+          <td>{{item.buttonmode3}}</td>
           <td>{{item.position}}</td>
           <td class="td-btns">
             <div class="icon-item"><span data-toggle="modal" data-target="#edit-device" @click="dialogEditDevice(item)" class="edit-icon"></span></div>
@@ -63,24 +67,23 @@
         <el-form-item label="设备ID：" prop="sn">
           <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
-        <el-form-item label="归属组：">
-          <div class="group-lamp">
-            <template v-for="group in groups">
-              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-            </template>
-            <div @click="addGroup" class="group-add"></div>
-          </div>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
-        <el-form-item label="情景模式：" prop="controlmode">
-          <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
-            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
+        <el-form-item label="归属组：">
+          <edit-group-max-component v-model="operData.groupid"
+                                    :companyid="operData.companyid"
+                                    :groupname="operData.groupname"
+                                    :run="addDeviceDialogVisible"
+                                    :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
         </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        <el-form-item label="归属厂商：" prop="vendor">
+          <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
+            <el-option v-for="type in vendor" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -95,24 +98,23 @@
         <el-form-item label="设备ID：" prop="sn">
           <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
-        <el-form-item label="归属组：">
-          <div class="group-lamp">
-            <template v-for="group in groups">
-              <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-            </template>
-            <div @click="addGroup" class="group-add"></div>
-          </div>
+        <el-form-item label="归属企业：" prop="companyid">
+          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
-        <el-form-item label="情景模式：" prop="controlmode">
-          <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
-            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
+        <el-form-item label="归属组：">
+          <edit-group-max-component v-model="operData.groupid"
+                                    :companyid="operData.companyid"
+                                    :groupname="operData.groupname"
+                                    :run="editDeviceDialogVisible"
+                                    :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
         </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
+        <el-form-item label="归属厂商：" prop="vendor">
+          <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
+            <el-option v-for="type in vendor" :value="type.value" :key="type.value" :label="type.text"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -129,123 +131,6 @@
         <el-button type="primary" @click="deleteDevice">确认删除</el-button>
       </span>
     </el-dialog>
-
- <!--   <dialog-component id="add-device">
-      <div slot="body">
-        <div class="dialog-title">创建控制面版</div>
-        <form class="form-horizontal default-form">
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备名称：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.devicename"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备ID：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.sn"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属组：</label>
-            <div class="col-md-8 group-lamp">
-              <template v-for="group in groups">
-                <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-              </template>
-              <div @click="addGroup" class="group-add"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">情景模式：</label>
-            <div class="col-md-8">
-              <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
-                <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
-              </el-select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">地理位置：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属企业：</label>
-            <div class="col-md-8">
-              <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
-            </div>
-          </div>
-          <div class="dialog-btn">
-            <span @click="addDevice" class="dialog-btn-icon">确认</span>
-          </div>
-        </form>
-      </div>
-    </dialog-component>
-    <dialog-component id="edit-device">
-      <div slot="body">
-        <div class="dialog-title">编辑控制面板</div>
-        <form class="form-horizontal default-form">
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备名称：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.devicename"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">设备ID：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.sn"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属组：</label>
-            <div class="col-md-8 group-lamp">
-              <template v-for="group in groups">
-                <div class="group-item default-btn">{{group.name}} <span class="group-delete"></span></div>
-              </template>
-              <div @click="addGroup" class="group-add"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">情景模式：</label>
-            <div class="col-md-8">
-              <el-select v-model="operData.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
-                <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
-              </el-select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">地理位置：</label>
-            <div class="col-md-8">
-              <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label">归属企业：</label>
-            <div class="col-md-8">
-              <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
-            </div>
-          </div>
-          <div class="dialog-btn">
-            <span @click="editDevice" class="dialog-btn-icon">确认</span>
-          </div>
-        </form>
-      </div>
-    </dialog-component>
-
-    <dialog-component id="delete-device">
-      <div slot="body">
-        <div class="dialog-title">删除控制面版</div>
-        <div class="text-center">
-          <div class="dialog-warning"></div>
-        </div>
-        <p class="title">您确认要删除此控制面板吗？</p>
-        <p class="text-center">请慎重操作，您的操作一旦确认，将无法恢复，并被系统记录在日志当中！</p>
-        <div class="dialog-btn">
-          <span @click="deleteDevice" class="dialog-btn-icon">确认删除</span>
-        </div>
-      </div>
-    </dialog-component>-->
   </div>
 
   <div v-else-if="currentPage == pages.search" class="content-right">
@@ -254,30 +139,28 @@
       <div class="form-group">
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename"/>
+          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
         </div>
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"/>
+          <el-input type="text" v-model="advancedSearchParams.sn" placeholder="输入设备ID"/>
         </div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
-            <el-option v-for="type in groups" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
+          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
         </div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position"/>
+          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">情景模式：</label>
+        <label class="col-md-3 control-label">运行状态：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.controlmode" placeholder="选择情景模式" clearable  style="width: 100%;">
-            <el-option v-for="type in controlPattern" :key="type.value" :value="type.value" :label="type.text"></el-option>
+          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
+            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
           </el-select>
         </div>
         <label class="col-md-3 control-label">接入时间：</label>
@@ -299,12 +182,6 @@
         <div class="col-md-3">
           <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
         </div>
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
       </div>
       <div class="search-btn">
         <div @click="highSearch" class="default-btn">搜索</div>
@@ -321,8 +198,10 @@
     import Config from "../../../config";
     import detailPanelControlPage from './detail-panel-control-page.vue';
     import Services from "../services";
+    import editGroupMaxComponent from './edit-group-max-component.vue';
+    import CommonConstant from "../../../constants/common";
     export default {
-        name: 'lampControlPage',
+        name: 'panelControlPage',
         data() {
             return {
                 addDeviceDialogVisible: false,
@@ -335,14 +214,17 @@
                     sn: [
                         {required: true, message: '请输入设备ID'}
                     ],
-                    controlmode: [
-                        {required: true, message: '请选择情景模式'}
-                    ],
                     position: [
                         {required: true, message: '请输入地理位置'}
                     ],
                     companyid: [
                         {required: true, message: '请选择企业'}
+                    ],
+                    vendor: [
+                        {required: true, message: '请选择厂商'}
+                    ],
+                    groupid: [
+                        {required: true, message: '请选择归属组'}
                     ],
                 },
                 searchParams: {
@@ -353,7 +235,7 @@
                 advancedSearchParams: {
                     devicename: '',
                     sn: '',
-                    groupid: '',
+                    groupname: '',
                     controlmode: '',
                     position: '',
                     regtimestart: '',
@@ -364,7 +246,7 @@
                 operData: {},
                 addDeviceData: {},
                 deviceView: '',
-                list: [{}],
+                list: [],
                 companies: [],
                 groups: [{name: '分组1'},{name: '分组2'}],
                 isSearchPage: false,
@@ -388,20 +270,24 @@
                     search: 2,
                     detail: 3
                 },
-                currentPage: 1
+                currentPage: 1,
+                moduleType: {},
+                vendor: []
             }
         },
         created: function () {
             this.initData()
         },
         components: {
-            detailPanelControlPage
+            detailPanelControlPage,
+            editGroupMaxComponent
         },
         methods: {
             initData: function () {
                 this.initPanel();
                 this.initCompanies();
                 this.initOperData();
+                this.initCommonData();
             },
             initPanel: function () {
                 this.findList(this.defaultPaging)
@@ -413,6 +299,12 @@
             },
             initOperData: function () {
                 this.operData = this.$common.copyObj(ContentPanel);
+            },
+            initCommonData: function () {
+                CommonConstant.deviceType.forEach(item => {
+                    this.moduleType[item.name] = item.value;
+                });
+                this.vendor = CommonConstant.vendor;
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
@@ -473,6 +365,7 @@
             deleteDevice: function () {
                 Services.deletePanel(this.operData.sn).then(res => {
                     this.hideModal();
+                    this.initPanel();
                 });
             },
             editDevice: function (formName) {
@@ -480,6 +373,7 @@
                     if (valid) {
                         Services.editPanel(this.operData).then(res => {
                             this.hideModal();
+                            this.initPanel();
                         });
                     }
                 })
