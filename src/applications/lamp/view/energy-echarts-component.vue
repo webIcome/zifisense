@@ -8,12 +8,15 @@
       <div id="charts" style="width: 100%; height: 500px">
       </div>
       <div class="get-table">
-        <div class="get-table-btn">下载图片</div>
+        <a :href="download" class="get-table-btn" download="chart">下载图片</a>
       </div>
     </div>
     <div v-show="currentPage == pages.excel" class="center">
         <table class="table table-hover table-striped">
           <thead>
+          <template>
+
+          </template>
           <th>设备名称</th>
           <th>设备ID</th>
           <th>运行状态</th>
@@ -25,39 +28,6 @@
           <th>有功电能</th>
           </thead>
           <tbody>
-          <tr>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
           <tr v-for="item in list">
             <td>{{item.devicename}}</td>
             <td>{{item.sn}}</td>
@@ -97,7 +67,7 @@
                 },
                 currentPage: 2,
                 options: {},
-                myChart: {}
+                myChart: null
             }
         },
         props: {
@@ -107,13 +77,27 @@
         },
         computed: {
             data: function () {
-                return [
-                    ['product', '2015', '2016', '2017'],
-                    ['Matcha Latte', 43.3, 85.8, 93.7],
-                    ['Milk Tea', 83.1, 73.4, 55.1],
-                    ['Cheese Cocoa', 86.4, 65.2, 82.5],
-                    ['Walnut Brownie', 72.4, 53.9, 39.1]
-                ]
+                this.list = [{according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
+                    {timepoint: '2018-03-01', consumption: '20'}]},
+                    {according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
+                        {timepoint: '2018-03-01', consumption: '20'}]}]
+                let titles = [];
+                let data = [];
+                titles.push('unit');
+                this.list.forEach(item => {
+                   titles.push(item.according);
+                    let result = [];
+                   item.result.forEach(child => {
+                       if (result.length) {
+                           result.push(child.consumption);
+                       } else {
+                           result.push(child.timepoint);
+                       }
+                   });
+                    data.push(result);
+                });
+                data.unshift(titles);
+                return data;
             },
             legendData: function () {
                 return this.data[0];
@@ -126,6 +110,11 @@
                 arr.shift();
                 return arr;
             },
+            download: function () {
+                if (this.myChart) {
+                    return this.myChart.getDataURL();
+                }
+            }
         },
         mounted: function () {
             this.initData();

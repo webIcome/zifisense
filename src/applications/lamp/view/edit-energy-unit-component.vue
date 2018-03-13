@@ -181,12 +181,13 @@
                 this.dialogVisible = false;
             },
             resetData: function () {
-                if (this.statisticalway == this.statisticalWay.company) {
+                if (this.statisticalway != this.statisticalWay.company) {
                     this.searchParams.companyid = this.companyid;
                 } else {
                     this.searchParams = {};
                 }
                 this.searchParams.moduletype = this.moduletype;
+                this.searchParams.statisticalway = this.statisticalway;
             }
         }
     }
