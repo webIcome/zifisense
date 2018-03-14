@@ -10,9 +10,15 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3 form-control-static">{{device.group}}</div>
-        <label class="col-md-3 control-label">控制模式：</label>
-        <div class="col-md-3 form-control-static">{{device.controlmode}}</div>
+        <div class="col-md-3 form-control-static">{{device.groupname}}</div>
+        <label class="col-md-3 control-label">按键1模式：</label>
+        <div class="col-md-3 form-control-static">{{device.buttonmode1}}</div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">按键2模式：</label>
+        <div class="col-md-3 form-control-static">{{device.buttonmode2}}</div>
+        <label class="col-md-3 control-label">按键3模式：</label>
+        <div class="col-md-3 form-control-static">{{device.buttonmode3}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">地理位置：</label>
@@ -22,9 +28,9 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3 form-control-static">{{device.regtime}}</div>
+        <div class="col-md-3 form-control-static">{{device.regtime | formDate}}</div>
         <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3 form-control-static">{{device.runningstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.runningstate | runningstateNameConverter}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

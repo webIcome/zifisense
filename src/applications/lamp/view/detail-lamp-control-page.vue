@@ -16,7 +16,7 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3 form-control-static">{{device.group}}</div>
+        <div class="col-md-3 form-control-static">{{device.groupname}}</div>
         <label class="col-md-3 control-label">有功电能：</label>
         <div class="col-md-3 form-control-static">{{device.activepower}}</div>
       </div>
@@ -28,21 +28,21 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">灯控类型：</label>
-        <div class="col-md-3 form-control-static">{{device.lightControllerType}}</div>
+        <div class="col-md-3 form-control-static">{{device.lightControllerType | lightControllerTypeNameConverter}}</div>
         <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3 form-control-static">{{device.regtime}}</div>
+        <div class="col-md-3 form-control-static">{{device.regtime | formDate}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">传感器类型：</label>
-        <div class="col-md-3 form-control-static">{{device.sensortype}}</div>
+        <div class="col-md-3 form-control-static">{{device.sensortype | sensortypeNameConverter}}</div>
         <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3 form-control-static">{{device.compnayname}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">开关状态：</label>
-        <div class="col-md-3 form-control-static">{{device.switchstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.switchstate | switchStateNameConverter}}</div>
         <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3 form-control-static">{{device.runningstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.runningstate | runningstateNameConverter}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>

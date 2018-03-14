@@ -5,17 +5,17 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.phone" placeholder="输入设备名称"/>
+            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"/>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <el-input type="text" v-model="searchParams.phone" placeholder="输入设备ID"/>
+            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID"/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
             <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
           </div>
-          <div class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
+          <div  @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
             <div @click="dialogHighSearch" class="default-btn"><span class="search-icon default-icon"></span>高级搜索</div>
             <div @click="dialogAddDevice" data-toggle="modal" data-target="#add-device" class="default-btn"><span
@@ -133,62 +133,10 @@
     </el-dialog>
   </div>
 
-  <div v-else-if="currentPage == pages.search" class="content-right">
-    <div class="page-title">控制面版高级搜索</div>
-    <form class="form-horizontal default-form">
-      <div class="form-group">
-        <label class="col-md-3 control-label">设备名称：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
-        </div>
-        <label class="col-md-3 control-label">设备ID：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn" placeholder="输入设备ID"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
-        </div>
-        <label class="col-md-3 control-label">地理位置：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3">
-          <!--<vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimestart"></vue-datepicker-local>
-          到
-          <vue-datepicker-local clearable :inputClass="'form-control'" class="input-two" v-model="advancedSearchParams.regtimeend"></vue-datepicker-local>-->
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
-          </el-col>
-          <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
-          </el-col>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">
-          <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
-        </div>
-      </div>
-      <div class="search-btn">
-        <div @click="highSearch" class="default-btn">搜索</div>
-        <div @click="goBack" class="default-btn">返回</div>
-      </div>
-    </form>
-  </div>
+  <search-panel-control-component v-else-if="currentPage == pages.search"
+                                 @search="highSearch" @back="goBack"
+                                 :runningStatus="runningStatus"
+                                 :companies="companies"></search-panel-control-component>
   <detail-panel-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-panel-control-page>
 
 </template>
@@ -200,6 +148,7 @@
     import Services from "../services";
     import editGroupMaxComponent from './edit-group-max-component.vue';
     import CommonConstant from "../../../constants/common";
+    import searchPanelControlComponent from './search-panel-control-component.vue';
     export default {
         name: 'panelControlPage',
         data() {
@@ -280,7 +229,8 @@
         },
         components: {
             detailPanelControlPage,
-            editGroupMaxComponent
+            editGroupMaxComponent,
+            searchPanelControlComponent
         },
         methods: {
             initData: function () {
@@ -327,8 +277,8 @@
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
-            highSearch: function () {
-                this.findList(Object.assign(this.advancedSearchParams, this.defaultPaging));
+            highSearch: function (searchParams) {
+                this.findList(Object.assign(searchParams, this.defaultPaging));
                 this.goBack();
             },
             goBack: function () {

@@ -43,13 +43,13 @@ Vue.http.interceptors.push(function (request, next) {
                 type: 'warning',
                 duration: 1000
             })
-        } else if(response.body.code == 0) {
+        } /*else if(response.body.code == 0) {
             Message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500
             })
-        }
+        }*/
         else if(response.body.code == 500) {
             Message({
                 message: '服务器500错误',

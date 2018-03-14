@@ -72,72 +72,21 @@
 
   </div>
 
-  <div v-else-if="currentPage == pages.search" class="content-right">
-    <div class="page-title">控制面版高级搜索</div>
-    <form class="form-horizontal default-form">
-      <div class="form-group">
-        <label class="col-md-3 control-label">设备名称：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename"/>
-        </div>
-        <label class="col-md-3 control-label">设备ID：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.groupid" placeholder="选择归属组" clearable  style="width: 100%;">
-            <el-option v-for="type in groups" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">地理位置：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">
-          <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
-        </div>
-        <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3">
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
-          </el-col>
-          <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
-          </el-col>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="search-btn">
-        <div @click="highSearch" class="default-btn">搜索</div>
-        <div @click="goBack" class="default-btn">返回</div>
-      </div>
-    </form>
-  </div>
+  <search-panel-control-component v-else-if="currentPage == pages.search"
+                                  @search="highSearch" @back="goBack"
+                                  :runningStatus="runningStatus"
+                                  :companies="companies"></search-panel-control-component>
 </template>
 
 <script>
-    import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
     import controlPanelDialogComponent from "./control-panel-dialog-component.vue";
     import CommonConstant from "../../../constants/common";
+    import searchPanelControlComponent from './search-panel-control-component.vue';
     export default {
         name: 'controlSinglePanelPage',
-        components: {controlPanelDialogComponent},
+        components: {controlPanelDialogComponent,searchPanelControlComponent},
         data() {
             return {
                 searchParams: {
@@ -148,31 +97,6 @@
                     groupid: '',
                     position: '',
                 },
-                advancedSearchParams: {
-                    devicename: '',
-                    sn: '',
-                    groupid: '',
-                    loopnum: '',
-                    threeVoltageLow: '',
-                    threeVoltageHigh: '',
-                    threeCurrentLow: '',
-                    threeCurrentHigh: '',
-                    sumActivePowerLow: '',
-                    sumActivePowerHigh: '',
-                    sumReactivePowerLow: '',
-                    sumReactivePowerHigh: '',
-                    position: '',
-                    regtimestart: '',
-                    regtimeend: '',
-                    runningstate: '',
-                    diportstate: ''
-                },
-            /*    operData: {
-                    scenarioname: '',
-                    button: '',
-                    controltype: ''
-                },*/
-                groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
                 list: [{}],
                 companies: [],
@@ -258,8 +182,8 @@
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
-            highSearch: function () {
-                this.findList(Object.assign(this.advancedSearchParams, this.defaultPaging));
+            highSearch: function (searchParams) {
+                this.findList(Object.assign(searchParams, this.defaultPaging));
                 this.goBack();
             },
             goBack: function () {
@@ -268,57 +192,6 @@
             showPage:function (page) {
                 this.currentPage = page;
             },
-        /*    selectBtn: function (btn) {
-                let scenarioId;
-                let scenarioName;
-                switch (btn){
-                    case 1:
-                        scenarioName = this.operData.buttonmode1;
-                        scenarioId = this.operData.buttonmodeid1;
-                        break;
-                    case 2:
-                        scenarioName = this.operData.buttonmode2;
-                        scenarioId = this.operData.buttonmodeid2;
-                        break;
-                    case 3:
-                        scenarioName = this.operData.buttonmode3;
-                        scenarioId = this.operData.buttonmodeid3;
-                        break;
-                }
-                let defaultData;
-                if (scenarioName != "普通模式") {
-                    defaultData = {scenarioid: scenarioId, scenarioname: scenarioName}
-                }
-                this.operData = Object.assign({},this.operData,defaultData)
-            },
-            dialogControlDevice: function (device) {
-                this.resetData();
-                this.operData = device;
-                let defaultData = {controltype: 1, button: 1}
-                if (device.buttonmode1 != "普通模式") {
-                    defaultData.scenarioname = device.buttonmode1
-                }
-                this.operData = Object.assign({},this.operData,defaultData);
-                this.controlDeviceDialogVisible = true;
-            },
-            controlDevice: function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        let data = {};
-                        data.deviceid = this.operData.deviceid;
-                        data.controltype = this.operData.controltype;
-                        data.button = this.operData.button;
-                        data.scenarioid = this.operData.scenarioid;
-                        Services.controlPanelSingle(data).then(res => {
-                            this.initLamp();
-                            this.hideModal();
-                        });
-                    }
-                })
-            },*/
-           /* hideModal: function () {
-                this.controlDeviceDialogVisible = false;
-            },*/
             resetData: function () {
                 this.operData = {}
             }

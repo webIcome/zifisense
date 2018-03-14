@@ -6,43 +6,43 @@
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3 form-control-static">{{device.devicename}}</div>
         <label class="col-md-3 control-label">DI口状态：</label>
-        <div class="col-md-3 form-control-static">{{device.diportstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.diportstate | switchStateNameConverter}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3 form-control-static">{{device.sn}}</div>
         <label class="col-md-3 control-label">三相电压：</label>
-        <div class="col-md-3 form-control-static">{{device.threeVoltage}}</div>
+        <div class="col-md-3 form-control-static">{{device.threevoltage}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3 form-control-static">{{device.group}}</div>
+        <div class="col-md-3 form-control-static">{{device.groupname}}</div>
         <label class="col-md-3 control-label">三相电流：</label>
-        <div class="col-md-3 form-control-static">{{device.threeCurrent}}</div>
+        <div class="col-md-3 form-control-static">{{device.threecurrent}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">回路数：</label>
         <div class="col-md-3 form-control-static">{{device.loopnum}}</div>
         <label class="col-md-3 control-label">有功电能累加：</label>
-        <div class="col-md-3 form-control-static">{{device.sumActivePower}}</div>
+        <div class="col-md-3 form-control-static">{{device.sumactivepower}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3 form-control-static">{{device.position}}</div>
         <label class="col-md-3 control-label">无功电能累加：</label>
-        <div class="col-md-3 form-control-static">{{device.sumReactivePower}}</div>
+        <div class="col-md-3 form-control-static">{{device.sumreactivepower}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3 form-control-static">{{device.companyname}}</div>
         <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3 form-control-static">{{device.regtime}}</div>
+        <div class="col-md-3 form-control-static">{{device.regtime | formDate}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">回路状态：</label>
         <div class="col-md-3 form-control-static">{{device.loopcontrol}}</div>
         <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3 form-control-static">{{device.runningstate}}</div>
+        <div class="col-md-3 form-control-static">{{device.runningstate | runningstateNameConverter}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

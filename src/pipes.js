@@ -11,7 +11,9 @@ export default {
     deviceStateNameConverter: _deviceStateNameConverter,
     runningstateNameConverter: _runningstateNameConverter,
     switchStateNameConverter: _switchStateNameConverter,
-    strategyStateNameConverter: _strategyStateNameConverter
+    strategyStateNameConverter: _strategyStateNameConverter,
+    lightControllerTypeNameConverter: _lightControllerTypeNameConverter,
+    sensortypeNameConverter: _sensortypeNameConverter
 }
 function _formDate(date, pattern) {
     if (!pattern) pattern = 'YYYY-MM-DD HH:mm:ss';
@@ -75,6 +77,24 @@ function _switchStateNameConverter(value) {
 function _strategyStateNameConverter(value) {
     let name = value;
     Common.strategyState.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
+}
+function _lightControllerTypeNameConverter(value) {
+    let name = value;
+    Common.lightControllerType.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
+}
+function _sensortypeNameConverter(value) {
+    let name = value;
+    Common.sensorType.forEach(item => {
         if (Number(value) == item.value) {
             name = item.text;
         }

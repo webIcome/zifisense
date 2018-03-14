@@ -9,41 +9,29 @@
         <div @click="dropdown" class="personal-center" data-toggle="dropdown" aria-expanded="false"><i class="personal-center-icon"></i>个人中心
         </div>
         <ul class="dropdown-menu">
-          <li class="change-password"><a href="#" @click="dialogChangePassword" data-toggle="#changePassword" data-target="#changePassword">修改密码</a></li>
+          <li class="change-password"><a href="#" @click="dialogChangePassword">修改密码</a></li>
           <li @click="logout"><a href="#">退出登录</a></li>
         </ul>
       </div>
       <div @click="goToHome" v-if="!isHome" class="go-home"><i class="home-icon"></i>返回主页
       </div>
     </div>
-    <dialog-component id="changePassword">
-      <div slot="body">
-        <div class="dialog-title">修改密码</div>
-        <form class="form-horizontal default-form">
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="currentPassword">当前密码：</label>
-            <div class="col-md-8">
-              <input type="password" class="form-control" id="currentPassword" v-model="password.oldpwd"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="new">新密码：</label>
-            <div class="col-md-8">
-              <input type="password" class="form-control" id="new" v-model="password.newpwd"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="second-new">确认新密码：</label>
-            <div class="col-md-8">
-              <input type="password" class="form-control" id="second-new" v-model="password.secondNew"/>
-            </div>
-          </div>
-            <div class="dialog-btn">
-              <button type="button" @click="changePassword" class="dialog-btn-icon">确认</button>
-            </div>
-        </form>
-      </div>
-    </dialog-component>
+    <el-dialog title="修改密码" :visible.sync="dialogVisible" center :width="'600px'">
+      <el-form label-width="140px" :model="password" ref="controlDevice" :rules="Rules" class="el-form-default">
+        <el-form-item label="当前密码：" prop="oldpwd">
+          <el-input type="password" v-model="password.oldpwd" placeholder="请输入当前密码"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码：" prop="newpwd">
+          <el-input type="password" v-model="password.newpwd" placeholder="请输入当前密码"></el-input>
+        </el-form-item>
+        <el-form-item label="确认新密码：" prop="secondNew">
+          <el-input type="password" v-model="password.secondNew" placeholder="请输入当前密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="changePassword('controlDevice')">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -56,11 +44,23 @@
         components: {DialogComponent}, name: 'headerComponent',
         data () {
             return {
+                dialogVisible: false,
                 user: {},
                 password: {
                     oldpwd: '',
                     newpwd: '',
                     secondNew: ''
+                },
+                Rules: {
+                    oldpwd: [
+                        {required: true, message: '请输入旧密码'},
+                    ],
+                    newpwd: [
+                        {required: true, message: '请输入新密码'},
+                    ],
+                    secondNew: [
+                        {required: true, message: '请确认新密码'},
+                    ],
                 }
             }
         },
@@ -80,21 +80,34 @@
             goToHome: function () {
                 window.location.replace('/')
             },
-            changePassword: function () {
-                if (this.password.newpwd != this.password.secondNew) {
-                    return;
-                }
-                this.$http.post('user/changePassword', this.password).then(res => {
-                    if (res.body.code != 0) {
+            changePassword: function (formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        if (this.password.newpwd != this.password.secondNew) {
+                            return;
+                        }
+                        this.$http.post('user/changePassword', this.password).then(res => {
+                            if (res.body.code != 0) {
 
-                    } else {
-                        this.$tips.success();
-                        $('#changePassword').modal('hide')
+                            } else {
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success',
+                                    duration: 1000
+                                });
+                                this.dialogVisible = false
+                            }
+                        })
                     }
                 })
             },
             dialogChangePassword: function () {
-                $('#changePassword').modal()
+                this.password = {
+                    oldpwd: '',
+                    newpwd: '',
+                    secondNew: ''
+                };
+                this.dialogVisible = true
             },
             logout: function () {
                 this.$http.get('accounts/logout').then(res => {

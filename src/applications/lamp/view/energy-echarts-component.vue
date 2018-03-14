@@ -17,27 +17,15 @@
           <template>
 
           </template>
-          <th>设备名称</th>
-          <th>设备ID</th>
-          <th>运行状态</th>
-          <th>地理位置</th>
-          <th>开关状态</th>
-          <th>亮度值</th>
-          <th>电压</th>
-          <th>电流</th>
-          <th>有功电能</th>
+          <th>时间</th>
+          <th>统计单位</th>
+          <th>有功电能累加</th>
           </thead>
           <tbody>
-          <tr v-for="item in list">
-            <td>{{item.devicename}}</td>
-            <td>{{item.sn}}</td>
-            <td>{{item.runnintstate}}</td>
-            <td>{{item.position}}</td>
-            <td>{{(item.switchstate == 1)? '开':'关'}}</td>
-            <td>{{item.brightness}}</td>
-            <td>{{item.voltagelow}}</td>
-            <td>{{item.oldpwd}}</td>
-            <td>{{item.activepower}}</td>
+          <tr v-for="item in excelList">
+            <td>{{item.timepoint}}</td>
+            <td>{{item.according}}</td>
+            <td>{{item.consumption}}</td>
           </tr>
           </tbody>
         </table>
@@ -72,6 +60,9 @@
         },
         props: {
             list: {
+                type: Array
+            },
+            excelList: {
                 type: Array
             }
         },

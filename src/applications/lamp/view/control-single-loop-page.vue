@@ -71,102 +71,21 @@
 
   </div>
 
-  <div v-else-if="currentPage == pages.search" class="content-right">
-    <div class="page-title">回路控制器高级搜索</div>
-    <form class="form-horizontal default-form">
-      <div class="form-group">
-        <label class="col-md-3 control-label">设备名称：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
-        </div>
-        <label class="col-md-3 control-label">有功电能累加：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerLow"  placeholder=""/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.sumActivePowerHigh"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">设备ID：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn"  placeholder="输入设备ID"/>
-        </div>
-        <label class="col-md-3 control-label">无功电能累加：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumReactivePowerLow"/>到<input
-            type="text" class="form-control input-two" v-model="advancedSearchParams.sumReactivePowerHigh"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
-        </div>
-        <label class="col-md-3 control-label">地理位置：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">回路数：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.loopnum" placeholder="输入回路数"/>
-        </div>
-        <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3">
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
-          </el-col>
-          <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
-          </el-col>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">DI口状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.diportstate" placeholder="选择DI口状态" clearable  style="width: 100%;">
-            <el-option v-for="type in diPortStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">
-          <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">三相电压：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.threeVoltageLow"/>到<input
-            type="text" class="form-control input-two" v-model="advancedSearchParams.threeVoltageHigh"/>
-        </div>
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">三项电流：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two"/>到<el-input type="text" class="input-two"/>
-        </div>
-      </div>
-      <div class="search-btn">
-        <div @click="highSearch" class="default-btn">搜索</div>
-        <div @click="goBack" class="default-btn">返回</div>
-      </div>
-    </form>
-  </div>
+  <search-loop-control-component v-else-if="currentPage == pages.search"
+                                 @search="highSearch" @back="goBack"
+                                 :runningStatus="runningStatus"
+                                 :diPortStatus="diPortStatus"
+                                 :companies="companies"></search-loop-control-component>
 </template>
 
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
-    import controlLoopDialogComponent from './control-loop-dialog-component.vue'
+    import controlLoopDialogComponent from './control-loop-dialog-component.vue';
+    import searchLoopControlComponent from './search-loop-control-component.vue'
     export default {
-        components: {controlLoopDialogComponent},
+        components: {controlLoopDialogComponent,searchLoopControlComponent},
         name: 'controlSingleLoopPage',
         data() {
             return {
@@ -179,55 +98,22 @@
                     groupid: '',
                     position: '',
                 },
-                advancedSearchParams: {
-                    devicename: '',
-                    sn: '',
-                    groupid: '',
-                    loopnum: '',
-                    threeVoltageLow: '',
-                    threeVoltageHigh: '',
-                    threeCurrentLow: '',
-                    threeCurrentHigh: '',
-                    sumActivePowerLow: '',
-                    sumActivePowerHigh: '',
-                    sumReactivePowerLow: '',
-                    sumReactivePowerHigh: '',
-                    position: '',
-                    regtimestart: '',
-                    regtimeend: '',
-                    runningstate: '',
-                    diportstate: ''
-                },
                 operData: {
                     controltype: 1
                 },
-                groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
-                list: [{}],
+                list: [],
                 companies: [],
-                lightControllerType: [
-                    {value: 1, text: '电源蓝牙'},
-                    {value: 2, text: '电源ZETA'},
-                    {value: 3, text: '电源蓝牙+ZETA'},
-                    {value: 4, text: '外挂式蓝牙'},
-                    {value: 5, text: '外挂式ZETA'},
-                    {value: 6, text: '外挂式蓝牙+ZETA'},
-                ],
-                switchStatus: [
-                    {value: 1, text: '开'},
-                    {value: 2, text: '关'},
-                ],
-                sensorType: [
-                    {value: 1, text: '无'},
-                    {value: 2, text: '光感'},
-                    {value: 3, text: '微波'},
-                ],
                 runningStatus: [
                     {value: 1, text: '正常'},
                     {value: 2, text: '欠流'},
                     {value: 3, text: '过流'},
                     {value: 4, text: '欠压'},
                     {value: 5, text: '过压'},
+                ],
+                diPortStatus: [
+                    {value: 1, text: '开'},
+                    {value: 2, text: '关'},
                 ],
                 defaultPaging: {
                     pageSize: Config.DEFAULT_PAGE_SIZE,
@@ -280,8 +166,8 @@
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
-            highSearch: function () {
-                this.findList(Object.assign(this.advancedSearchParams, this.defaultPaging));
+            highSearch: function (searchParams) {
+                this.findList(Object.assign(searchParams, this.defaultPaging));
                 this.goBack();
             },
             goBack: function () {

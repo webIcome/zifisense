@@ -42,8 +42,8 @@
           <td>{{item.groupname}}</td>
           <td>{{item.moduletype | deviceTypeNameConverter}}</td>
           <td>{{item.deviceTotal}}</td>
-          <td>{{item.strategyName}}</td>
-          <td>{{item.state | deviceStateNameConverter}}</td>
+          <td>{{item.strategyname}}</td>
+          <td>{{item.strategystate | deviceStateNameConverter}}</td>
           <td class="td-btns">
             <control-light-dialog-component v-if="item.moduletype == moduleType.light" :device="item"></control-light-dialog-component>
             <control-loop-dialog-component v-if="item.moduletype == moduleType.loop" :device="item"></control-loop-dialog-component>

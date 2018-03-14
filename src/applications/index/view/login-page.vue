@@ -120,6 +120,27 @@
 <style scoped lang="less">
   .zifi-container {
     background: url("../assets/login/bg.png") 100% 100%;
+    min-width: 400px;
+  }
+  @media screen and (max-width: 1500px){
+    .login-container {
+      transform: scale(0.8, 0.8);
+    }
+  }
+  @media screen and (max-width: 1400px){
+    .login-container {
+      transform: scale(0.7, 0.7);
+    }
+  }
+  @media screen and (max-width: 1300px){
+    .login-container {
+      transform: scale(0.6, 0.6);
+    }
+  }
+  @media screen and (max-width: 1200px){
+    .login-container {
+      transform: scale(0.5, 0.5);
+    }
   }
   .login-container {
     display: inline-block;

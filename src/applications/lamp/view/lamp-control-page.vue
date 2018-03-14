@@ -175,9 +175,10 @@
             <el-option v-for="type in vendor" :value="type.value" :key="type.value" :label="type.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="灯控器类型：" prop="lampTypeID">
-          <el-input type="text" v-model="showSelectedLampName" placeholder="选择灯控器类型" clearable @focus="dialogSelectLamp" @change="changeSelectLamp"></el-input>
-          <el-input type="text"v-show="false" v-model="operData.lampTypeID"></el-input>
+        <el-form-item label="灯具类型：" prop="lampTypeID">
+          <select-lamps-component v-model="operData.lampTypeID"
+                                  @name="operData.lampType=arguments[0]"
+                                  :modelnum="operData.lampType"></select-lamps-component>
         </el-form-item>
         <el-form-item label="归属某一回路：" prop="position">
           <el-input type="text" v-model="operData.toloopnum" placeholder="请输回路控制器的某一回路"/>
@@ -216,134 +217,9 @@
                           @pagingEvent='pagingLoopEvent'></paging-component>
       </div>
     </el-dialog>
-
-<!--    <el-dialog title="选择灯具类型" :visible.sync="selectLampDialogVisible" center :width="'600px'">
-      <el-form :inline="true" label-width="170px" :model="searchLampParams"  ref="editGroup" >
-        <el-form-item prop="switchstate">
-          <el-input type="text" v-model="searchLampParams.devicename" placeholder="输入设备名称"></el-input>
-        </el-form-item>
-        <el-form-item prop="deviceType">
-          <tree-select-component v-model="searchLampParams.companyid" :list="companies"></tree-select-component>
-        </el-form-item>
-        <el-button type="primary" @click="findLampsList" icon="el-icon-search">筛选</el-button>
-      </el-form>
-      <div>
-        <el-table ref="singleTable" :data="lampList" border class="table" @current-change="selectLamp" highlight-current-row>
-          <el-table-column label="灯具型号" prop="modelnum" align="center"></el-table-column>
-          <el-table-column label="归属企业" prop="companyname" align="center"></el-table-column>
-        </el-table>
-        <paging-component v-if="searchLampParams.pages" :pageNumber="searchLampParams.pageNum" :pages="searchLampParams.pages"
-                          @pagingEvent='pagingLampEvent'></paging-component>
-      </div>
-    </el-dialog>-->
-
   </div>
 
-  <div v-else-if="currentPage == pages.search" class="content-right">
-    <div class="page-title">灯控器高级搜索</div>
-    <form class="form-horizontal default-form">
-      <div class="form-group">
-        <label class="col-md-3 control-label">设备名称：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.devicename" placeholder="输入设备名称"/>
-        </div>
-        <label class="col-md-3 control-label">电压/v：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.voltagelow" placeholder="输入电压"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.voltagehigh"  placeholder="输入电压"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">设备ID：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.sn" placeholder="输入设备ID"/>
-        </div>
-        <label class="col-md-3 control-label">电流/A：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow" placeholder="输入电流"/>到<el-input
-            v-model="advancedSearchParams.currenthigh" type="text" class="input-two" placeholder="输入电流"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属组：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
-        </div>
-        <label class="col-md-3 control-label">有功电能：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow" placeholder="输入有功电能"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh" placeholder="输入有功电能"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">归属回路控制器：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.loopcontrollerSn" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
-            <el-option></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">地理位置：</label>
-        <div class="col-md-3">
-          <el-input type="text" v-model="advancedSearchParams.position" placeholder="输入地理位置"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">灯控器类型：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.lightControllerType" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
-            <el-option v-for="type in lightControllerType" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">接入时间：</label>
-        <div class="col-md-3">
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
-          </el-col>
-          <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
-          <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
-          </el-col>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">传感器类型：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.sensortype" placeholder="选择传感器类型" clearable  style="width: 100%;">
-            <el-option v-for="type in sensorType" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3">
-          <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">开关状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.switchstate" placeholder="选择开关状态" clearable  style="width: 100%;">
-            <el-option v-for="type in switchStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">亮度值：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow" placeholder="输入亮度"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.brightnesshigh" placeholder="输入亮度"/>
-        </div>
-      </div>
-      <div class="search-btn">
-        <div @click="highSearch" class="default-btn">搜索</div>
-        <div @click="goBack" class="default-btn">返回</div>
-      </div>
-    </form>
-  </div>
+  <search-light-control-component v-else-if="currentPage == pages.search" @search="highSearch" @back="goBack" :companies="companies"></search-light-control-component>
   <detail-lamp-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-lamp-control-page>
 </template>
 
@@ -356,6 +232,7 @@
     import CommonConstant from "../../../constants/common";
     import editGroupMaxComponent from './edit-group-max-component.vue';
     import selectLampsComponent from './select-lamps-component.vue';
+    import searchLightControlComponent from './search-light-control-component.vue';
     export default {
         name: 'lampControlPage',
         data() {
@@ -417,7 +294,7 @@
                 },
                 lampList: [],
                 showSelectedLoopName: '',
-                advancedSearchParams: {
+               /* advancedSearchParams: {
                     devicename: '',
                     sn: '',
                     groupname: '',
@@ -438,11 +315,10 @@
                     regtimeend: '',
                     companyid: '',
                     runningstate: '',
-                },
+                },*/
                 operData: {},
-                groups: [{name: '分组1'}, {name: '分组2'}],
                 isSearchPage: false,
-                list: [{}],
+                list: [],
                 companies: [],
                 lightControllerType: [
                     {value: 1, text: '电源蓝牙'},
@@ -486,7 +362,8 @@
         components: {
             detailLampControlPage,
             editGroupMaxComponent,
-            selectLampsComponent
+            selectLampsComponent,
+            searchLightControlComponent
         },
         created: function () {
             this.initData()
@@ -527,17 +404,14 @@
                     this.list = data.list;
                 });
             },
-            addGroup: function () {
-
-            },
             dialogHighSearch: function () {
                 this.showPage(this.pages.search)
             },
             search: function () {
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
-            highSearch: function () {
-                this.findList(Object.assign(this.advancedSearchParams, this.defaultPaging));
+            highSearch: function (searchParams) {
+                this.findList(Object.assign(searchParams, this.defaultPaging));
                 this.goBack();
             },
             goBack: function () {
@@ -579,32 +453,6 @@
                     this.searchLoopParams.pages = data.pages;
                     this.searchLoopParams.pageSize = data.pageSize;
                     this.loopList = data.list;
-                });
-            },
-            dialogSelectLamp: function () {
-                this.findLampsList(this.defaultPaging);
-                this.selectLampDialogVisible = true;
-            },
-            selectLamp: function (val) {
-                this.operData.loopcontrollersn = val.objectid;
-                this.showSelectedLampName = val.modelnum;
-                this.selectLampDialogVisible = false;
-            },
-            changeSelectLamp: function (val) {
-                if (!val) {
-                    this.operData.loopcontrollersn = ''
-                }
-            },
-            pagingLampEvent: function (pageNum) {
-                this.searchLampParams.pageNum = pageNum;
-                this.findLampsList(this.searchLampParams);
-            },
-            findLampsList: function (params) {
-                Services.findLampsList(params).then(data => {
-                    this.searchLampParams.pageNum = data.pageNum;
-                    this.searchLampParams.pages = data.pages;
-                    this.searchLampParams.pageSize = data.pageSize;
-                    this.lampList = data.list;
                 });
             },
             dialogAddDevice: function () {

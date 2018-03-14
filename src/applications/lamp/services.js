@@ -303,7 +303,12 @@ export default {
     },
     //energy
     findChartData(params) {
-        return HttpClient.get('consumption/getResult', {params: params}).then(res => {
+        return HttpClient.get('consumption/getChartResult', {params: params}).then(res => {
+            return res.body.data;
+        })
+    },
+    findExcelData(params) {
+        return HttpClient.get('consumption/getListResult', {params: params}).then(res => {
             return res.body.data;
         })
     },
