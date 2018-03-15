@@ -37,9 +37,7 @@
 
           </div>
           <div class="pull-right">
-            <div @click="dialogAddStrategy" class="default-btn"><span class="add-icon default-icon"></span>新建灯时序</div>
-            <div @click="dialogAddLoopStrategy" class="default-btn"><span class="add-icon default-icon"></span>新建回路时序
-            </div>
+            <div @click="dialogAddStrategy" class="default-btn"><span class="add-icon default-icon"></span>新建时序</div>
           </div>
         </form>
       </div>
@@ -58,8 +56,11 @@
         <tr v-for="item in list">
           <td>{{item.strategyname}}</td>
           <td>{{item.moduletype | deviceTypeNameConverter}}</td>
-          <td>{{item.validityTime | formDate}}</td>
-          <td>{{item.executionTime | formDate}}</td>
+          <td>{{item.validitystart | formDate}}~{{item.validityend | formDate}}</td>
+          <td v-if="item.periodtype == period.single">{{item.singlextime | formDate}}</td>
+          <td v-else-if="item.periodtype == period.day">{{item.singlextime | formTime}}</td>
+          <td v-else-if="item.periodtype == period.week">{{item.weeknumber | formWeek}}/{{item.singlextime | formTime}}</td>
+          <td v-else-if="item.periodtype == period.intervaltime">每分钟 {{item.intervaltime}}次</td>
           <td class="td-btns">
             <div class="icon-item"><span @click="dialogEditStrategy(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteStrategy(item)" class="delete-icon"></span></div>
@@ -71,7 +72,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="灯时序控制-新建" :visible.sync="addStrategyDialogVisible" center :width="'650px'">
+    <el-dialog title="时序控制-新建" :visible.sync="addStrategyDialogVisible" center :width="'650px'">
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="addStrategyRules"
                class="el-form-default">
         <el-form-item label="策略名称：" prop="strategyname">
@@ -87,41 +88,42 @@
         </el-form-item>
         <el-form-item label="有效时间：" required>
           <el-form-item style="display: inline-block" prop="validitystart">
-            <el-date-picker style="width: 200px" v-model="operData.validitystart" type="date"
+            <el-date-picker style="width: 200px" v-model="operData.validitystart" type="datetime"
                             placeholder=""></el-date-picker>
           </el-form-item>
           到
 
           <el-form-item style="display: inline-block" prop="validityend">
-            <el-date-picker style="width: 200px" v-model="operData.validityend" type="date"
+            <el-date-picker style="width: 200px" v-model="operData.validityend" type="datetime"
                             placeholder=""></el-date-picker>
           </el-form-item>
         </el-form-item>
         <el-form-item label="执行频率：" prop="periodtype">
-          <!-- <el-select style="width: 200px; margin-right: 24px" v-model="operData.periodType" placeholder="选择类型" clearable >
-             <el-option v-for="item in periodType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-           </el-select>-->
           <template v-for="item in periodType">
             <el-radio v-model="operData.periodtype" :label="item.value">{{item.text}}</el-radio>
           </template>
         </el-form-item>
-        <el-form-item v-if="operData.periodtype == period.single" label="执行时间：" prop="executiontime">
-          <el-date-picker style="width: 200px" v-model="operData.singlextime" type="date"
+        <el-form-item v-if="operData.periodtype == period.single" label="执行时间：" prop="singlextime">
+          <el-date-picker style="width: 250px" v-model="operData.singlextime" type="datetime"
                           placeholder="请选择时间点"></el-date-picker>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.day" label="执行时间：" prop="periodextime">
-          <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间"></el-time-picker>
+          <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间" :value-format="'HH:mm:ss'"></el-time-picker>
         </el-form-item>
-        <el-form-item v-else-if="operData.periodtype == period.week" label="执行时间：" prop="weeknumber">
-          <el-select style="width: 200px" v-model="operData.weeknumber" placeholder="请选择周几" clearable>
-            <el-option v-for="item in week" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-          <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间"></el-time-picker>
+        <el-form-item v-else-if="operData.periodtype == period.week" label="执行时间：" class="is-required">
+          <el-form-item style="display: inline-block" prop="weeknumber" >
+            <el-select style="width: 200px" v-model="operData.weeknumber" placeholder="请选择周几" clearable>
+              <el-option v-for="item in week" :key="item.value" :value="item.value" :label="item.text"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item style="display: inline-block; margin: 0"  prop="periodextime">
+            <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间" :value-format="'HH:mm:ss'"></el-time-picker>
+          </el-form-item>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
           <el-input style="width: 200px" v-model="operData.intervaltime"></el-input>
         </el-form-item>
-        <el-form-item label="执行功能：" prop="taskcmd">
+        <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
           <div>
             <el-radio v-model="operData.taskcmd" label="lightOn">开灯</el-radio>
           </div>
@@ -139,75 +141,23 @@
             <el-radio v-model="operData.taskcmd" label="lightSate">状态读取</el-radio>
           </div>
         </el-form-item>
+        <el-form-item label="执行功能：" v-else prop="taskcmd">
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryOn">开线路</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryOff">关线路</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryState">状态读取</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryMeter">读取电表</el-radio>
+          </div>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="addStrategy('addStrategy')">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog title="回路时序控制-新建" :visible.sync="addLoopStrategyDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="operLoopData" ref="addLoopStrategy" :rules="addStrategyRules"
-               class="el-form-default">
-        <el-form-item label="策略名称：" prop="strategyname">
-          <el-input type="text" v-model="operLoopData.strategyname" placeholder="输入设备名称"></el-input>
-        </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operLoopData.companyid" :list="companies"></tree-select-component>
-        </el-form-item>
-        <el-form-item label="策略功能：" prop="moduletype">
-          <el-select v-model="operLoopData.moduletype" placeholder="选择类型" clearable>
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="有效时间：" required>
-          <el-form-item style="display: inline-block" prop="validitystart">
-            <el-date-picker style="width: 200px" v-model="operLoopData.validitystart" type="date" placeholder=""></el-date-picker>
-          </el-form-item>
-          到
-          <el-form-item style="display: inline-block" prop="validityend">
-            <el-date-picker style="width: 200px" v-model="operLoopData.validityend" type="date"
-                            placeholder=""></el-date-picker>
-          </el-form-item>
-        </el-form-item>
-        <el-form-item label="执行频率：" prop="periodtype">
-          <template v-for="item in periodType">
-            <el-radio v-model="operLoopData.periodtype" :label="item.value">{{item.text}}</el-radio>
-          </template>
-        </el-form-item>
-        <el-form-item v-if="operLoopData.periodtype == period.single" label="执行时间：" prop="singlextime">
-          <el-date-picker style="width: 200px" v-model="operLoopData.singlextime" type="date"
-                          placeholder="请选择时间点"></el-date-picker>
-        </el-form-item>
-        <el-form-item v-else-if="operLoopData.periodtype == period.day" label="执行时间：" prop="periodextime">
-          <el-time-picker style="width: 200px" v-model="operLoopData.periodextime"
-                          placeholder="请选择时间"></el-time-picker>
-        </el-form-item>
-        <el-form-item v-else-if="operLoopData.periodtype == period.week" label="执行时间：" prop="weeknumber">
-          <el-select style="width: 200px" v-model="operLoopData.weeknumber" placeholder="请选择时间" clearable>
-            <el-option v-for="item in week" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-          <el-time-picker style="width: 200px" v-model="operLoopData.periodextime"
-                          placeholder="请选择时间"></el-time-picker>
-        </el-form-item>
-        <el-form-item v-else-if="operLoopData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
-          <el-input style="width: 200px" type="text" v-model="operLoopData.intervaltime"></el-input>
-        </el-form-item>
-        <el-form-item label="执行功能：" prop="taskcmd">
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryOn">开线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryOff">关线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryState">状态读取</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryMeter">读取电表</el-radio>
-          </div>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addLoopStrategy('addLootStrategy')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -227,35 +177,42 @@
         </el-form-item>
         <el-form-item label="有效时间：" required>
           <el-form-item style="display: inline-block" prop="validitystart">
-            <el-date-picker style="width: 200px" v-model="operData.validitystart" type="date" placeholder=""></el-date-picker>
+            <el-date-picker style="width: 200px" v-model="operData.validitystart" type="datetime"
+                            placeholder=""></el-date-picker>
           </el-form-item>
           到
+
           <el-form-item style="display: inline-block" prop="validityend">
-            <el-date-picker style="width: 200px" v-model="operData.validityend" type="date" placeholder=""></el-date-picker>
-          </el-form-item>
+          <el-date-picker style="width: 200px" v-model="operData.validityend" type="datetime"
+                          placeholder=""></el-date-picker>
+        </el-form-item>
         </el-form-item>
         <el-form-item label="执行频率：" prop="periodtype">
           <template v-for="item in periodType">
             <el-radio v-model="operData.periodtype" :label="item.value">{{item.text}}</el-radio>
           </template>
         </el-form-item>
-        <el-form-item v-if="operData.periodtype == period.single" label="执行时间：" prop="executiontime">
-          <el-date-picker style="width: 200px" v-model="operData.singlextime" type="date"
+        <el-form-item v-if="operData.periodtype == period.single" label="执行时间：" prop="singlextime">
+          <el-date-picker style="width: 250px" v-model="operData.singlextime" type="datetime"
                           placeholder="请选择时间点"></el-date-picker>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.day" label="执行时间：" prop="periodextime">
-          <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间"></el-time-picker>
+          <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间" :value-format="'HH:mm:ss'"></el-time-picker>
         </el-form-item>
-        <el-form-item v-else-if="operData.periodtype == period.week" label="执行时间：" prop="weeknumber">
-          <el-select style="width: 200px" v-model="operData.weeknumber" placeholder="请选择周几" clearable>
-            <el-option v-for="item in week" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-          <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间"></el-time-picker>
+        <el-form-item v-else-if="operData.periodtype == period.week" label="执行时间：" class="is-required">
+          <el-form-item style="display: inline-block" prop="weeknumber" >
+            <el-select style="width: 200px" v-model="operData.weeknumber" placeholder="请选择周几" clearable>
+              <el-option v-for="item in week" :key="item.value" :value="item.value" :label="item.text"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item style="display: inline-block; margin: 0"  prop="periodextime">
+            <el-time-picker style="width: 200px" v-model="operData.periodextime" placeholder="请选择时间" :value-format="'HH:mm:ss'"></el-time-picker>
+          </el-form-item>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
           <el-input style="width: 200px" v-model="operData.intervaltime"></el-input>
         </el-form-item>
-        <el-form-item label="执行功能：" prop="taskcmd">
+        <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
           <div>
             <el-radio v-model="operData.taskcmd" label="lightOn">开灯</el-radio>
           </div>
@@ -273,78 +230,25 @@
             <el-radio v-model="operData.taskcmd" label="lightSate">状态读取</el-radio>
           </div>
         </el-form-item>
+        <el-form-item label="执行功能：" v-else prop="taskcmd">
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryOn">开线路</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryOff">关线路</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryState">状态读取</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.taskcmd" label="circuitryMeter">读取电表</el-radio>
+          </div>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="editStrategy('editStrategy')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="回路时序控制-编辑" :visible.sync="editLoopStrategyDialogVisible" center :width="'650px'">
-      <el-form label-width="120px" :model="operLoopData" ref="editLoopStrategy" :rules="addStrategyRules"
-               class="el-form-default">
-        <el-form-item label="策略名称：" prop="strategyname">
-          <el-input type="text" v-model="operLoopData.strategyname" placeholder="输入设备名称"></el-input>
-        </el-form-item>
-        <el-form-item label="归属企业：" prop="companyid">
-          <tree-select-component v-model="operLoopData.companyid" :list="companies"></tree-select-component>
-        </el-form-item>
-        <el-form-item label="策略功能：" prop="moduletype">
-          <el-select v-model="operLoopData.moduletype" placeholder="选择类型" clearable>
-            <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="有效时间：" required>
-          <el-form-item style="display: inline-block" prop="validitystart">
-            <el-date-picker style="width: 200px" v-model="operLoopData.validitystart" type="date" placeholder=""></el-date-picker>
-          </el-form-item>
-          到
-          <el-form-item style="display: inline-block" prop="validityend">
-          <el-date-picker style="width: 200px" v-model="operLoopData.validityend" type="date"
-                          placeholder=""></el-date-picker>
-        </el-form-item>
-        </el-form-item>
-        <el-form-item label="执行频率：" prop="periodtype">
-          <template v-for="item in periodType">
-            <el-radio v-model="operLoopData.periodtype" :label="item.value">{{item.text}}</el-radio>
-          </template>
-        </el-form-item>
-        <el-form-item v-if="operLoopData.periodtype == period.single" label="执行时间：" prop="singlextime">
-          <el-date-picker style="width: 200px" v-model="operLoopData.singlextime" type="date"
-                          placeholder="请选择时间点"></el-date-picker>
-        </el-form-item>
-        <el-form-item v-else-if="operLoopData.periodtype == period.day" label="执行时间：" prop="periodextime">
-          <el-time-picker style="width: 200px" v-model="operLoopData.periodextime"
-                          placeholder="请选择时间"></el-time-picker>
-        </el-form-item>
-        <el-form-item v-else-if="operLoopData.periodtype == period.week" label="执行时间：" prop="weeknumber">
-          <el-select style="width: 200px" v-model="operLoopData.weeknumber" placeholder="请选择时间" clearable>
-            <el-option v-for="item in week" :key="item.value" :value="item.value" :label="item.text"></el-option>
-          </el-select>
-          <el-time-picker style="width: 200px" v-model="operLoopData.periodextime"
-                          placeholder="请选择时间"></el-time-picker>
-        </el-form-item>
-        <el-form-item v-else-if="operLoopData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
-          <el-input style="width: 200px" type="text" v-model="operLoopData.intervaltime"></el-input>
-        </el-form-item>
-        <el-form-item label="执行功能：" prop="taskcmd">
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryOn">开线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryOff">关线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryState">状态读取</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operLoopData.taskcmd" label="circuitryMeter">读取电表</el-radio>
-          </div>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="editLoopStrategy('editLoopStrategy')">确 定</el-button>
-      </span>
-    </el-dialog>
-
     <el-dialog title="删除时序控制" :visible.sync="deleteStrategyDialogVisible" center :width="'600px'">
       <div class="text-center">
         <div class="dialog-warning"></div>
@@ -364,16 +268,47 @@
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
+    import CommonConstant from "../../../constants/common";
     export default {
         name: 'strategyTimePage',
         data() {
             return {
                 addStrategyDialogVisible: false,
-                addLoopStrategyDialogVisible: false,
                 editStrategyDialogVisible: false,
-                editLoopStrategyDialogVisible: false,
                 deleteStrategyDialogVisible: false,
-                addStrategyRules: {
+                searchParams: {
+                    strategyname: '',
+                    moduletype: '',
+                    validityStart: '',
+                    validityEnd: '',
+                },
+                operData: {},
+                list: [{}],
+                companies: [],
+                periodType: [
+                    {value: 'single', text: '一次'},
+                    {value: 'day', text: '每天'},
+                    {value: 'week', text: '每周'},
+                    {value: 'interval', text: '间隔'},
+                ],
+                week: [],
+                period: {
+                    single: 'single',
+                    day: 'day',
+                    week: 'week',
+                    interval: 'interval'
+                },
+                deviceType: [],
+                defaultPaging: {
+                    pageSize: Config.DEFAULT_PAGE_SIZE,
+                    pageNum: 1
+                },
+                defaultValue: '08:00:00'
+            }
+        },
+        computed: {
+            addStrategyRules: function () {
+                let rules = {
                     companyid: [
                         {required: true, message: '请选择所属企业'}
                     ],
@@ -395,43 +330,35 @@
                     taskcmd: [
                         {required: true, message: '请选择执行功能'}
                     ],
-                },
-                searchParams: {
-                    strategyname: '',
-                    moduletype: '',
-                    validityStart: '',
-                    validityEnd: '',
-                },
-                operData: {},
-                operLoopData: {},
-                list: [{}],
-                companies: [],
-                periodType: [
-                    {value: 'single', text: '一次'},
-                    {value: 'day', text: '每天'},
-                    {value: 'week', text: '每周'},
-                    {value: 'interval', text: '间隔'},
-                ],
-                week: [
-                    {value: 1, text: '周一'},
-                    {value: 2, text: '周二'},
-                    {value: 3, text: '周三'},
-                    {value: 4, text: '周四'},
-                    {value: 5, text: '周五'},
-                    {value: 6, text: '周六'},
-                    {value: 0, text: '周天'},
-                ],
-                period: {
-                    single: 'single',
-                    day: 'day',
-                    week: 'week',
-                    interval: 'interval'
-                },
-                deviceType: [],
-                defaultPaging: {
-                    pageSize: Config.DEFAULT_PAGE_SIZE,
-                    pageNum: 1
-                },
+                };
+                switch (this.operData.periodtype) {
+                    case this.period.single:
+                        rules.singlextime = [
+                            {required: true, message: '请选择时间'}
+                        ];
+                        break;
+                    case this.period.day:
+                        rules.periodextime = [
+                            {required: true, message: '请选择时间'}
+                        ];
+                        break;
+                    case this.period.week:
+                        rules.periodextime = [
+                            {required: true, message: '请选择时间'}
+                        ];
+                        rules.weeknumber = [
+                            {required: true, message: '请选择时间'}
+                        ];
+                        break;
+                    case this.period.interval:
+                        rules.intervaltime = [
+                            {required: true, message: '请输入间隔时间'}
+                        ];
+                        break;
+                    default:
+                        break;
+                }
+                return rules;
             }
         },
         created: function () {
@@ -449,6 +376,7 @@
                     {value: 1, text: '灯控器'},
                     {value: 2, text: '回路控制器'},
                 ];
+                this.week = CommonConstant.week;
             },
             initPaging: function () {
                 this.findList(this.defaultPaging)
@@ -480,19 +408,18 @@
                 this.resetData();
                 this.addStrategyDialogVisible = true;
             },
-            dialogAddLoopStrategy: function () {
-                this.resetData();
-                this.addLoopStrategyDialogVisible = true;
-            },
             dialogEditStrategy: function (item) {
                 this.resetData();
-                this.operData = item;
-                this.editStrategyDialogVisible = true;
+                this.getStrategyDetail(item.objectid).then(data => {
+                    this.operData = data;
+                    this.editStrategyDialogVisible = true;
+                });
             },
-            dialogEditLoopStrategy: function (item) {
-                this.resetData();
-                this.operLoopData = item;
-                this.editLoopStrategyDialogVisible = true;
+            getStrategyDetail: function (id) {
+                return Services.getStrategyDetail(id).then(data => {
+                   data.periodextime = this.$common.getUnixDate(data.periodextime);
+                   return data;
+                });
             },
             dialogDeleteStrategy: function (item) {
                 this.resetData();
@@ -502,42 +429,44 @@
             addStrategy: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        Services.addStrategy(this.operData).then(res => {
-                            this.initPaging();
-                            this.hideModal();
-                        })
-                    }
-                })
-            },
-            addLoopStrategy: function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        Services.addLoopStrategy(this.operLoopData).then(res => {
-                            this.initPaging();
-                            this.hideModal();
-                        })
+                        if (this.operData.moduletype == 1) {
+                            Services.addLightStrategy(this.transformData(this.operData)).then(res => {
+                                this.initPaging();
+                                this.hideModal();
+                            })
+                        } else {
+                            Services.addLoopStrategy(this.transformData(this.operData)).then(res => {
+                                this.initPaging();
+                                this.hideModal();
+                            })
+                        }
+
                     }
                 })
             },
             editStrategy: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        Services.editStrategy(this.operData).then(res => {
-                            this.initPaging();
-                            this.hideModal();
-                        })
+                        if (this.operData.moduletype == 1) {
+                            Services.editLightStrategy(this.transformData(this.operData)).then(res => {
+                                this.initPaging();
+                                this.hideModal();
+                            })
+                        } else {
+                            Services.editLoopStrategy(this.transformData(this.operData)).then(res => {
+                                this.initPaging();
+                                this.hideModal();
+                            })
+                        }
+
                     }
                 })
             },
-            editLoopStrategy: function (formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        Services.editLoopStrategy(this.operLoopData).then(res => {
-                            this.initPaging();
-                            this.hideModal();
-                        })
-                    }
-                })
+            transformData: function (data) {
+                if (data.periodtype == this.period.single) {
+                    delete data.periodextime
+                }
+                return data;
             },
             deleteStrategy: function () {
                 Services.deleteStrategy(this.operData.objectid).then(res => {
@@ -547,9 +476,7 @@
             },
             hideModal: function () {
                 this.addStrategyDialogVisible = false;
-                this.addLoopStrategyDialogVisible = false;
                 this.editStrategyDialogVisible = false;
-                this.editLoopStrategyDialogVisible = false;
                 this.deleteStrategyDialogVisible = false;
             },
             resetData: function () {

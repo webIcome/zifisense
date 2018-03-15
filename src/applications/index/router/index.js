@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import loginPage from '../view/login-page';
+// import loginPage from '../view/login-page';
 import homePage from '../view/home-page';
 const systemManagementPage =  () => import(/* webpackChunkName: "group-sys" */'../view/system-management-page');
 const userManagementPage =  () => import(/* webpackChunkName: "group-sys" */'../view/user-management-page');
@@ -10,9 +10,9 @@ const organizeManagementPage =  () => import(/* webpackChunkName: "group-sys" */
 Vue.use(Router);
 
 export default new Router({
-    mode:'history',
+    // mode:'history',
     routes: [
-        {path: '/login', name: 'login', component: loginPage},
+        // {path: '/login', name: 'login', component: loginPage},
         {path: '/', name: 'home', component: homePage, alias: ['/index', '/home']},
         {path: '/sys', name: 'sys', component: systemManagementPage,
         children: [

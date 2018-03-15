@@ -274,6 +274,11 @@ export default {
             return res;
         })
     },
+    getStrategyDetail(id) {
+        return HttpClient.post('strategy/getDetailsBySn', {objectid: id}).then(res => {
+            return res.body.data;
+        })
+    },
     //scenario
     findScenario(params) {
         return HttpClient.get('scenario/getList', {params: params}).then(res => {
@@ -332,4 +337,9 @@ export default {
             return res.body.data;
         })
     },
+    getExcel(params) {
+        return HttpClient.get('consumption/getExcelList', {params: params}).then(res => {
+            return res;
+        })
+    }
 }

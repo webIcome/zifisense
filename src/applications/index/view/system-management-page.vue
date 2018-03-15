@@ -80,7 +80,7 @@
                 this.initDefaultMenu();
             },
             initDefaultMenu: function () {
-                if (window.location.pathname == '/sys/' || window.location.pathname == '/sys') this.$router.push(this.navs[0].url);
+                if (window.location.hash == '#/sys/' || window.location.hash == '#/sys') this.$router.push(this.navs[0].url);
             },
         },
         mounted: function () {

@@ -77,6 +77,9 @@
             ...mapActions({
                 getUser: MutationTypes.GET_USER_LOCAL
             }),
+            goToLogin: function () {
+                window.location.replace('/login')
+            },
             goToHome: function () {
                 window.location.replace('/')
             },
@@ -111,7 +114,7 @@
             },
             logout: function () {
                 this.$http.get('accounts/logout').then(res => {
-                    this.goToHome();
+                    this.goToLogin();
                 })
             },
             dropdown: function () {

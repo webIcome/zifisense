@@ -1,7 +1,7 @@
 <template>
   <div class="content-right">
     <energy-params-component v-if="currentPage == pages.home" v-on:search="search"></energy-params-component>
-    <energy-echarts-component v-else :list="list" :excelList="excelList"></energy-echarts-component>
+    <energy-echarts-component v-else :list="list" :excelList="excelList" :searchParams="searchParams"></energy-echarts-component>
 
   </div>
 
@@ -25,7 +25,8 @@
                 },
                 currentPage : 1,
                 list: [],
-                excelList: []
+                excelList: [],
+                searchParams: {}
             }
         },
         created: function () {
@@ -36,6 +37,7 @@
             search: function (searchParams) {
                 let list = Services.findChartData(searchParams);
                 let excelList = Services.findExcelData(searchParams);
+                this.searchParams = searchParams;
                 Promise.all([list, excelList]).then(data => {
                     this.list = data[0].list;
                     this.excelList = data[1].list;

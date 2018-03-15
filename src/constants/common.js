@@ -62,6 +62,15 @@ const CommonConstant = {
     ],
     vendor: [
         {value: 1, text: '1-纵行zeta'},
+    ],
+    week: [
+        {value: 1, text: '周一'},
+        {value: 2, text: '周二'},
+        {value: 3, text: '周三'},
+        {value: 4, text: '周四'},
+        {value: 5, text: '周五'},
+        {value: 6, text: '周六'},
+        {value: 0, text: '周天'},
     ]
 };
 

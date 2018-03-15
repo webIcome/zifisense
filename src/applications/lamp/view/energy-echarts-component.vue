@@ -30,7 +30,7 @@
           </tbody>
         </table>
       <div class="get-table">
-        <div class="get-table-btn">导出表格</div>
+        <a :href="excelUrl"  class="get-table-btn">导出表格</a>
       </div>
     </div>
   </div>
@@ -39,6 +39,7 @@
 <script>
     import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
+    import Services from "../services";
     let Echarts = require('echarts/lib/echarts');
     require('echarts/lib/component/dataset');
     require('echarts/lib/chart/bar');
@@ -64,18 +65,21 @@
             },
             excelList: {
                 type: Array
+            },
+            searchParams: {
+                type: Object
             }
         },
         computed: {
             data: function () {
-                let list = [{according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
+               /* let list = [{according: '组1', result: [{timepoint: '2018-02-28', consumption: '20'},
                     {timepoint: '2018-03-01', consumption: '21'}]},
                     {according: '组2', result: [{timepoint: '2018-02-28', consumption: '20'},
-                        {timepoint: '2018-03-01', consumption: '21'}]}]
+                        {timepoint: '2018-03-01', consumption: '21'}]}]*/
                 let titles = [];
                 let data = [];
                 titles.push('unit');
-                list.forEach((item,index) => {
+                this.list.forEach((item,index) => {
                    titles.push(item.according);
                     let result = [];
                     let title;
@@ -106,6 +110,9 @@
                 if (this.myChart) {
                     return this.myChart.getDataURL();
                 }
+            },
+            excelUrl: function () {
+                return this.getUrl(Config.LAMP_URL_API, 'consumption/getExcelList', this.searchParams)
             }
         },
         mounted: function () {
@@ -141,6 +148,15 @@
             choosePage: function (page) {
                 this.currentPage = page;
             },
+            getExcel: function () {
+                console.log($.param(this.searchParams))
+                Services.getExcel(this.searchParams);
+
+            },
+            getUrl: function (url, path, params) {
+                return  url + path + '?' + $.param(params)
+
+            }
         }
     }
 </script>

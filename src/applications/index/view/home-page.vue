@@ -94,8 +94,9 @@
         height: 60px;
         line-height: 60px;
         color: #fff;
-        background: -webkit-linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));
-        background: linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));
+        /*background: -webkit-linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));*/
+        /*background: linear-gradient(left, rgba(13, 41, 109,1) 30%, rgba(13, 41, 109,0));*/
+        background: -webkit-gradient(linear, left top, right top, color-stop(30%, #0d296d), to(rgba(13, 41, 109, 0)));
         font-size: 24px;
         .icon {
           display: inline-block;

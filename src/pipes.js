@@ -5,6 +5,8 @@ import moment from "moment";
 import Common from './constants/common';
 export default {
     formDate: _formDate,
+    formTime: _formTime,
+    formWeek: _formWeek,
     lampTypeNameConverter: _lampTypeNameConverter,
     powerTypeNameConverter: _powerTypeNameConverter,
     deviceTypeNameConverter: _deviceTypeNameConverter,
@@ -18,6 +20,19 @@ export default {
 function _formDate(date, pattern) {
     if (!pattern) pattern = 'YYYY-MM-DD HH:mm:ss';
     return moment(date).format(pattern);
+}
+function _formTime(date, pattern) {
+    if (!pattern) pattern = 'HH:mm:ss';
+    return moment(date).format(pattern);
+}
+function _formWeek(value) {
+    let name = value;
+    Common.week.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
 }
 function _lampTypeNameConverter(value) {
     let name = value;

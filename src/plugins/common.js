@@ -23,6 +23,11 @@ class common {
         return moment(date).format(pattern);
     }
 
+    static getUnixDate(date, pattern) {
+        if (!pattern) pattern = 'HH:mm:ss';
+        return moment.unix(date).format(pattern);
+    }
+
     static vmSet(orginObj, targetObj) {
         Object.keys(orginObj).forEach(key => {
             this.$set(targetObj, key, orginObj[key]);
