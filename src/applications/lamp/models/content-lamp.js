@@ -11,7 +11,7 @@ export const Lamp ={
     brightness: '',
     voltagelow: '',
     current: '',
-    activepower: '',
+    sumpower: '',
     lightControllerType: '',
     sensortype: '',
     switchstate: '',

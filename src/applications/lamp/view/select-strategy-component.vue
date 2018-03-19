@@ -12,7 +12,7 @@
       <div>
         <el-table ref="singleTable" :data="list" border class="table" @row-click="select" highlight-current-row>
           <el-table-column label="策略名称" prop="strategyname" align="center"></el-table-column>
-          <el-table-column label="有效期" prop="validitytime" align="center"></el-table-column>
+          <el-table-column label="有效期" prop="validitytime" :formatter="formatter" align="center"></el-table-column>
         </el-table>
         <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                           @pagingEvent='pagingEvent'></paging-component>
@@ -73,6 +73,12 @@
                 this.dialogVisible = false;
                 this.$emit('input', val.objectid);
                 this.$emit('strategyname', val.strategyname);
+            },
+            formatter: function (row, column, cellValue) {
+                let time = this.$common.getFormDate(row.validitystart);
+                time += '~';
+                time += this.$common.getFormDate(row.validityend);
+                return time;
             },
             changeSelect: function (val) {
                 this.$emit('input', '');

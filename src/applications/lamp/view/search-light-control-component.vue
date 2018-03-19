@@ -29,10 +29,10 @@
         <div class="col-md-3">
           <el-input type="text" v-model="advancedSearchParams.groupname" placeholder="输入组名称"></el-input>
         </div>
-        <label class="col-md-3 control-label">有功电能：</label>
+        <label class="col-md-3 control-label">累计能耗：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.activepowerlow" placeholder="输入有功电能"/>到<el-input
-            type="text" class="input-two" v-model="advancedSearchParams.activepowerhigh" placeholder="输入有功电能"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.sumpowerlow" placeholder="输入累计能耗"/>到<el-input
+            type="text" class="input-two" v-model="advancedSearchParams.sumpowerhigh" placeholder="输入累计能耗"/>
         </div>
       </div>
       <div class="form-group">

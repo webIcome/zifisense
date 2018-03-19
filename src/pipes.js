@@ -15,7 +15,9 @@ export default {
     switchStateNameConverter: _switchStateNameConverter,
     strategyStateNameConverter: _strategyStateNameConverter,
     lightControllerTypeNameConverter: _lightControllerTypeNameConverter,
-    sensortypeNameConverter: _sensortypeNameConverter
+    sensortypeNameConverter: _sensortypeNameConverter,
+    enableSensorNameConverter: _enableSensorNameConverter,
+    signNameConverter: _signNameConverter
 }
 function _formDate(date, pattern) {
     if (!pattern) pattern = 'YYYY-MM-DD HH:mm:ss';
@@ -110,6 +112,24 @@ function _lightControllerTypeNameConverter(value) {
 function _sensortypeNameConverter(value) {
     let name = value;
     Common.sensorType.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
+}
+function _enableSensorNameConverter(value) {
+    let name = value;
+    Common.enableSensor.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
+}
+function _signNameConverter(value) {
+    let name = value;
+    Common.sign.forEach(item => {
         if (Number(value) == item.value) {
             name = item.text;
         }

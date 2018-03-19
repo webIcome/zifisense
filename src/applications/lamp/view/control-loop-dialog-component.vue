@@ -8,18 +8,27 @@
             <el-radio v-model="operData.controltype" :label="1">开关</el-radio>
           </div>
           <div>
-            <el-radio v-model="operData.controltype" :label="2">读取DI口</el-radio>
+            <el-radio v-model="operData.controltype" :label="2">读取所有线路</el-radio>
           </div>
           <div>
-            <el-radio v-model="operData.controltype" :label="3">抄表</el-radio>
+            <el-radio v-model="operData.controltype" :label="3">读取电流</el-radio>
           </div>
           <div>
-            <el-radio v-model="operData.controltype" :label="4">下发策略</el-radio>
-            <el-form-item v-if="operData.controltype == 4" style="display: inline-block"  prop="strategyid">
+            <el-radio v-model="operData.controltype" :label="4">抄表</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.controltype" :label="5">下发策略</el-radio>
+            <el-form-item v-if="operData.controltype == 5" style="display: inline-block"  prop="strategyid">
               <select-strategy-component v-model="operData.strategyid"
                                          :strategyName="operData.strategyname"
                                          @strategyname="operData.strategyname = arguments[0]"
                                          :modultype="moduleType.loop"></select-strategy-component>
+            </el-form-item>
+          </div>
+          <div>
+            <el-radio v-model="operData.controltype" :label="6">设置心跳包周期</el-radio>
+            <el-form-item v-if="operData.controltype == 6" style="display: inline-block"  prop="heartperiod">
+              <el-input type="text" v-model.number="operData.heartperiod"></el-input>
             </el-form-item>
           </div>
         </el-form-item>
@@ -28,8 +37,8 @@
             <div style="margin-bottom: 10px">
               <el-input style="width: 100px; margin-right: 10px" v-model="item.number"></el-input>
               <div style="display: inline-block;" v-if="operData.controltype==1">
-                <el-radio v-model="item.switch" :label='1'>开</el-radio>
-                <el-radio v-model="item.switch" :label='2'>关</el-radio>
+                <el-radio v-model="item.switchtype" :label='1'>开</el-radio>
+                <el-radio v-model="item.switchtype" :label='2'>关</el-radio>
               </div>
               <i title="删除回路" class="el-icon-remove-outline" style="vertical-align: middle;margin-left: 20px;cursor: pointer" @click="deleteLoop(index)"></i>
             </div>
@@ -77,10 +86,19 @@
                     controltype: [
                         {required: true, message: '请选择指令'}
                     ],
+                    loop: [
+                        {required: true, message: '添加回路'}
+                    ]
                 }
-                if (this.operData.controltype ==4) {
+                if (this.operData.controltype ==5) {
                     rules.strategyid = [
                         {required: true, message: '请选择策略'}
+                    ];
+                }
+                if (this.operData.controltype ==6) {
+                    rules.heartperiod = [
+                        {required: true, message: '请输入周期'},
+                        {type:'number',min: 0,max: 65535, message: '范围0~65535'}
                     ];
                 }
                 return rules;
@@ -109,29 +127,31 @@
                             data.strategyid = this.operData.strategyid;
                         }
                         if (data.controltype == 1) {
-                            data.switch = this.selectedLoops.map(item => {
-                                return item.switch
+                            data.switchtype = this.selectedLoops.map(item => {
+                                return item.switchtype
                             }).join()
                         }
-                        data.loop = this.selectedLoops.map(item => {
-                            return item.number;
-                        }).join();
-                        if (this.device.groupid) {
-                            data.groupid = this.device.groupid;
-                            Services.controlLoopGroup(data).then(res => {
-                                this.hideModal();
-                            })
-                        } else {
+                        data.loop = this.operData.loop
+                        if (this.device.deviceid) {
                             data.deviceid = this.device.deviceid;
                             Services.controlLoopSingle(data).then(res => {
                                 this.hideModal();
                             });
+
+                        } else {
+                            data.groupid = this.device.objectid;
+                            Services.controlLoopGroup(data).then(res => {
+                                this.hideModal();
+                            })
                         }
                     }
                 })
             },
             addLoop: function () {
-                this.selectedLoops.push({switch: 1, number: this.selectedLoops.length + 1})
+                this.selectedLoops.push({switchtype: 1, number: this.selectedLoops.length + 1});
+                this.operData.loop = this.selectedLoops.map(item => {
+                    return item.number;
+                }).join();
             },
             deleteLoop: function (index) {
                 this.selectedLoops.splice(index, 1)

@@ -33,7 +33,7 @@ export default {
         });
     },
     controlLightSingle(body) {
-        return HttpClient.post('lightController/singleControl', body).then(res => {
+        return HttpClient.post('singleControl/lightController', body).then(res => {
             return res;
         })
     },
@@ -66,7 +66,7 @@ export default {
         });
     },
     controlLoopSingle(body) {
-        return HttpClient.post('loopController/singleControl', body).then(res => {
+        return HttpClient.post('singleControl/loopController', body).then(res => {
             return res;
         })
     },
@@ -99,7 +99,7 @@ export default {
         });
     },
     controlPanelSingle(body) {
-        return HttpClient.post('controlPanel/singleControl', body).then(res => {
+        return HttpClient.post('singleControl/controlPanel', body).then(res => {
             return res;
         })
     },
@@ -153,17 +153,17 @@ export default {
         });
     },
     controlPanelGroup(body) {
-        return HttpClient.post('controlPanel/groupControl', body).then(res => {
+        return HttpClient.post('groupControl/controlPanel', body).then(res => {
             return res;
         })
     },
     controlLoopGroup(body) {
-        return HttpClient.post('loopController/groupControl', body).then(res => {
+        return HttpClient.post('groupControl/loopController', body).then(res => {
             return res;
         })
     },
     controlLightGroup(body) {
-        return HttpClient.post('lightController/groupControl', body).then(res => {
+        return HttpClient.post('groupControl/lightController', body).then(res => {
             return res;
         })
     },

@@ -300,7 +300,7 @@
                 this.resetData();
                 this.operData = this.transformDataToUse(strategy);
                 this.editStrategyDialogVisible = true;
-                this.validateGroups();
+//                this.validateGroups();
             },
             dialogDeleteStrategy: function (strategy) {
                 this.resetData();

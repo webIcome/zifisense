@@ -81,16 +81,15 @@
                 titles.push('unit');
                 this.list.forEach((item,index) => {
                    titles.push(item.according);
-                    let result = [];
-                    let title;
                    item.result.forEach((child, childIndex) => {
-                       result.push(child.consumption);
-                       if (index == childIndex) {
-                           title = child.timepoint
+                       if (index > 0) {
+                           data[childIndex].push(child.consumption)
+                       } else {
+                           data[childIndex] = [];
+                           data[childIndex].push(child.timepoint);
+                           data[childIndex].push(child.consumption);
                        }
                    });
-                   result.unshift(title);
-                   data.push(result);
                 });
                 data.unshift(titles);
                 return data;

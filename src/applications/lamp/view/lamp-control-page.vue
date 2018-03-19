@@ -55,7 +55,7 @@
         <th>亮度值</th>
         <th>电压</th>
         <th>电流</th>
-        <th>有功电能</th>
+        <th>累计电能</th>
         <th>操作</th>
         </thead>
         <tbody>
@@ -68,7 +68,7 @@
           <td>{{item.brightness}}</td>
           <td>{{item.voltagelow}}</td>
           <td>{{item.oldpwd}}</td>
-          <td>{{item.activepower}}</td>
+          <td>{{item.sumpower}}</td>
           <td class="td-btns">
             <div class="icon-item"><span data-toggle="modal" data-target="#edit-device"
                                          @click="dialogEditDevice(item)" class="edit-icon"></span></div>
@@ -318,7 +318,7 @@
                 },*/
                 operData: {},
                 isSearchPage: false,
-                list: [],
+                list: [{}],
                 companies: [],
                 lightControllerType: [
                     {value: 1, text: '电源蓝牙'},

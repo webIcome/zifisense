@@ -45,7 +45,7 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
-                total: '',
+                total: 0,
                 statisticalWay: {
                     device: 1,
                     group: 2,

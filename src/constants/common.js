@@ -71,6 +71,14 @@ const CommonConstant = {
         {value: 5, text: '周五'},
         {value: 6, text: '周六'},
         {value: 0, text: '周天'},
+    ],
+    enableSensor: [
+        {value: 1, text: '有效'},
+        {value: 2, text: '无效'},
+    ],
+    sign: [
+        {value: 1, text: '开启'},
+        {value: 2, text: '关闭'},
     ]
 };
 

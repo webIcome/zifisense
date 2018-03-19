@@ -113,16 +113,16 @@
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        if (this.device.groupid) {
-                            this.operData.groupid = this.device.groupid;
-                            Services.controlPanelGroup(this.operData).then(res => {
-                                this.hideModal();
-                            })
-                        } else {
+                        if (this.device.deviceid) {
                             this.operData.deviceid = this.device.deviceid;
                             Services.controlPanelSingle(this.operData).then(res => {
                                 this.hideModal();
                             });
+                        } else {
+                            this.operData.groupid = this.device.objectid;
+                            Services.controlPanelGroup(this.operData).then(res => {
+                                this.hideModal();
+                            })
                         }
                     }
                 })
