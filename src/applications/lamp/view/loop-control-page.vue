@@ -95,8 +95,9 @@
           <edit-group-max-component v-model="operData.groupid"
                                     :companyid="operData.companyid"
                                     :groupname="operData.groupname"
+                                    @name="operData.groupname = arguments[0]"
                                     :run="addDeviceDialogVisible"
-                                    :moduletype="moduleType.panel"></edit-group-max-component>
+                                    :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
           <el-input type="text" v-model="operData.loopnum"/>
@@ -129,6 +130,7 @@
           <edit-group-max-component v-model="operData.groupid"
                                     :companyid="operData.companyid"
                                     :groupname="operData.groupname"
+                                    @name="operData.groupname = arguments[0]"
                                     :run="editDeviceDialogVisible"
                                     :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
@@ -234,7 +236,7 @@
                     diportstate: ''
                 },
                 operData: {},
-                list: [{}],
+                list: [],
                 companies: [],
                 isSearchPage: false,
                 diPortStatus: [

@@ -74,6 +74,7 @@
           <edit-group-max-component v-model="operData.groupid"
                                     :companyid="operData.companyid"
                                     :groupname="operData.groupname"
+                                    @name="operData.groupname = arguments[0]"
                                     :run="addDeviceDialogVisible"
                                     :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>
@@ -105,6 +106,7 @@
           <edit-group-max-component v-model="operData.groupid"
                                     :companyid="operData.companyid"
                                     :groupname="operData.groupname"
+                                    @name="operData.groupname = arguments[0]"
                                     :run="editDeviceDialogVisible"
                                     :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>

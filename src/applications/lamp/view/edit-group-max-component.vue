@@ -69,9 +69,6 @@
                 default: ''
             }
         },
-        created: function () {
-            this.initData();
-        },
         computed: {
             editable: function () {
                 return this.moduletype && this.companyid
@@ -85,8 +82,8 @@
             }
         },
         watch: {
-            run: function (newVal) {
-                if (newVal) this.getSelectedList();
+            value: function (newVal) {
+                if (newVal && this.run) this.getSelectedList();
             }
         },
         methods: {
@@ -98,6 +95,7 @@
                 this.searchParams.companyid = this.companyid;
                 this.searchParams.moduletype = this.moduletype;
                 this.dialogVisible = true;
+                this.initSelectedList();
                 this.findList(this.searchParams)
             },
             pagingEvent: function (pageNumber) {
@@ -109,18 +107,33 @@
                     this.searchParams.pageNum = data.pageNum;
                     this.searchParams.pages = data.pages;
                     this.searchParams.pageSize = data.pageSize;
-                    this.list = this.selectDataList.concat(data.list);
+                    this.list = this.concatList(data.list);
                     this.total = this.list.length;
                 });
             },
+            concatList: function (list) {
+                list = list.filter(item => {
+                    let filter = true;
+                    this.selectDataList.forEach(selectItem => {
+                        if (selectItem.objectid == item.objectid) {
+                            filter = false
+                        }
+                    });
+                    return filter;
+                });
+                return list.concat(this.selectDataList);
+            },
             getSelectedList: function () {
+                this.initSelectedList();
+                this.$emit('input', this.selectedList.join());
+            },
+            initSelectedList: function () {
                 this.selectedList = [];
                 if (!this.value) return;
                 this.selectDataList = this.getGroups(this.value, this.groupname);
                 this.selectDataList.forEach(item => {
                     this.selectedList.push(item.objectid);
                 });
-                this.$emit('input', this.selectedList.join());
             },
             getGroups: function (id, name) {
                 let ids = id.split(',');
@@ -128,15 +141,33 @@
                 let groups = [];
                 ids.forEach((item,index) => {
                     let group = {};
-                    group.sn = item;
-                    group.devicename = names[index];
+                    group.objectid = item;
+                    group.groupname = names[index];
                     groups.push(group)
                 });
                 return groups;
             },
             selectDevice: function () {
+                if (this.selectedList.length > 5) {
+                    this.$message({
+                    message: '最多归属5个组',
+                    type: 'warning',
+                    duration: 1000
+                    });
+                    return;
+                }
+                this.name(this.selectedList);
                 this.$emit('input', this.selectedList.join());
                 this.dialogVisible = false;
+            },
+            name: function (selectedList) {
+                let names = [];
+                this.list.forEach(item => {
+                    if (selectedList.indexOf(item.objectid) != -1) {
+                        names.push(item.groupname);
+                    }
+                });
+                this.$emit('name', names.join())
             },
             resetData: function () {
 

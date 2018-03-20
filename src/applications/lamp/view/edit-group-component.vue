@@ -51,7 +51,7 @@
                   pageSize: Config.DEFAULT_PAGE_SIZE,
                   pageNum: 1
               },
-              total: '',
+              total: 0,
               deviceType: {},
 
           }
@@ -72,9 +72,6 @@
           run: {
               default: false
           }
-      },
-      created: function () {
-          this.initData();
       },
       computed: {
           editable: function () {
@@ -133,12 +130,15 @@
               if (!this.groupid) return;
               Services.getSelectedDevicesGroupList({companyid: this.companyid, moduletype: this.moduletype, objectid: this.groupid}).then(data => {
                   this.selectDataList = data.list;
-                  this.selectedList = [];
-                  this.selectDataList.forEach(item => {
-                      this.selectedList.push(item.sn);
-                  });
+                 this.initSelectDataList();
                   this.$emit('input', this.selectedList.join());
               })
+          },
+          initSelectDataList: function () {
+              this.selectedList = [];
+              this.selectDataList.forEach(item => {
+                  this.selectedList.push(item.sn);
+              });
           },
           selectDevice: function () {
               this.$emit('input', this.selectedList.join());
