@@ -88,7 +88,7 @@
         <el-form-item label="归属岗位：" prop="postid">
           <el-select v-model="operUser.postid" placeholder="请选择岗位">
             <template v-for="post in posts">
-              <el-option :value="post.objectid">{{post.postname}}</el-option>
+              <el-option :key="post.objectid" :value="post.objectid" :label="post.postname"></el-option>
             </template>
           </el-select>
         </el-form-item>
@@ -190,10 +190,10 @@
                         {required: true, message: '请填写姓名'}
                     ],
                     expiretime: [
-                        {required: true, message: '请填写邮箱'}
+                        {required: true, message: '选择日期'}
                     ],
                     email: [
-                        {required: true, message: '请选择日期'}
+                        {required: true, message: '请填写邮箱'}
                     ],
                 },
                 addUserDialogVisible: false,

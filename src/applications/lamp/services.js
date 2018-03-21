@@ -337,8 +337,8 @@ export default {
             return res.body.data;
         })
     },
-    getExcel(params) {
-        return HttpClient.get('consumption/getExcelList', {params: params}).then(res => {
+    getExcel(config) {
+        return HttpClient.get('consumption/getExcelList', config).then(res => {
             return res;
         })
     }

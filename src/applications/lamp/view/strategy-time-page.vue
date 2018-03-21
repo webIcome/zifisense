@@ -58,9 +58,9 @@
           <td>{{item.moduletype | deviceTypeNameConverter}}</td>
           <td>{{item.validitystart | formDate}}~{{item.validityend | formDate}}</td>
           <td v-if="item.periodtype == period.single">{{item.singlextime | formDate}}</td>
-          <td v-else-if="item.periodtype == period.day">{{item.singlextime | formTime}}</td>
-          <td v-else-if="item.periodtype == period.week">{{item.weeknumber | formWeek}}/{{item.singlextime | formTime}}</td>
-          <td v-else-if="item.periodtype == period.intervaltime">每分钟 {{item.intervaltime}}次</td>
+          <td v-else-if="item.periodtype == period.day">每天 {{item.periodextime | formTime}}</td>
+          <td v-else-if="item.periodtype == period.week">{{item.weeknumber | formWeek}} {{item.periodextime | formTime}}</td>
+          <td v-else-if="item.periodtype == period.interval">{{item.intervaltime}} 分钟/次</td>
           <td class="td-btns">
             <div class="icon-item"><span @click="dialogEditStrategy(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteStrategy(item)" class="delete-icon"></span></div>
@@ -82,7 +82,7 @@
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="策略功能：" prop="moduletype">
-          <el-select v-model="operData.moduletype" placeholder="选择类型" clearable>
+          <el-select v-model="operData.moduletype" placeholder="选择类型" clearable @change="changeModuletype">
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
@@ -171,7 +171,7 @@
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
         <el-form-item label="策略功能：" prop="moduletype">
-          <el-select v-model="operData.moduletype" placeholder="选择类型" clearable>
+          <el-select v-model="operData.moduletype" placeholder="选择类型" clearable @change="changeModuletype">
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
@@ -277,10 +277,13 @@
                 editStrategyDialogVisible: false,
                 deleteStrategyDialogVisible: false,
                 searchParams: {
+                    companyid: '',
                     strategyname: '',
                     moduletype: '',
-                    validityStart: '',
-                    validityEnd: '',
+                    validitystartST: '',
+                    validitystartED: '',
+                    validityendST: '',
+                    validityendED: '',
                 },
                 operData: {},
                 list: [{}],
@@ -308,6 +311,13 @@
         },
         computed: {
             addStrategyRules: function () {
+                let dateValidatePass = (rule, value, callback) => {
+                    if (!value || value == 'Invalid date') {
+                        callback(new Error('请选择时间'))
+                    } else {
+                        callback()
+                    }
+                };
                 let rules = {
                     companyid: [
                         {required: true, message: '请选择所属企业'}
@@ -339,12 +349,12 @@
                         break;
                     case this.period.day:
                         rules.periodextime = [
-                            {required: true, message: '请选择时间'}
+                            {validator: dateValidatePass}
                         ];
                         break;
                     case this.period.week:
                         rules.periodextime = [
-                            {required: true, message: '请选择时间'}
+                            {validator: dateValidatePass}
                         ];
                         rules.weeknumber = [
                             {required: true, message: '请选择时间'}
@@ -389,11 +399,17 @@
             initOperData: function () {
 //                this.operData = this.$common.copyObj(LampContent);
             },
+            changeModuletype: function () {
+                if (this.operData.taskcmd) this.operData.taskcmd = '';
+            },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
                 this.findList(this.searchParams);
             },
             findList: function (params) {
+                Object.keys(params).forEach(key => {
+                    if (params[key] instanceof Date) params[key] = this.$common.getFormDate(params[key])
+                });
                 Services.findStrategy(params).then(data => {
                     this.searchParams.pageNum = data.pageNum;
                     this.searchParams.pages = data.pages;

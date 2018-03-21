@@ -25,7 +25,7 @@ class common {
 
     static getUnixDate(date, pattern) {
         if (!pattern) pattern = 'HH:mm:ss';
-        return moment.unix(date).format(pattern);
+        return moment(Number(date)).format(pattern);
     }
 
     static vmSet(orginObj, targetObj) {

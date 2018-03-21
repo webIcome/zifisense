@@ -5,7 +5,7 @@
       <div @click="choosePage(pages.echart)" class="energy-title-chart" :class="{active: currentPage == pages.echart}"><span class="icon"></span>柱状图</div>
     </div>
     <div  v-show="currentPage == pages.echart">
-      <div id="charts" style="width: 100%; height: 500px">
+      <div id="charts" style="width: 100%; height: 450px">
       </div>
       <div class="get-table">
         <a :href="download" class="get-table-btn" download="chart">下载图片</a>
@@ -30,7 +30,8 @@
           </tbody>
         </table>
       <div class="get-table">
-        <a :href="excelUrl"  class="get-table-btn">导出表格</a>
+        <!--<a :href="excelUrl"  class="get-table-btn">导出表格</a>-->
+        <a @click="downloadExcel"  class="get-table-btn">导出表格</a>
       </div>
     </div>
   </div>
@@ -110,9 +111,9 @@
                     return this.myChart.getDataURL();
                 }
             },
-            excelUrl: function () {
+           /* excelUrl: function () {
                 return this.getUrl(Config.LAMP_URL_API, 'consumption/getExcelList', this.searchParams)
-            }
+            }*/
         },
         mounted: function () {
             this.initData();
@@ -147,14 +148,27 @@
             choosePage: function (page) {
                 this.currentPage = page;
             },
-            getExcel: function () {
-                console.log($.param(this.searchParams))
-                Services.getExcel(this.searchParams);
-
-            },
-            getUrl: function (url, path, params) {
+           /* getUrl: function (url, path, params) {
                 return  url + path + '?' + $.param(params)
-
+            },*/
+            downloadExcel: function () {
+                Services.getExcel({params: this.searchParams, responseType: 'blob'}).then(res => {
+                    return res.blob();
+                }).then(blob => {
+                    let urlObject = window.URL || window.webkitURL || window;
+                    let save_link = document.createElement("a");
+                    save_link.href = urlObject.createObjectURL(blob);
+                    save_link.download = Date.parse(new Date()) + '.xls';
+                    this.fakeClick(save_link);
+                })
+            },
+            fakeClick: function (obj) {
+                var ev = document.createEvent("MouseEvents");
+                ev.initMouseEvent(
+                    "click", true, false, window, 0, 0, 0, 0, 0
+                    , false, false, false, false, 0, null
+                );
+                obj.dispatchEvent(ev);
             }
         }
     }

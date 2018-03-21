@@ -25,7 +25,7 @@ function _formDate(date, pattern) {
 }
 function _formTime(date, pattern) {
     if (!pattern) pattern = 'HH:mm:ss';
-    return moment(date).format(pattern);
+    return moment(Number(date)).format(pattern);
 }
 function _formWeek(value) {
     let name = value;

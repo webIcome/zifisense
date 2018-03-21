@@ -138,7 +138,6 @@
 </template>
 
 <script>
-    import RestfulConstant from "../../../constants/restful";
     import Config from "../../../config";
     import Services from "../services";
     import selectGroupComponent from './select-group-component.vue';
