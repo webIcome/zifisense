@@ -492,18 +492,7 @@
                 this.isEditLimit = true;
             },
             confirmLimit: function () {
-                let ids = [];
-                this.limits.forEach(item => {
-                    if (item.checked) {
-                        ids.push(item.objectid);
-                        item.children.forEach(permission => {
-                            if (permission.checked) {
-                                ids.push(permission.objectid)
-                            }
-                        })
-                    }
-
-                });
+                let ids = this.getIds(this.limits);
                 this.$http.post('permission/changeForPost', {
                     postid: this.currentPost.objectid,
                     permissionlist: ids.join(',')
@@ -512,6 +501,23 @@
                     this.getPostsPermission();
                 });
                 this.isEditLimit = false;
+            },
+            getIds: function (list) {
+                let ids = [];
+                function getIds(list) {
+                    if (list && list.length) {
+                        list.forEach(item => {
+                            if (item.checked) {
+                                ids.push(item.objectid);
+                                getIds(item.children);
+                            }
+                        })
+                    } else {
+                        return
+                    }
+                }
+                getIds(list);
+                return ids;
             },
             closeMode: function () {
                 this.editPostDialogVisible = false;

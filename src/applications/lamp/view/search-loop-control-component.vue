@@ -62,22 +62,11 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">三相电压：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.threeVoltageLow"/>到<input
-            type="text" class="form-control input-two" v-model="advancedSearchParams.threeVoltageHigh"/>
-        </div>
         <label class="col-md-3 control-label">运行状态：</label>
         <div class="col-md-3">
           <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
             <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
           </el-select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">三项电流：</label>
-        <div class="col-md-3">
-          <el-input type="text" class="input-two"/>到<el-input type="text" class="input-two"/>
         </div>
       </div>
       <div class="search-btn">

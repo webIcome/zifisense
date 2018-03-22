@@ -70,6 +70,14 @@ class common {
             return color;
         }
     }
+    static rgbColor(string) {
+        let rgb = string.split(',');
+        let r = parseInt(rgb[0]);
+        let g = parseInt(rgb[1]);
+        let b = parseInt(rgb[2]);
+        let hex = "#" + ((r << 16) + (g << 8) + b).toString(16);
+        return hex;
+    }
 }
 export default {
     install(Vue, pluginOptions = {}) {

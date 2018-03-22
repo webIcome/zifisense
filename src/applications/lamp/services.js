@@ -11,14 +11,14 @@ export default {
         })
     },
     getLight(id) {
-        return HttpClient.post('lightController/getDetailsBySn', {sn: id}).then(res => {
+        return HttpClient.post('lightController/getDetailsBySn', {deviceid: id}).then(res => {
             let data = res.body.data;
             if (!data) data = {};
             return data
         })
     },
     deleteLight(id) {
-        return HttpClient.post('lightController/delete', {sn: id}).then(res => {
+        return HttpClient.post('lightController/delete', {deviceid: id}).then(res => {
             return res;
         });
     },
@@ -44,14 +44,14 @@ export default {
         })
     },
     getLoop(id) {
-        return HttpClient.post('loopController/getDetailsBySn', {sn: id}).then(res => {
+        return HttpClient.post('loopController/getDetailsBySn', {deviceid: id}).then(res => {
             let data = res.body.data;
             if (!data) data = {};
             return data
         })
     },
     deleteLoop(id) {
-        return HttpClient.post('loopController/delete', {sn: id}).then(res => {
+        return HttpClient.post('loopController/delete', {deviceid: id}).then(res => {
             return res;
         });
     },
@@ -77,14 +77,14 @@ export default {
         })
     },
     getPanel(id) {
-        return HttpClient.post('controlPanel/getDetailsBySn', {sn: id}).then(res => {
+        return HttpClient.post('controlPanel/getDetailsBySn', {deviceid: id}).then(res => {
             let data = res.body.data;
             if (!data) data = {};
             return data
         })
     },
     deletePanel(id) {
-        return HttpClient.post('controlPanel/delete', {sn: id}).then(res => {
+        return HttpClient.post('controlPanel/delete', {deviceid: id}).then(res => {
             return res;
         });
     },

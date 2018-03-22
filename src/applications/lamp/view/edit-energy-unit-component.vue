@@ -92,7 +92,7 @@
                 let label;
                 switch (this.statisticalway) {
                     case 1:
-                        key = 'sn';
+                        key = 'deviceid';
                         label = 'devicename';
                         break;
                     case 2:
@@ -108,7 +108,7 @@
                         label = 'companyname';
                         break;
                     default:
-                        key = 'sn';
+                        key = 'deviceid';
                         label = 'devicename';
                         break;
                 }

@@ -140,6 +140,19 @@
           <div>
             <el-radio v-model="operData.taskcmd" label="lightSate">状态读取</el-radio>
           </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.taskcmd" label="colorTempAdjust">调节色温</el-radio>
+            <div style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
+                         show-input></el-slider>
+            </div>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.taskcmd" label="rgbAdjust">调节RGB</el-radio>
+            <div style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-input :disabled="operData.taskcmd != 'rgbAdjust'" type="color" v-model="operData.rgb"/>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item label="执行功能：" v-else prop="taskcmd">
           <div>
@@ -228,6 +241,19 @@
           </div>
           <div>
             <el-radio v-model="operData.taskcmd" label="lightSate">状态读取</el-radio>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.taskcmd" label="colorTempAdjust">调节色温</el-radio>
+            <div style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
+                         show-input></el-slider>
+            </div>
+          </div>
+          <div style="position: relative">
+            <el-radio v-model="operData.taskcmd" label="rgbAdjust">调节RGB</el-radio>
+            <div style="position: absolute; width: 300px; right: 0; top: 5px">
+              <el-input :disabled="operData.taskcmd != 'rgbAdjust'" type="color" v-model="operData.rgb"/>
+            </div>
           </div>
         </el-form-item>
         <el-form-item label="执行功能：" v-else prop="taskcmd">
@@ -349,7 +375,7 @@
                         break;
                     case this.period.day:
                         rules.periodextime = [
-                            {validator: dateValidatePass}
+                            {validator: dateValidatePass, required: true}
                         ];
                         break;
                     case this.period.week:
@@ -427,6 +453,7 @@
             dialogEditStrategy: function (item) {
                 this.resetData();
                 this.getStrategyDetail(item.objectid).then(data => {
+                    if (data.rgb) data.rgb = this.$common.rgbColor(data.rgb);
                     this.operData = data;
                     this.editStrategyDialogVisible = true;
                 });
@@ -446,6 +473,12 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         if (this.operData.moduletype == 1) {
+                            if (this.operData.taskcmd == 'rgbAdjust') {
+                                if (!this.operData.rgb) {
+                                    this.operData.rgb = '#000000'
+                                }
+                                this.operData.rgb = this.$common.colorRgb(this.operData.rgb);
+                            }
                             Services.addLightStrategy(this.transformData(this.operData)).then(res => {
                                 this.initPaging();
                                 this.hideModal();
@@ -464,6 +497,12 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         if (this.operData.moduletype == 1) {
+                            if (this.operData.taskcmd == 'rgbAdjust') {
+                                if (!this.operData.rgb) {
+                                    this.operData.rgb = '#000000'
+                                }
+                                this.operData.rgb = this.$common.colorRgb(this.operData.rgb);
+                            }
                             Services.editLightStrategy(this.transformData(this.operData)).then(res => {
                                 this.initPaging();
                                 this.hideModal();

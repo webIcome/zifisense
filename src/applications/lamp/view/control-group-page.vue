@@ -72,8 +72,8 @@
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备：" prop="sn">
-          <edit-group-component v-model="addGroupData.sn"
+        <el-form-item label="设备：" prop="deviceid">
+          <edit-group-component v-model="addGroupData.deviceid"
                                 :groupid="addGroupData.objectid"
                                 :run="addGroupDialogVisible"
                                 :moduletype="addGroupData.moduletype"
@@ -103,9 +103,9 @@
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备：" prop="sn">
+        <el-form-item label="设备：" prop="deviceid">
 
-          <edit-group-component v-model="editGroupData.sn"
+          <edit-group-component v-model="editGroupData.deviceid"
                                       :groupid="editGroupData.objectid"
                                 :run="editGroupDialogVisible"
                                       :moduletype="editGroupData.moduletype"
@@ -185,7 +185,7 @@
                     moduletype: [
                         {required: true, message: '请选择类型'}
                     ],
-                    sn: [
+                    deviceid: [
                         {required: true, message: '请选择设备'}
                     ],
                     strategyid: [

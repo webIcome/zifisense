@@ -42,7 +42,7 @@
                   hasChecked: '${checked}/${total}'
               },
               props: {
-                  key: 'sn',
+                  key: 'deviceid',
                   label: 'devicename'
               },
               selectedList: [],
@@ -137,7 +137,7 @@
           initSelectDataList: function () {
               this.selectedList = [];
               this.selectDataList.forEach(item => {
-                  this.selectedList.push(item.sn);
+                  this.selectedList.push(item.deviceid);
               });
           },
           selectDevice: function () {

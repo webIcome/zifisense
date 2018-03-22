@@ -290,7 +290,7 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                Services.getPanel(device.sn).then(device => {
+                Services.getPanel(device.deviceid).then(device => {
                     this.deviceView = device;
                     this.showPage(this.pages.detail)
                 });
@@ -304,7 +304,7 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                Services.getPanel(device.sn).then(device => {
+                Services.getPanel(device.deviceid).then(device => {
                     this.operData = device
                 });
                 this.editDeviceDialogVisible = true;
@@ -315,7 +315,7 @@
                 this.deleteDeviceDialogVisible = true;
             },
             deleteDevice: function () {
-                Services.deletePanel(this.operData.sn).then(res => {
+                Services.deletePanel(this.operData.deviceid).then(res => {
                     this.hideModal();
                     this.initPanel();
                 });

@@ -423,7 +423,7 @@
                 if (event.target.className == 'delete-icon' || event.target.className == 'edit-icon') {
                     return;
                 }
-                Services.getLight(device.sn).then(device => {
+                Services.getLight(device.deviceid).then(device => {
                     this.deviceView = device;
                     this.showPage(this.pages.detail)
                 });
@@ -463,7 +463,7 @@
             },
             dialogEditDevice: function (device) {
                 this.resetData();
-                Services.getLight(device.sn).then(device => {
+                Services.getLight(device.deviceid).then(device => {
                     this.operData = device;
                     this.showSelectedLoopName = device.devicename;
                     this.showSelectedLampName = device.lampType
@@ -476,7 +476,7 @@
                 this.deleteDeviceDialogVisible = true;
             },
             deleteDevice: function () {
-                Services.deleteLight(this.operData.sn).then(res => {
+                Services.deleteLight(this.operData.deviceid).then(res => {
                     this.initLamp();
                     this.hideModal();
                 });
