@@ -43,7 +43,7 @@ export default class GVerify {
         for(var i = 0; i <txtArr.length; i++) {
             var txt = txtArr[i];
             this.options.code += txt;
-            ctx.font = this._randomNum(this.options.height/2, this.options.height) + 'px SimHei'; //随机生成字体大小
+            ctx.font = this._randomNum(this.options.height/1.5, this.options.height) + 'px SimHei'; //随机生成字体大小
             ctx.fillStyle = this._randomColor(50, 160); //随机生成字体颜色
             ctx.shadowOffsetX = this._randomNum(-3, 3);
             ctx.shadowOffsetY = this._randomNum(-3, 3);

@@ -29,8 +29,6 @@
       <div class="form-group">
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3 form-control-static">{{device.regtime | formDate}}</div>
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3 form-control-static">{{device.runningstate | runningstateNameConverter}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

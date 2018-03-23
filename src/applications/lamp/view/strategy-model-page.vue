@@ -6,7 +6,7 @@
           <div class="form-group">
             <label>情景名称：</label>
             <el-input style="width: 180px" type="text" v-model="searchParams.scenarioname"
-                      placeholder="输入情景名称"></el-input>
+                      placeholder="输入情景名称" clearable></el-input>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选
 
@@ -30,7 +30,7 @@
         <tr v-for="item in list">
           <td>{{item.scenarioname}}</td>
           <td>{{item.groupname}}</td>
-          <td>{{item.analysistask}}</td>
+          <td style="max-width: 500px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.analysistask">{{item.analysistask}}</td>
           <td class="td-btns">
             <div class="icon-item"><span @click="dialogEditStrategy(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteStrategy(item)" class="delete-icon"></span></div>

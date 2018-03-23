@@ -31,7 +31,6 @@
         <thead>
         <th>设备名称</th>
         <th>设备ID</th>
-        <th>运行状态</th>
         <th>按钮1情景模式</th>
         <th>按钮2情景模式</th>
         <th>按钮3情景模式</th>
@@ -42,7 +41,6 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runningstate | runningstateNameConverter}}</td>
           <td>{{item.buttonmode1}}</td>
           <td>{{item.buttonmode2}}</td>
           <td>{{item.buttonmode3}}</td>
@@ -137,7 +135,6 @@
 
   <search-panel-control-component v-else-if="currentPage == pages.search"
                                  @search="highSearch" @back="goBack"
-                                 :runningStatus="runningStatus"
                                  :companies="companies"></search-panel-control-component>
   <detail-panel-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-panel-control-page>
 
@@ -192,7 +189,6 @@
                     regtimestart: '',
                     regtimeend: '',
                     companyid: '',
-                    runningstate: '',
                 },
                 operData: {},
                 addDeviceData: {},
@@ -201,13 +197,6 @@
                 companies: [],
                 groups: [{name: '分组1'},{name: '分组2'}],
                 isSearchPage: false,
-                runningStatus: [
-                    {value: 1, text: '正常'},
-                    {value: 2, text: '欠流'},
-                    {value: 3, text: '过流'},
-                    {value: 4, text: '欠压'},
-                    {value: 5, text: '过压'},
-                ],
                 controlPattern: [
                     {value: 1, text: '普通模式'},
                     {value: 2, text: '情景模式'},

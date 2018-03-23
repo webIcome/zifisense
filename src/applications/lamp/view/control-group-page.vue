@@ -14,9 +14,9 @@
             </el-select>
           </div>
           <div class="form-group">
-            <label class="sr-only">应用状态：</label>
-            <el-select v-model="searchParams.switchstate" placeholder="选择应用状态" clearable >
-              <el-option v-for="status in deviceState" :key="status.value" :value="status.value" :label="status.text"></el-option>
+            <label class="sr-only">策略执行状态：</label>
+            <el-select v-model="searchParams.strategystate" placeholder="选择策略执行状态" clearable >
+              <el-option v-for="status in strategyState" :key="status.value" :value="status.value" :label="status.text"></el-option>
             </el-select>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
@@ -34,7 +34,7 @@
         <th>类型</th>
         <th>数量</th>
         <th>策略</th>
-        <th>应用状态</th>
+        <th>策略执行状态</th>
         <th>操作</th>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@
           <td>{{item.moduletype | deviceTypeNameConverter}}</td>
           <td>{{item.deviceTotal}}</td>
           <td>{{item.strategyname}}</td>
-          <td>{{item.strategystate | deviceStateNameConverter}}</td>
+          <td>{{item.strategystate | strategyStateNameConverter}}</td>
           <td class="td-btns">
             <control-light-dialog-component v-if="item.moduletype == moduleType.light" :device="item"></control-light-dialog-component>
             <control-loop-dialog-component v-if="item.moduletype == moduleType.loop" :device="item"></control-loop-dialog-component>
@@ -205,7 +205,7 @@
                 deleteGroupData:{},
                 list: [{}],
                 companies: [],
-                deviceState: [],
+                strategyState: [],
                 deviceType: [],
                 moduleType: {
                 },
@@ -237,7 +237,7 @@
             },
             initCommonData: function () {
                 this.deviceType = Common.deviceType;
-                this.deviceState = Common.deviceState;
+                this.strategyState = Common.strategyState;
                 this.deviceType.forEach(item => {
                     this.moduleType[item.name] = item.value;
                 })

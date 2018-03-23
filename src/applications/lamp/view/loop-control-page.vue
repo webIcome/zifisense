@@ -51,7 +51,6 @@
         <thead>
         <th>设备名称</th>
         <th>设备ID</th>
-        <th>运行状态</th>
         <th>回路数</th>
         <th>地理位置</th>
         <th>回路状态、DI口状态</th>
@@ -62,7 +61,6 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runningstate | runningstateNameConverter}}</td>
           <td>{{item.loopnum}}</td>
           <td>{{item.position}}</td>
           <td>{{item.loopcontrol + '、' + item.diportstate}}</td>
@@ -164,7 +162,6 @@
 
   <search-loop-control-component v-else-if="currentPage == pages.search"
                                  @search="highSearch" @back="goBack"
-                                 :runningStatus="runningStatus"
                                  :diPortStatus="diPortStatus"
                                  :companies="companies"></search-loop-control-component>
   <detail-loop-control-page v-else-if="currentPage == pages.detail" :device="deviceView" :pages="pages" @page="showPage"></detail-loop-control-page>
@@ -242,13 +239,6 @@
                 diPortStatus: [
                     {value: 1, text: '开'},
                     {value: 2, text: '关'},
-                ],
-                runningStatus: [
-                    {value: 1, text: '正常'},
-                    {value: 2, text: '欠流'},
-                    {value: 3, text: '过流'},
-                    {value: 4, text: '欠压'},
-                    {value: 5, text: '过压'},
                 ],
                 vendor: [],
                 moduleType: {},

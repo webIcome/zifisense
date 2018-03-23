@@ -34,7 +34,7 @@
         <th>类型</th>
         <th>数量</th>
         <th>策略</th>
-        <th>应用状态</th>
+        <th>策略执行状态</th>
         <th>操作</th>
         </thead>
         <tbody>

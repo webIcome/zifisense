@@ -42,7 +42,7 @@
         <label class="col-md-3 control-label">开关状态：</label>
         <div class="col-md-3 form-control-static">{{device.switchstate | switchStateNameConverter}}</div>
         <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3 form-control-static">{{device.runningstate | runningstateNameConverter}}</div>
+        <div class="col-md-3 form-control-static">{{device.runningstate}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>

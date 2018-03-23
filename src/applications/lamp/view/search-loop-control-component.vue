@@ -61,14 +61,6 @@
           <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
         </div>
       </div>
-      <div class="form-group">
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-      </div>
       <div class="search-btn">
         <div @click="highSearch" class="default-btn">搜索</div>
         <div @click="goBack" class="default-btn">返回</div>
@@ -86,9 +78,6 @@
             }
         },
         props: {
-            runningStatus: {
-                type: Array
-            },
             companies: {
                 type: Array
             },

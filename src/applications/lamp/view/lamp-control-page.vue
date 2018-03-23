@@ -62,7 +62,7 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runningstate | runningstateNameConverter}}</td>
+          <td>{{item.runningstate}}</td>
           <td>{{item.position}}</td>
           <td>{{item.switchstate | switchStateNameConverter}}</td>
           <td>{{item.brightness}}</td>

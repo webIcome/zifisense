@@ -82,14 +82,6 @@
             <el-option v-for="type in switchStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
           </el-select>
         </div>
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
         <div class="col-md-3">
           <el-input type="text" class="input-two" v-model="advancedSearchParams.brightnesslow" placeholder="输入亮度"/>到<el-input
@@ -130,14 +122,7 @@
                     {value: 1, text: '无'},
                     {value: 2, text: '光感'},
                     {value: 3, text: '微波'},
-                ],
-                runningStatus: [
-                    {value: 1, text: '正常'},
-                    {value: 2, text: '欠流'},
-                    {value: 3, text: '过流'},
-                    {value: 4, text: '欠压'},
-                    {value: 5, text: '过压'},
-                ],
+                ]
             }
         },
         props: {

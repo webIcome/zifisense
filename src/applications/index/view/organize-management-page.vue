@@ -322,16 +322,14 @@
                 posts: [],
                 limits: [],
                 operPost: {
-                    postid: '',
                     postname: '',
                     description: ''
                 },
                 deleteCompanyData: {
                     companyname: '',
-                    companyid: ''
+                    objectid: ''
                 },
                 editCompanyData: {
-                    companyid: '',
                     companyname: ''
                 },
                 addCompanyData: {
@@ -572,12 +570,12 @@
       .company-title-name,
       .job-title-name,
       .limit-title-name {
+        float: left;
         margin-right: 10px;
         display: inline-block;
         height: 24px;
         line-height: 24px;
         padding-left: 16px;
-        vertical-align: middle;
         margin-top: 8px;
         border-left: 6px solid #1789e1;
         color: #1789e1;
@@ -590,7 +588,6 @@
         font-size: 18px;
         color: #fff;
         padding-left: 10px;
-        vertical-align: middle;
         cursor: pointer;
       }
       .btn-add-company {

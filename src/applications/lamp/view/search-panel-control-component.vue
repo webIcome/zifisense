@@ -23,12 +23,6 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">运行状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.runningstate" placeholder="选择运行状态" clearable  style="width: 100%;">
-            <el-option v-for="type in runningStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
           <el-col :span="11">
@@ -39,8 +33,6 @@
             <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
           </el-col>
         </div>
-      </div>
-      <div class="form-group">
         <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3">
           <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>
@@ -63,9 +55,6 @@
             }
         },
         props: {
-            runningStatus: {
-                type: Array
-            },
             companies: {
                 type: Array
             },
