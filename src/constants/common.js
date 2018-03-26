@@ -61,7 +61,7 @@ const CommonConstant = {
         {appcode: 'XTQX', appname: '系统管理', name: 'sys'},
     ],
     vendor: [
-        {value: 1, text: '1-纵行zeta'},
+        {value: 1, text: '纵行zeta'},
     ],
     week: [
         {value: 1, text: '周一'},
@@ -79,6 +79,11 @@ const CommonConstant = {
     sign: [
         {value: 1, text: '开启'},
         {value: 2, text: '关闭'},
+    ],
+    mode: [
+        {value: 1, text: '全控制模式'},
+        {value: 2, text: '情景模式'},
+        {value: 3, text: '组控制模式'},
     ]
 };
 

@@ -17,7 +17,9 @@ export default {
     lightControllerTypeNameConverter: _lightControllerTypeNameConverter,
     sensortypeNameConverter: _sensortypeNameConverter,
     enableSensorNameConverter: _enableSensorNameConverter,
-    signNameConverter: _signNameConverter
+    signNameConverter: _signNameConverter,
+    modeNameConverter: _modeNameConverter,
+    noinducedbrightnessNameConverter: _noinducedbrightnessNameConverter,
 }
 function _formDate(date, pattern) {
     if (!pattern) pattern = 'YYYY-MM-DD HH:mm:ss';
@@ -135,4 +137,19 @@ function _signNameConverter(value) {
         }
     });
     return name;
+}
+function _modeNameConverter(value) {
+    let name = value;
+    Common.mode.forEach(item => {
+        if (Number(value) == item.value) {
+            name = item.text;
+        }
+    });
+    return name;
+}
+function _noinducedbrightnessNameConverter(value) {
+    if (value == 255) {
+        return '关灯'
+    }
+    return value;
 }

@@ -49,6 +49,15 @@
           <div>
             <el-radio v-model="operData.controltype" :label='15'>传感器使能</el-radio>
           </div>
+          <div>
+            <el-radio v-model="operData.controltype" :label='16'>感应亮度设置</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.controltype" :label='17'>感应色温设置</el-radio>
+          </div>
+          <div>
+            <el-radio v-model="operData.controltype" :label='18'>感应RGB设置</el-radio>
+          </div>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 5" label="策略：" prop="strategyid">
           <select-strategy-component v-model="operData.strategyid"
@@ -136,6 +145,42 @@
           <el-radio v-model="operData.enablesensor" :label='1'>有效</el-radio>
           <el-radio v-model="operData.enablesensor" :label='2'>无效</el-radio>
         </el-form-item>
+        <el-form-item v-if="operData.controltype == 15 && operData.enablesensor == 1" label="感应保持状态时间：" prop="inducedkeeptime">
+          <el-input type="text" v-model.number="operData.inducedkeeptime"></el-input>
+        </el-form-item>
+        <template  v-if="operData.controltype == 16">
+          <el-form-item label="有感应亮度：" prop="inducedbrightness">
+            <el-slider v-model="operData.inducedbrightness" show-input>
+            </el-slider>
+          </el-form-item>
+          <el-form-item label="无感应亮度：" prop="noinducedbrightness">
+            <div>
+              <el-radio v-model="noinducedbrightness" :label='0'>关灯</el-radio>
+            </div>
+            <div>
+              <el-radio v-model="noinducedbrightness" :label='1'>亮度</el-radio>
+              <el-slider v-if="noinducedbrightness == 1" v-model="operData.noinducedbrightness" show-input></el-slider>
+            </div>
+          </el-form-item>
+        </template>
+        <template  v-if="operData.controltype == 17">
+          <el-form-item label="有感应色温：" prop="inducedcolortemp">
+            <el-slider v-model="operData.inducedcolortemp" show-input>
+            </el-slider>
+          </el-form-item>
+          <el-form-item label="无感应色温：" prop="noinducedcolortemp">
+            <el-slider v-model="operData.noinducedcolortemp" show-input>
+            </el-slider>
+          </el-form-item>
+        </template>
+        <template  v-if="operData.controltype == 18">
+          <el-form-item label="有感应rgb：" prop="inducedrgb">
+            <el-input type="color" v-model.number="operData.inducedrgb"></el-input>
+          </el-form-item>
+          <el-form-item label="无感应rgb：" prop="noinducedrgb">
+            <el-input type="color" v-model.number="operData.noinducedrgb"></el-input>
+          </el-form-item>
+        </template>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="controlDevice('controlDevice')">确 定</el-button>
@@ -160,6 +205,7 @@
                     brightness: '',
                     strategyid: '',
                 },
+                noinducedbrightness: 0,
                 moduleType: {}
             }
         },
@@ -266,7 +312,37 @@
                         rules.enablesensor = [
                             {required: true, message: '请选择传感器使能'}
                         ];
+                        if (this.operData.enablesensor == 1) {
+                            rules.inducedkeeptime = [
+                                {required: true, message: '请输入感应保持状态时间'},
+                                {type: 'number', message: '范围0~255',min: 0, max: 255}
+                            ];
+                        }
                         break;
+                    case 16:
+                        rules.inducedbrightness = [
+                            {required: true, message: '有感应亮度不能为空'},
+                        ];
+                       /* rules.noinducedbrightness = [
+                            {required: true, message: '无感应亮度不能为空'},
+                        ];*/
+                        break;
+                    case 17:
+                        rules.inducedcolortemp = [
+                            {required: true, message: '有感应色温不能为空'},
+                        ];
+                        rules.noinducedcolortemp = [
+                            {required: true, message: '无感应色温不能为空'},
+                        ];
+                        break;
+                  /*  case 18:
+                        rules.inducedrgb = [
+                            {required: true, message: '有感应色温不能为空'},
+                        ];
+                        rules.noinducedrgb = [
+                            {required: true, message: '无感应色温不能为空'},
+                        ];
+                        break;*/
                     default:
                         break;
 
@@ -290,26 +366,43 @@
             controlDevice: function (formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        if (this.operData.controltype == 7) {
-                            if (!this.operData.rgb) {
-                                this.operData.rgb = '#000000'
-                            }
-                            this.operData.rgb = this.$common.colorRgb(this.operData.rgb);
-                        }
+                        let data = this.transformData(this.operData);
                         if (this.device.deviceid) {
-                            this.operData.deviceid = this.device.deviceid;
-                            Services.controlLightSingle(this.operData).then(res => {
+                            data.deviceid = this.device.deviceid;
+                            Services.controlLightSingle(data).then(res => {
                                 this.hideModal();
                             });
 
                         } else {
-                            this.operData.groupid = this.device.objectid;
-                            Services.controlLightGroup(this.operData).then(res => {
+                            data.groupid = this.device.objectid;
+                            Services.controlLightGroup(data).then(res => {
                                 this.hideModal();
                             })
                         }
                     }
                 })
+            },
+            transformData: function (data) {
+                if (data.controltype == 7) {
+                    if (!data.rgb) {
+                        data.rgb = '#000000'
+                    }
+                    data.rgb = this.$common.colorRgb(data.rgb);
+                } else if (data.controltype == 16) {
+                    if (this.noinducedbrightness == 0) {
+                        data.noinducedbrightness == 255
+                    }
+                } else if (data.controltype == 18) {
+                    if (!data.inducedrgb) {
+                        data.inducedrgb = '#000000'
+                    }
+                    if (!data.noinducedrgb) {
+                        data.noinducedrgb = '#000000'
+                    }
+                    data.inducedrgb = this.$common.colorRgb(data.inducedrgb);
+                    data.noinducedrgb = this.$common.colorRgb(data.noinducedrgb);
+                }
+                return data
             },
             hideModal: function () {
                 this.controlDeviceDialogVisible = false;

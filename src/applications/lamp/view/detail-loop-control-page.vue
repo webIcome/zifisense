@@ -12,13 +12,13 @@
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3 form-control-static">{{device.sn}}</div>
         <label class="col-md-3 control-label">三相电压：</label>
-        <div class="col-md-3 form-control-static">{{device.threevoltage}}</div>
+        <div class="col-md-3 form-control-static" style="overflow: hidden;text-overflow: ellipsis;" :title="device.threevoltage">{{device.threevoltage}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3 form-control-static">{{device.groupname}}</div>
         <label class="col-md-3 control-label">三相电流：</label>
-        <div class="col-md-3 form-control-static">{{device.threecurrent}}</div>
+        <div class="col-md-3 form-control-static" style="overflow: hidden;text-overflow: ellipsis;" :title="device.threecurrent">{{device.threecurrent}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">回路数：</label>
@@ -41,6 +41,8 @@
       <div class="form-group">
         <label class="col-md-3 control-label">回路状态：</label>
         <div class="col-md-3 form-control-static">{{device.loopcontrol}}</div>
+        <label class="col-md-3 control-label">心跳包周期：</label>
+        <div class="col-md-3 form-control-static">{{device.heartbeattime}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

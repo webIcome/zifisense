@@ -22,7 +22,7 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属回路控制器：</label>
-        <div class="col-md-3 form-control-static">{{device.voltagelow}}</div>
+        <div class="col-md-3 form-control-static">{{device.loopcontrollersn}}</div>
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3 form-control-static">{{device.position}}</div>
       </div>
@@ -36,7 +36,7 @@
         <label class="col-md-3 control-label">传感器类型：</label>
         <div class="col-md-3 form-control-static">{{device.sensortype | sensortypeNameConverter}}</div>
         <label class="col-md-3 control-label">归属企业：</label>
-        <div class="col-md-3 form-control-static">{{device.compnayname}}</div>
+        <div class="col-md-3 form-control-static">{{device.companyname}}</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">开关状态：</label>
@@ -119,6 +119,30 @@
       <div class="form-group">
         <label class="col-md-3 control-label">灯具类型名：</label>
         <div class="col-md-3 form-control-static">{{device.lampType}}</div>
+        <label class="col-md-3 control-label">温度：</label>
+        <div class="col-md-3 form-control-static">{{device.temp}}</div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">感应时间：</label>
+        <div class="col-md-3 form-control-static">{{device.inducedkeeptime}}</div>
+        <label class="col-md-3 control-label">有感应亮度：</label>
+        <div class="col-md-3 form-control-static">{{device.inducedbrightness}}</div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">无感应亮度：</label>
+        <div class="col-md-3 form-control-static">{{device.noinducedbrightness | noinducedbrightnessNameConverter}}</div>
+        <label class="col-md-3 control-label">有感应色温：</label>
+        <div class="col-md-3 form-control-static">{{device.inducedcolortemp}}</div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">无感应色温：</label>
+        <div class="col-md-3 form-control-static">{{device.noinducedcolortemp}}</div>
+        <label class="col-md-3 control-label">有感应RGB：</label>
+        <div class="col-md-3 form-control-static">{{device.inducedrgb}}</div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">无感应RGB：</label>
+        <div class="col-md-3 form-control-static">{{device.noinducedrgb}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

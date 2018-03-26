@@ -98,7 +98,7 @@
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="editGroupData.companyid" :list="companies"></tree-select-component>
         </el-form-item>
-        <el-form-item label="类型：" prop="deviceType">
+        <el-form-item label="类型：" prop="moduletype">
           <el-select v-model="editGroupData.moduletype" placeholder="选择类型" clearable >
             <el-option v-for="item in deviceType" :key="item.value" :value="item.value" :label="item.text"></el-option>
           </el-select>

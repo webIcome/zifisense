@@ -66,8 +66,8 @@
           <td>{{item.position}}</td>
           <td>{{item.switchstate | switchStateNameConverter}}</td>
           <td>{{item.brightness}}</td>
-          <td>{{item.voltagelow}}</td>
-          <td>{{item.oldpwd}}</td>
+          <td>{{item.voltage}}</td>
+          <td>{{item.current}}</td>
           <td>{{item.sumpower}}</td>
           <td class="td-btns">
             <div class="icon-item"><span data-toggle="modal" data-target="#edit-device"

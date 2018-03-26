@@ -5,11 +5,11 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"/>
+            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID"/>
+            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
@@ -17,15 +17,15 @@
           </div>
           <div class="form-group">
             <label class="sr-only">回路数：</label>
-            <el-input type="text" v-model="searchParams.loopnum" placeholder="回路数"/>
+            <el-input type="text" v-model="searchParams.loopnum" placeholder="回路数" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属组：</label>
-            <el-input type="text" v-model="searchParams.groupid" placeholder="归属组"/>
+            <el-input type="text" v-model="searchParams.groupname" placeholder="归属组" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">地理位置：</label>
-            <el-input type="text" v-model="searchParams.position" placeholder="地理位置"/>
+            <el-input type="text" v-model="searchParams.position" placeholder="地理位置" clearable/>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选
 
@@ -54,7 +54,11 @@
         <th>回路数</th>
         <th>地理位置</th>
         <th>回路状态、DI口状态</th>
-        <th>电表参数</th>
+        <!--<th>电表参数</th>-->
+        <!--<th>三相电压</th>-->
+        <!--<th>三相电流</th>-->
+        <th>有功电能累加</th>
+        <th>无功电能累加</th>
         <th>操作</th>
         </thead>
         <tbody>
@@ -63,8 +67,12 @@
           <td>{{item.sn}}</td>
           <td>{{item.loopnum}}</td>
           <td>{{item.position}}</td>
-          <td>{{item.loopcontrol + '、' + item.diportstate}}</td>
-          <td>{{item.threevoltage}}{{item.threecurrent}}{{item.sumActivePower}}{{item.sumReactivePower}}</td>
+          <td  style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threevoltage  + '、' + item.diportstate">{{item.loopcontrol + '、' + item.diportstate}}</td>
+          <!--<td>{{item.threevoltage}}{{item.threecurrent}}{{item.sumActivePower}}{{item.sumReactivePower}}</td>-->
+          <!--<td style="max-width: 200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threevoltage">{{item.threevoltage}}</td>-->
+          <!--<td style="max-width: 200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threecurrent">{{item.threecurrent}}</td>-->
+          <td>{{item.sumactivepower}}</td>
+          <td>{{item.sumreactivepower}}</td>
         <td class="td-btns">
           <div class="icon-item"><span data-toggle="modal" data-target="#edit-device" @click="dialogEditDevice(item)"
                                        class="edit-icon"></span></div>
