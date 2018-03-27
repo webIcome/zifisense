@@ -45,6 +45,9 @@
         props: {
             scenarioname: {
                 default: ''
+            },
+            componyid: {
+                default: ''
             }
         },
         created: function () {
@@ -66,7 +69,8 @@
                 })
             },
             dialogSelect: function () {
-                this.findList(this.defaultPaging);
+                this.searchParams.companyid = this.componyid;
+                this.findList(Object.assign(this.searchParams, this.defaultPaging));
                 this.dialogVisible = true;
             },
             select: function (val) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input type="text" v-model="modelnum" placeholder="选择灯具" @focus="dialogSelect" @change="changeSelect"></el-input>
+    <el-input :disabled="!companyId" type="text" v-model="modelnum" placeholder="选择灯具" @focus="dialogSelect" @change="changeSelect"></el-input>
     <el-dialog title="选择灯具" :visible.sync="dialogVisible" center :width="'600px'"  append-to-body>
       <el-form :inline="true" label-width="170px" :model="searchParams">
         <el-form-item prop="switchstate">
@@ -42,6 +42,9 @@
         props: {
             modelnum: {
                 default: ''
+            },
+            companyId: {
+                default: ''
             }
         },
         created: function () {
@@ -62,6 +65,7 @@
                 this.findList(Object.assign(this.searchParams, this.defaultPaging))
             },
             findList: function (params) {
+                params.companyid = this.companyId;
                 Services.findLampsList(params).then(data => {
                     this.searchParams.pageNum = data.pageNum;
                     this.searchParams.pages = data.pages;

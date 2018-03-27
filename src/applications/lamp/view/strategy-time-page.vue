@@ -6,7 +6,7 @@
           <div class="form-group">
             <label>策略名称：</label>
             <el-input style="width: 180px" type="text" v-model="searchParams.strategyname"
-                      placeholder="输入策略名称"></el-input>
+                      placeholder="输入策略名称" clearable></el-input>
           </div>
           <div class="form-group">
             <label>有效时间起：</label>
@@ -223,7 +223,7 @@
           </el-form-item>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
-          <el-input style="width: 200px" v-model="operData.intervaltime"></el-input>
+          <el-input style="width: 200px" v-model.number="operData.intervaltime"></el-input>
         </el-form-item>
         <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
           <div>
@@ -388,7 +388,8 @@
                         break;
                     case this.period.interval:
                         rules.intervaltime = [
-                            {required: true, message: '请输入间隔时间'}
+                            {required: true, message: '请输入间隔时间'},
+                            {type: 'number', message: '范围0~4294967295',min: 0, max: 4294967295}
                         ];
                         break;
                     default:

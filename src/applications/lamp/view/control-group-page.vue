@@ -5,7 +5,7 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">名称：</label>
-            <el-input type="text" v-model="searchParams.groupname" placeholder="输入设备名称"></el-input>
+            <el-input type="text" v-model="searchParams.groupname" placeholder="输入设备名称" clearable></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
@@ -79,11 +79,12 @@
                                 :moduletype="addGroupData.moduletype"
                                 :companyid="addGroupData.companyid"></edit-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="strategyid">
+        <el-form-item v-if="addGroupData.moduletype != moduleType.panel" label="策略：" prop="strategyid">
           <select-strategy-component v-model="addGroupData.strategyid"
                                      :strategyName="addGroupData.strategyname"
                                      @strategyname="addGroupData.strategyname = arguments[0]"
-                                     :modultype="addGroupData.moduletype"></select-strategy-component>
+                                     :companyId="addGroupData.companyid"
+                                     :moduletype="addGroupData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -111,11 +112,12 @@
                                       :moduletype="editGroupData.moduletype"
                                       :companyid="editGroupData.companyid"></edit-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="strategyid">
+        <el-form-item  v-if="editGroupData.moduletype != moduleType.panel" label="策略：" prop="strategyid">
           <select-strategy-component v-model="editGroupData.strategyid"
                                      :strategyName="editGroupData.strategyname"
                                      @strategyname="editGroupData.strategyname = arguments[0]"
-                                     :modultype="editGroupData.moduletype"></select-strategy-component>
+                                     :companyId="editGroupData.companyid"
+                                     :moduletype="editGroupData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -175,25 +177,8 @@
                 repealGroupDialogVisible: false,
                 issueGroupDialogVisible: false,
                 deleteGroupDialogVisible: false,
-                Rules: {
-                    groupname: [
-                        {required: true, message: '请输入名称'}
-                    ],
-                    companyid: [
-                        {required: true, message: '请选择企业'}
-                    ],
-                    moduletype: [
-                        {required: true, message: '请选择类型'}
-                    ],
-                    deviceid: [
-                        {required: true, message: '请选择设备'}
-                    ],
-                    strategyid: [
-                        {required: true, message: '请选择策略'}
-                    ],
-                },
                 searchParams: {
-                    devicename: '',
+                    groupname: '',
                     sn: '',
                     type: '',
                 },
@@ -214,6 +199,31 @@
                     pageNum: 1
                 },
             }
+        },
+        computed: {
+            Rules: function() {
+                let rules = {
+                        groupname: [
+                            {required: true, message: '请输入名称'}
+                        ],
+                        companyid: [
+                            {required: true, message: '请选择企业'}
+                        ],
+                        moduletype: [
+                            {required: true, message: '请选择类型'}
+                        ],
+                        deviceid: [
+                            {required: true, message: '请选择设备'}
+                        ],
+                    };
+                if ((this.addGroupDialogVisible && this.addGroupData.moduletype != this.moduleType.panel)||
+                    (this.editGroupDialogVisible && this.editGroupData.moduletype != this.moduleType.panel)) {
+                    rules.strategyid = [
+                        {required: true, message: '请选择策略'}
+                    ]
+                }
+                return rules;
+            },
         },
         created: function () {
             this.initData()

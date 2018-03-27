@@ -21,8 +21,9 @@
             <el-form-item v-if="operData.controltype == 5" style="display: inline-block"  prop="strategyid">
               <select-strategy-component v-model="operData.strategyid"
                                          :strategyName="operData.strategyname"
+                                         :companyId="device.companyid"
                                          @strategyname="operData.strategyname = arguments[0]"
-                                         :modultype="moduleType.loop"></select-strategy-component>
+                                         :moduletype="moduleType.loop"></select-strategy-component>
             </el-form-item>
           </div>
           <div>
@@ -32,7 +33,7 @@
             </el-form-item>
           </div>
         </el-form-item>
-        <el-form-item label="控制回路：" prop="loop">
+        <el-form-item v-if="operData.controltype == 1" label="控制回路：" prop="loop">
           <template v-for="(item,index) in selectedLoops" >
             <div style="margin-bottom: 10px">
               <el-input style="width: 100px; margin-right: 10px" v-model="item.number"></el-input>
@@ -85,8 +86,10 @@
                 let rules = {
                     controltype: [
                         {required: true, message: '请选择指令'}
-                    ],
-                    loop: [
+                    ]
+                };
+                if (this.operData.controltype == 1) {
+                    rules.loop = [
                         {required: true, message: '添加回路'}
                     ]
                 }
@@ -125,13 +128,14 @@
                         data.controltype = this.operData.controltype;
                         if (data.controltype == 4) {
                             data.strategyid = this.operData.strategyid;
-                        }
-                        if (data.controltype == 1) {
+                        } else if (data.controltype == 1) {
                             data.switchtype = this.selectedLoops.map(item => {
                                 return item.switchtype
                             }).join()
+                        } else if (data.controltype == 6) {
+                            data.heartperiod = this.operData.heartperiod;
                         }
-                        data.loop = this.operData.loop
+                        data.loop = this.operData.loop;
                         if (this.device.deviceid) {
                             data.deviceid = this.device.deviceid;
                             Services.controlLoopSingle(data).then(res => {

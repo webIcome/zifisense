@@ -5,11 +5,11 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"></el-input>
+            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称" clearable></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID"/>
+            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
@@ -126,6 +126,7 @@
         <el-form-item label="灯具类型：" prop="lampTypeID">
           <select-lamps-component v-model="operData.lampTypeID"
                                   @name="operData.lampType=arguments[0]"
+                                  :companyId = operData.companyid
                                   :modelnum="operData.lampType"></select-lamps-component>
         </el-form-item>
         <el-form-item label="归属某一回路：" prop="toloopnum">
@@ -180,6 +181,7 @@
         <el-form-item label="灯具类型：" prop="lampTypeID">
           <select-lamps-component v-model="operData.lampTypeID"
                                   @name="operData.lampType=arguments[0]"
+                                  :companyId = operData.companyid
                                   :modelnum="operData.lampType"></select-lamps-component>
         </el-form-item>
         <el-form-item label="归属某一回路：" prop="position">

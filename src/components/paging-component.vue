@@ -141,7 +141,8 @@
       color: #999;
       text-decoration: none;
       border: 1px solid #999999;
-      width: 40px;
+      /*width: 40px;*/
+      min-width: 40px;
       height: 30px;
       line-height: 30px;
       margin: 0 5px;
@@ -151,12 +152,12 @@
       &.active {
         background-color: #1789e1;
         color: #fff;
-        border: none;
+        border-color: #2b71b8;
       }
       &:hover {
         background-color: #2b71b8;
         color: #fff;
-        border: none;
+        border-color: #2b71b8;
       }
     }
     input {

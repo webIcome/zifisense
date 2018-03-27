@@ -20,10 +20,10 @@
             <el-radio v-model="operData.controltype" :label='5'>下发策略</el-radio>
           </div>
           <div style="position: relative">
-            <el-radio v-model="operData.controltype" :label='6'>色温</el-radio>
+            <el-radio v-model="operData.controltype" :label='6'>调节色温</el-radio>
           </div>
           <div style="position: relative">
-            <el-radio v-model="operData.controltype" label=7>RGB</el-radio>
+            <el-radio v-model="operData.controltype" label=7>调节RGB</el-radio>
           </div>
           <div>
             <el-radio v-model="operData.controltype" :label='8'>故障阈值设置</el-radio>
@@ -62,8 +62,9 @@
         <el-form-item v-if="operData.controltype == 5" label="策略：" prop="strategyid">
           <select-strategy-component v-model="operData.strategyid"
                                      :strategyName="operData.strategyname"
+                                     :companyId="device.companyid"
                                      @strategyname="operData.strategyname = arguments[0]"
-                                     :modultype="moduleType.light"></select-strategy-component>
+                                     :moduletype="moduleType.light"></select-strategy-component>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 3" label="亮度：">
           <el-slider v-model="operData.brightness" show-input></el-slider>
@@ -71,8 +72,8 @@
         <el-form-item v-if="operData.controltype == 7" label="RGB：" prop="rgb">
           <el-input type="color" v-model="operData.rgb"/>
         </el-form-item>
-        <el-form-item v-if="operData.controltype == 6" label="色温：" prop="temperature">
-          <el-slider v-model="operData.temperature" show-input>
+        <el-form-item v-if="operData.controltype == 6" label="色温：" prop="colortemp">
+          <el-slider v-model="operData.colortemp" show-input>
           </el-slider>
         </el-form-item>
         <template v-if="operData.controltype == 8">
@@ -229,7 +230,7 @@
                         ];
                         break;
                     case 6:
-                        rules.temperature = [
+                        rules.colortemp = [
                             {required: true, message: '请选择色温'}
                         ];
                         break;
@@ -252,12 +253,12 @@
                             {type: 'number', message: '范围0~330',min: 0, max: 330}
                         ];
                         rules.powerfactor = [
-                            {required: true, message: '请输入电源额定电流'},
+                            {required: true, message: '请输入电源功率因素'},
                             {type: 'number', message: '范围0.1~1',min: 0.1, max: 1}
                         ];
                         rules.voltageratio = [
                             {required: true, message: '请输入电压转化倍率'},
-                            {type: 'number', message: '范围0.1~1',min: 0.1, max: 1}
+                            {type: 'number', message: '范围0~25.5',min: 0, max: 25.5}
                         ];
                         rules.volabratio = [
                             {required: true, message: '请输入电压异常比例'},
@@ -265,7 +266,7 @@
                         ];
                         rules.curratio = [
                             {required: true, message: '请输入电流转化倍率'},
-                            {type: 'number', message: '范围0.1~1',min: 0.1, max: 1}
+                            {type: 'number', message: '范围0~25.5',min: 0, max: 25.5}
                         ];
                         rules.curabratio = [
                             {required: true, message: '请输入电流异常比例'},
@@ -305,7 +306,7 @@
                     case 12:
                         rules.elecuploadperiod = [
                             {required: true, message: '请输入电参数上报周期'},
-                            {type: 'number', message: '范围0~65535',min: 0, max: 65535}
+                            {type: 'number', message: '范围0~255',min: 0, max: 255}
                         ];
                         break;
                     case 15:
@@ -390,7 +391,7 @@
                     data.rgb = this.$common.colorRgb(data.rgb);
                 } else if (data.controltype == 16) {
                     if (this.noinducedbrightness == 0) {
-                        data.noinducedbrightness == 255
+                        data.noinducedbrightness = 255
                     }
                 } else if (data.controltype == 18) {
                     if (!data.inducedrgb) {

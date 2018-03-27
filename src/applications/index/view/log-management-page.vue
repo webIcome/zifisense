@@ -11,12 +11,14 @@
           <el-date-picker id="date-end" v-model="searchParams.operationtimeEnd" type="date" placeholder="选择结束时间"></el-date-picker>
         </div>
         <div class="form-group">
-          <label for="username">用户名：</label>
-          <input type="text" class="form-control" id="username" v-model="searchParams.loginname"/>
+          <label>用户名：</label>
+          <!--<input type="text" class="form-control" id="username" v-model="searchParams.loginname"/>-->
+          <el-input style="width: 200px" type="text" v-model="searchParams.loginname" placeholder="输入用户名" clearable/>
         </div>
         <div class="form-group">
-          <label for="phone">手机号码：</label>
-          <input type="text" class="form-control" id="phone" v-model="searchParams.phone"/>
+          <label>手机号码：</label>
+          <!--<input type="text" class="form-control" id="phone" v-model="searchParams.phone"/>-->
+          <el-input style="width: 200px" type="text" v-model="searchParams.phone" placeholder="输入手机号码" clearable/>
         </div>
         <div @click="search" class="form-group default-btn">搜索</div>
       </form>

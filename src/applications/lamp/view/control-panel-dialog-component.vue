@@ -21,8 +21,7 @@
             <select-scenario-component v-model="operData.scenarioid"
                                        :scenarioname="operData.scenarioname"
                                        @scenarioname="operData.scenarioname=arguments[0]"
-                                       :componyid="operData.componyid"
-                                       :modultype="moduleType.panel"></select-scenario-component>
+                                       :componyid="device.componyid"></select-scenario-component>
           </el-form-item>
         </template>
       </el-form>

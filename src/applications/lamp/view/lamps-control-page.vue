@@ -5,15 +5,11 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">灯具型号：</label>
-            <el-input type="text" v-model="searchParams.modelnum" placeholder="输入设备名称"/>
+            <el-input type="text" v-model="searchParams.modelnum" placeholder="输入灯具型号" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>
             <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
-          </div>
-          <div class="form-group">
-            <label class="sr-only">灯具寿命：</label>
-            <el-input type="text" v-model="searchParams.lifetime" placeholder="回路数"/>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选
 

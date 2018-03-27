@@ -218,7 +218,7 @@
                     sn: '',
                     componyid: '',
                     loopnum: '',
-                    groupid: '',
+                    groupname: '',
                     position: '',
                 },
                 advancedSearchParams: {

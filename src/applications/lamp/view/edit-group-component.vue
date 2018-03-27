@@ -127,11 +127,13 @@
               });
           },
           getSelectedList: function () {
-              if (!this.groupid) return;
+              if (!this.groupid) {
+                  this.initSelectDataList();
+                  return;
+              }
               Services.getSelectedDevicesGroupList({companyid: this.companyid, moduletype: this.moduletype, objectid: this.groupid}).then(data => {
                   this.selectDataList = data.list;
                  this.initSelectDataList();
-                  this.$emit('input', this.selectedList.join());
               })
           },
           initSelectDataList: function () {
@@ -139,6 +141,7 @@
               this.selectDataList.forEach(item => {
                   this.selectedList.push(item.deviceid);
               });
+              this.$emit('input', this.selectedList.join());
           },
           selectDevice: function () {
               this.$emit('input', this.selectedList.join());

@@ -7,12 +7,16 @@
           <tree-select-component v-model="searchParams.companyid" :list="companies"></tree-select-component>
         </div>
         <div class="form-group">
-          <label for="username">用户名：</label>
-          <input type="text" class="form-control" id="username" v-model="searchParams.loginname"/>
+          <label>用户名：</label>
+          <!--<input type="text" class="form-control" id="username" v-model="searchParams.loginname"/>-->
+          <el-input style="width: 200px" type="text" v-model="searchParams.loginname"
+                    placeholder="输入用户名" clearable></el-input>
         </div>
         <div class="form-group">
-          <label for="jopName">岗位名称：</label>
-          <input type="text" class="form-control" id="jopName" v-model="searchParams.postname"/>
+          <label>岗位名称：</label>
+          <!--<input type="text" class="form-control" id="jopName" v-model="searchParams.postname"/>-->
+          <el-input style="width: 200px" type="text" v-model="searchParams.postname"
+                    placeholder="输入岗位名称" clearable></el-input>
         </div>
         <div class="form-group default-btn" @click="search">筛选</div>
       </form>
@@ -193,7 +197,8 @@
                         {required: true, message: '选择日期'}
                     ],
                     email: [
-                        {required: true, message: '请填写邮箱'}
+                        {required: true, message: '请填写邮箱'},
+                        { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change'}
                     ],
                 },
                 addUserDialogVisible: false,
@@ -202,11 +207,9 @@
                 resetUserDialogVisible: false,
                 highSearchDialogVisible: false,
                 searchParams: {
-                    postid: '',
                     companyid: '',
                     loginname: '',
-                    username: '',
-                    email: '',
+                    postname: ''
                 },
                 advancedSearchParams: {
                     postid: '',

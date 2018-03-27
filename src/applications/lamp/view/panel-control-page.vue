@@ -5,11 +5,11 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称"/>
+            <el-input type="text" v-model="searchParams.devicename" placeholder="输入设备名称" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">设备ID：</label>
-            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID"/>
+            <el-input type="text" v-model="searchParams.sn" placeholder="输入设备ID" clearable/>
           </div>
           <div class="form-group">
             <label class="sr-only">归属企业：</label>

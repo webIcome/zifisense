@@ -5,7 +5,7 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.areaname" placeholder="输入设备名称"></el-input>
+            <el-input type="text" v-model="searchParams.areaname" placeholder="输入设备名称" clearable></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
@@ -79,11 +79,12 @@
                                 :moduletype="addAreaData.moduletype"
                                 :companyid="addAreaData.companyid"></edit-area-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="strategyid">
+        <el-form-item v-if="addAreaData.moduletype != moduleType.panel" label="策略：" prop="strategyid">
           <select-strategy-component v-model="addAreaData.strategyid"
                                      :strategyName="addAreaData.strategyname"
+                                     :companyId="addAreaData.companyid"
                                      @strategyname="addAreaData.strategyname = arguments[0]"
-                                     :modultype="addAreaData.moduletype"></select-strategy-component>
+                                     :moduletype="addAreaData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -110,11 +111,12 @@
                                 :moduletype="editAreaData.moduletype"
                                 :companyid="editAreaData.companyid"></edit-area-group-component>
         </el-form-item>
-        <el-form-item label="策略：" prop="strategyid">
+        <el-form-item v-if="editAreaData.moduletype != moduleType.panel" label="策略：" prop="strategyid">
           <select-strategy-component v-model="editAreaData.strategyid"
                                      :strategyName="editAreaData.strategyname"
+                                     :companyId="editAreaData.companyid"
                                      @strategyname="editAreaData.strategyname = arguments[0]"
-                                     :modultype="editAreaData.moduletype"></select-strategy-component>
+                                     :moduletype="editAreaData.moduletype"></select-strategy-component>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -134,7 +136,7 @@
       <p class="text-center">下发到您的选中的区域：<span style="color: #1789e1">“{{issueAreaData.areaname}}”</span> 吗？</p>
       <p class="text-center">您的应用将会实时生效，并被系统操作日志记录！</p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="issueGroup">确认</el-button>
+        <el-button type="primary" @click="issueArea">确认</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除区域" :visible.sync="deleteAreaDialogVisible" center :width="'600px'">
@@ -174,23 +176,6 @@
                 repealAreaDialogVisible: false,
                 issueAreaDialogVisible: false,
                 deleteAreaDialogVisible: false,
-                Rules: {
-                    areaname: [
-                        {required: true, message: '请输入名称'}
-                    ],
-                    companyid: [
-                        {required: true, message: '请选择企业'}
-                    ],
-                    moduletype: [
-                        {required: true, message: '请选择类型'}
-                    ],
-                    groupid: [
-                        {required: true, message: '请选择组'}
-                    ],
-                    strategyid: [
-                        {required: true, message: '请选择策略'}
-                    ],
-                },
                 searchParams: {
                     areaname: '',
                     moduletype: '',
@@ -211,6 +196,34 @@
                 },
                 strategyState: [],
             }
+        },
+        computed: {
+            Rules: function() {
+                let rules = {
+                    areaname: [
+                        {required: true, message: '请输入名称'}
+                    ],
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                    moduletype: [
+                        {required: true, message: '请选择类型'}
+                    ],
+                    groupid: [
+                        {required: true, message: '请选择组'}
+                    ],
+                    strategyid: [
+                        {required: true, message: '请选择策略'}
+                    ],
+                };
+                if ((this.addAreaDialogVisible && this.addAreaData.moduletype != this.moduleType.panel)||
+                    (this.editAreaDialogVisible && this.editAreaData.moduletype != this.moduleType.panel)) {
+                    rules.strategyid = [
+                        {required: true, message: '请选择策略'}
+                    ]
+                }
+                return rules;
+            },
         },
         created: function () {
             this.initData()
