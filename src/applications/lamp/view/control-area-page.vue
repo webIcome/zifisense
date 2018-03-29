@@ -212,16 +212,13 @@
                     groupid: [
                         {required: true, message: '请选择组'}
                     ],
-                    strategyid: [
-                        {required: true, message: '请选择策略'}
-                    ],
                 };
-                if ((this.addAreaDialogVisible && this.addAreaData.moduletype != this.moduleType.panel)||
+                /*if ((this.addAreaDialogVisible && this.addAreaData.moduletype != this.moduleType.panel)||
                     (this.editAreaDialogVisible && this.editAreaData.moduletype != this.moduleType.panel)) {
                     rules.strategyid = [
                         {required: true, message: '请选择策略'}
                     ]
-                }
+                }*/
                 return rules;
             },
         },

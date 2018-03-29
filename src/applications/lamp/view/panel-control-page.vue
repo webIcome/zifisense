@@ -31,6 +31,7 @@
         <thead>
         <th>设备名称</th>
         <th>设备ID</th>
+        <th>控制模式</th>
         <th>按钮1情景模式</th>
         <th>按钮2情景模式</th>
         <th>按钮3情景模式</th>
@@ -41,6 +42,7 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
+          <td>{{item.mode | modeNameConverter}}</td>
           <td>{{item.buttonmode1}}</td>
           <td>{{item.buttonmode2}}</td>
           <td>{{item.buttonmode3}}</td>

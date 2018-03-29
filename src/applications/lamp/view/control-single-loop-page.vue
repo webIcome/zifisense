@@ -45,8 +45,8 @@
         <th>设备名称</th>
         <th>设备ID</th>
         <th>地理位置</th>
-        <th>运行状态</th>
         <th>回路状态</th>
+        <th>DI口状态</th>
         <th>当前策略</th>
         <th>操作</th>
         </thead>
@@ -55,8 +55,8 @@
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
           <td>{{item.position}}</td>
-          <td>{{item.runningstate | runningstateNameConverter}}</td>
           <td>{{item.loopcontrol}}</td>
+          <td>{{item.diportstate}}</td>
           <td>{{item.strategyname}}</td>
           <td class="td-btns">
             <control-loop-dialog-component :device="item"></control-loop-dialog-component>

@@ -67,7 +67,7 @@
                         if (this.verifyCode) access.code = this.verifyCode;
                         if (this.code != this.verifyCode) {
                             return this.$message({
-                                message: '表单验证失败',
+                                message: '验证码错误',
                                 type: 'warning'
                             });
                         }
@@ -76,11 +76,14 @@
                                 window.location.replace('/')
                             }, 200)
                         }).catch(err => {
-                            this.$tips.fail(err.message);
+                            /*this.$message({
+                                message: err.message,
+                                type: 'warning'
+                            });*/
                         })
                     } else {
                         this.$message({
-                            message: '表单验证失败',
+                            message: '用户名、密码、验证码必填',
                             type: 'warning'
                         });
                     }

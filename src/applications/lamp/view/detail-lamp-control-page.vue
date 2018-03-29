@@ -46,7 +46,7 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
-        <div class="col-md-3 form-control-static">{{device.brightness}}</div>
+        <div class="col-md-3 form-control-static">{{device.brightness == 255? '控制异常' : device.brightness}}</div>
         <label class="col-md-3 control-label">亮灯时长：</label>
         <div class="col-md-3 form-control-static">{{device.sumlighttime || 0}} 分钟</div>
       </div>
@@ -123,8 +123,8 @@
         <div class="col-md-3 form-control-static">{{device.temp}}</div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">感应时间：</label>
-        <div class="col-md-3 form-control-static">{{device.inducedkeeptime}}</div>
+        <label class="col-md-3 control-label">感应状态保持时间：</label>
+        <div class="col-md-3 form-control-static">{{device.inducedkeeptime}} s</div>
         <label class="col-md-3 control-label">有感应亮度：</label>
         <div class="col-md-3 form-control-static">{{device.inducedbrightness}}</div>
       </div>
@@ -143,6 +143,8 @@
       <div class="form-group">
         <label class="col-md-3 control-label">无感应RGB：</label>
         <div class="col-md-3 form-control-static">{{device.noinducedrgb}}</div>
+        <label class="col-md-3 control-label">归属路数：</label>
+        <div class="col-md-3 form-control-static">{{device.toloopnum}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

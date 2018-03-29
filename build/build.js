@@ -10,9 +10,37 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const config = require('../config')
 const webpackConfig = require('./webpack.prod.conf')
+const fs = require('fs')
+const archiver = require('archiver')
 
 const spinner = ora('building for production...')
 spinner.start()
+
+webpackConfig.plugins.push(new webpack.ProgressPlugin(function (percentage, msg) {
+    if (percentage === 1) {
+      let output = fs.createWriteStream(path.resolve(__dirname, '..', 'zifisense_web.zip'));
+      output.on('close', function () {
+          console.log('success')
+      })
+        let archive = archiver('zip', {
+          zlib: {level: 9}
+        })
+        archive.on('warning', function (err) {
+            if (err.code === 'ENOENT') {
+                // log warning
+            } else {
+                // throw error
+                throw err;
+            }
+        })
+        archive.on('error', function (err) {
+            throw err;
+        });
+        archive.pipe(output);
+        archive.directory(path.join(__dirname, '../dist'), false);
+        archive.finalize();
+    }
+}))
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err

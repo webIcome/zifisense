@@ -48,7 +48,7 @@
       <div class="form-group">
         <label class="col-md-3 control-label">灯控器类型：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.lightControllerType" placeholder="选择归属回路控制器" clearable  style="width: 100%;">
+          <el-select v-model="advancedSearchParams.lightControllerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
             <el-option v-for="type in lightControllerType" :key="type.value" :value="type.value" :label="type.text"></el-option>
           </el-select>
         </div>

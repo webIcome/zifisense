@@ -28,8 +28,8 @@
           </div>
           <div>
             <el-radio v-model="operData.controltype" :label="6">设置心跳包周期</el-radio>
-            <el-form-item v-if="operData.controltype == 6" style="display: inline-block"  prop="heartperiod">
-              <el-input type="text" v-model.number="operData.heartperiod"></el-input>
+            <el-form-item v-if="operData.controltype == 6" style="display: inline-block; width: 100px;margin-left: 10px"  prop="heartperiod">
+              <el-input type="text" v-model.number="operData.heartperiod"></el-input> 分钟
             </el-form-item>
           </div>
         </el-form-item>

@@ -5,7 +5,7 @@
         <form class="form-inline default-form">
           <div class="form-group">
             <label class="sr-only">名称：</label>
-            <el-input type="text" v-model="searchParams.groupname" placeholder="输入设备名称" clearable></el-input>
+            <el-input type="text" v-model="searchParams.groupname" placeholder="输入组名称" clearable></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
@@ -18,6 +18,10 @@
             <el-select v-model="searchParams.strategystate" placeholder="选择策略执行状态" clearable >
               <el-option v-for="status in strategyState" :key="status.value" :value="status.value" :label="status.text"></el-option>
             </el-select>
+          </div>
+          <div class="form-group">
+            <label class="sr-only">归属区域：</label>
+            <el-input type="text" v-model="searchParams.areaname" placeholder="输入区域名称" clearable></el-input>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选</div>
           <div class="pull-right">
@@ -32,6 +36,7 @@
         <thead>
         <th>名称</th>
         <th>类型</th>
+        <th>归属区域</th>
         <th>数量</th>
         <th>策略</th>
         <th>策略执行状态</th>
@@ -41,6 +46,7 @@
         <tr v-for="item in list">
           <td>{{item.groupname}}</td>
           <td>{{item.moduletype | deviceTypeNameConverter}}</td>
+          <td>{{item.areaname}}</td>
           <td>{{item.deviceTotal}}</td>
           <td>{{item.strategyname}}</td>
           <td>{{item.strategystate | strategyStateNameConverter}}</td>
@@ -62,7 +68,7 @@
     <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'">
       <el-form label-width="100px" :model="addGroupData" :rules="Rules"  ref="addGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
-          <el-input type="text" v-model="addGroupData.groupname" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="addGroupData.groupname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="addGroupData.companyid" :list="companies"></tree-select-component>
@@ -94,7 +100,7 @@
     <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'">
       <el-form label-width="100px" :model="editGroupData" :rules="Rules"  ref="editGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
-          <el-input type="text" v-model="editGroupData.groupname" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="editGroupData.groupname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="editGroupData.companyid" :list="companies"></tree-select-component>
@@ -179,8 +185,9 @@
                 deleteGroupDialogVisible: false,
                 searchParams: {
                     groupname: '',
-                    sn: '',
-                    type: '',
+                    moduletype: '',
+                    strategystate: '',
+                    areaname: ''
                 },
                 setGroupData: {},
                 addGroupData: {},
@@ -216,12 +223,12 @@
                             {required: true, message: '请选择设备'}
                         ],
                     };
-                if ((this.addGroupDialogVisible && this.addGroupData.moduletype != this.moduleType.panel)||
+               /* if ((this.addGroupDialogVisible && this.addGroupData.moduletype != this.moduleType.panel)||
                     (this.editGroupDialogVisible && this.editGroupData.moduletype != this.moduleType.panel)) {
                     rules.strategyid = [
                         {required: true, message: '请选择策略'}
                     ]
-                }
+                }*/
                 return rules;
             },
         },

@@ -21,7 +21,7 @@
         </div>
         <label class="col-md-3 control-label">电源类型：</label>
         <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.powertype" placeholder="选择灯具类型" clearable  style="width: 100%;">
+          <el-select v-model="advancedSearchParams.powertype" placeholder="选择电源类型" clearable  style="width: 100%;">
             <el-option v-for="type in powertype" :key="type.value" :value="type.value" :label="type.text"></el-option>
           </el-select>
         </div>

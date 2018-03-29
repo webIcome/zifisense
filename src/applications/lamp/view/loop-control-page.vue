@@ -53,7 +53,8 @@
         <th>设备ID</th>
         <th>回路数</th>
         <th>地理位置</th>
-        <th>回路状态、DI口状态</th>
+        <th>回路状态</th>
+        <th>DI口状态</th>
         <!--<th>电表参数</th>-->
         <!--<th>三相电压</th>-->
         <!--<th>三相电流</th>-->
@@ -67,12 +68,14 @@
           <td>{{item.sn}}</td>
           <td>{{item.loopnum}}</td>
           <td>{{item.position}}</td>
-          <td  style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threevoltage  + '、' + item.diportstate">{{item.loopcontrol + '、' + item.diportstate}}</td>
+          <!--<td  style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threevoltage  + '、' + item.diportstate">{{item.loopcontrol + '、' + item.diportstate}}</td>-->
+          <td>{{item.loopcontrol}}</td>
+          <td>{{item.diportstate}}</td>
           <!--<td>{{item.threevoltage}}{{item.threecurrent}}{{item.sumActivePower}}{{item.sumReactivePower}}</td>-->
           <!--<td style="max-width: 200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threevoltage">{{item.threevoltage}}</td>-->
           <!--<td style="max-width: 200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.threecurrent">{{item.threecurrent}}</td>-->
-          <td>{{item.sumactivepower}}</td>
-          <td>{{item.sumreactivepower}}</td>
+          <td>{{item.sumactivepower}} Wh</td>
+          <td>{{item.sumreactivepower}} Wh</td>
         <td class="td-btns">
           <div class="icon-item"><span data-toggle="modal" data-target="#edit-device" @click="dialogEditDevice(item)"
                                        class="edit-icon"></span></div>
@@ -106,7 +109,7 @@
                                     :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
-          <el-input type="text" v-model="operData.loopnum"/>
+          <el-input type="text" v-model="operData.loopnum" placeholder="请输入回路数"/>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
@@ -141,7 +144,7 @@
                                     :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
-          <el-input type="text" v-model="operData.loopnum"/>
+          <el-input type="text" v-model="operData.loopnum" placeholder="请输入回路数"/>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
@@ -371,6 +374,7 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         Services.addLoop(this.operData).then(res => {
+                            console.log(res)
                             this.initLoop();
                             this.hideModal();
                         });

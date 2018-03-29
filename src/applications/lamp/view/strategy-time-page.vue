@@ -76,7 +76,7 @@
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="addStrategyRules"
                class="el-form-default">
         <el-form-item label="策略名称：" prop="strategyname">
-          <el-input type="text" v-model="operData.strategyname" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="operData.strategyname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
@@ -121,7 +121,7 @@
           </el-form-item>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
-          <el-input style="width: 200px" v-model="operData.intervaltime"></el-input>
+          <el-input style="width: 200px" v-model.number="operData.intervaltime"></el-input> 分钟
         </el-form-item>
         <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
           <div>
@@ -178,7 +178,7 @@
       <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="addStrategyRules"
                class="el-form-default">
         <el-form-item label="策略名称：" prop="strategyname">
-          <el-input type="text" v-model="operData.strategyname" placeholder="输入设备名称"></el-input>
+          <el-input type="text" v-model="operData.strategyname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
@@ -223,7 +223,7 @@
           </el-form-item>
         </el-form-item>
         <el-form-item v-else-if="operData.periodtype == period.interval" label="间隔时间：" prop="intervaltime">
-          <el-input style="width: 200px" v-model.number="operData.intervaltime"></el-input>
+          <el-input type="text" style="width: 200px" v-model.number="operData.intervaltime"></el-input> 分钟
         </el-form-item>
         <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
           <div>

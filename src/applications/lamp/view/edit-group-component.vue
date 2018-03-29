@@ -3,7 +3,7 @@
     <el-col :span="18" v-if="value">{{deviceNumber}}个设备</el-col>
     <el-col :span="18" v-else>0个设备</el-col>
     <el-button :disabled="!editable" :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-    <el-dialog title="编辑组" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
+    <el-dialog title="设备选择" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
       <el-transfer v-model="selectedList"
                    :titles="titles"
                    :data="list"

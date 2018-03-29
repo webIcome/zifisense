@@ -24,13 +24,13 @@
         <label class="col-md-3 control-label">回路数：</label>
         <div class="col-md-3 form-control-static">{{device.loopnum}}</div>
         <label class="col-md-3 control-label">有功电能累加：</label>
-        <div class="col-md-3 form-control-static">{{device.sumactivepower}}</div>
+        <div class="col-md-3 form-control-static">{{device.sumactivepower}} Wh</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">地理位置：</label>
         <div class="col-md-3 form-control-static">{{device.position}}</div>
         <label class="col-md-3 control-label">无功电能累加：</label>
-        <div class="col-md-3 form-control-static">{{device.sumreactivepower}}</div>
+        <div class="col-md-3 form-control-static">{{device.sumreactivepower}} Wh</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属企业：</label>
@@ -42,7 +42,11 @@
         <label class="col-md-3 control-label">回路状态：</label>
         <div class="col-md-3 form-control-static">{{device.loopcontrol}}</div>
         <label class="col-md-3 control-label">心跳包周期：</label>
-        <div class="col-md-3 form-control-static">{{device.heartbeattime}}</div>
+        <div class="col-md-3 form-control-static">{{device.heartbeattime}} 分钟</div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">电流：</label>
+        <div class="col-md-3 form-control-static">{{device.current}} mA</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

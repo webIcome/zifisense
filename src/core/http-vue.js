@@ -27,9 +27,9 @@ Vue.http.interceptors.push(function (request, next) {
 
         } else if (response.body.code == 10001 || response.body.code == 422){
             Message({
-                message: '请求参数错误',
+                message: response.body.errorMap,
                 type: 'warning',
-                duration: 1000
+                duration: 2000
             })
         } else if (response.body.code == 10002) {
             Message({

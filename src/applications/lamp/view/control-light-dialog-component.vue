@@ -140,7 +140,7 @@
           </el-form-item>
         </template>
         <el-form-item v-if="operData.controltype == 12" label="电参数上报周期：" prop="elecuploadperiod">
-          <el-input type="text" v-model.number="operData.elecuploadperiod"></el-input>
+          <el-input style="width: 200px" type="text" v-model.number="operData.elecuploadperiod"></el-input> H
         </el-form-item>
         <el-form-item v-if="operData.controltype == 15" label="传感器使能：" prop="enablesensor">
           <el-radio v-model="operData.enablesensor" :label='1'>有效</el-radio>

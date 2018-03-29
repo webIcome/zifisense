@@ -62,13 +62,13 @@
         <tr v-for="item in list" @click="showDetail($event, item)">
           <td>{{item.devicename}}</td>
           <td>{{item.sn}}</td>
-          <td>{{item.runningstate}}</td>
+          <td style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.runningstate">{{item.runningstate}}</td>
           <td>{{item.position}}</td>
           <td>{{item.switchstate | switchStateNameConverter}}</td>
-          <td>{{item.brightness}}</td>
-          <td>{{item.voltage}}</td>
-          <td>{{item.current}}</td>
-          <td>{{item.sumpower}}</td>
+          <td>{{item.brightness == 255? '控制异常' : item.brightness}}</td>
+          <td>{{item.voltage}} V</td>
+          <td>{{item.current}} A</td>
+          <td>{{item.sumpower}} Wh</td>
           <td class="td-btns">
             <div class="icon-item"><span data-toggle="modal" data-target="#edit-device"
                                          @click="dialogEditDevice(item)" class="edit-icon"></span></div>
@@ -102,7 +102,7 @@
                                     :moduletype="moduleType.light"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="归属回路控制器：" prop="loopcontrollersn">
-          <el-input type="text" v-model="showSelectedLoopName" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
+          <el-input :disabled="!operData.companyid" type="text" v-model="showSelectedLoopName" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
           <el-input type="text"v-show="false" v-model="operData.loopcontrollersn"></el-input>
         </el-form-item>
         <el-form-item label="灯控器类型：" prop="lightControllerType">
@@ -184,7 +184,7 @@
                                   :companyId = operData.companyid
                                   :modelnum="operData.lampType"></select-lamps-component>
         </el-form-item>
-        <el-form-item label="归属某一回路：" prop="position">
+        <el-form-item label="归属某一回路：" prop="toloopnum">
           <el-input type="text" v-model="operData.toloopnum" placeholder="请输回路控制器的某一回路"/>
         </el-form-item>
       </el-form>
@@ -253,9 +253,6 @@
                     sn: [
                         {required: true, message: '请输入设备ID'}
                     ],
-                    loopcontrollersn: [
-                        {required: true, message: '选择归属回路控制器'}
-                    ],
                     lightControllerType: [
                         {required: true, message: '选择灯控器类型'}
                     ],
@@ -270,12 +267,6 @@
                     ],
                     vendor: [
                         {required: true, message: '请选择厂商'}
-                    ],
-                    toloopnum: [
-                        {required: true, message: '请填写归属回路控制器的某一回路'}
-                    ],
-                    lampTypeID: [
-                        {required: true, message: '请选择灯具类型'}
                     ],
                 },
                 searchParams: {
@@ -434,7 +425,8 @@
                 this.currentPage = page;
             },
             dialogSelectLoop: function () {
-                this.findLoopList(this.defaultPaging);
+                this.searchLoopParams.companyid = this.operData.companyid;
+                this.findLoopList(Object.assign(this.searchLoopParams,this.defaultPaging));
                 this.selectLoopDialogVisible = true;
             },
             selectLoop: function (val) {

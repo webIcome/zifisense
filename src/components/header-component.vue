@@ -89,7 +89,7 @@
                         if (this.password.newpwd != this.password.secondNew) {
                             return;
                         }
-                        this.$http.post('user/changePassword', this.password).then(res => {
+                        this.$http.post('user/changePassword', this.password, {root: Config.URL_API}).then(res => {
                             if (res.body.code != 0) {
 
                             } else {
@@ -113,7 +113,7 @@
                 this.dialogVisible = true
             },
             logout: function () {
-                this.$http.get('accounts/logout').then(res => {
+                this.$http.get('accounts/logout', {root: Config.URL_API}).then(res => {
                     this.goToLogin();
                 })
             },
