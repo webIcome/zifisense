@@ -29,7 +29,7 @@
       <div class="form-group">
         <label class="col-md-3 control-label">灯具功率：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.powerlow"/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.powerhigh"/>
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.powerLow"/>到<el-input type="text" class="input-two" v-model="advancedSearchParams.powerHigh"/>
         </div>
         <label class="col-md-3 control-label">额定电流：</label>
         <div class="col-md-3">

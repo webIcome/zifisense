@@ -20,7 +20,7 @@
             <div style="position: relative">
               <el-radio v-model="groupItem.task" label="3">调节亮度</el-radio>
               <div style="position: absolute; width: 300px; right: 0; top: 5px">
-                <el-slider :disabled="groupItem.task != 3" v-model="groupItem.brightness" show-input></el-slider>
+                <el-slider :disabled="groupItem.task != 3" v-model="groupItem.brightness"></el-slider>
               </div>
             </div>
           </el-form-item>

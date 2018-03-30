@@ -79,7 +79,7 @@
             goToGivenPage: function () {
                 if (!Number(this.givenPage)) return;
                 if (this.givenPage <= 0 || this.givenPage > this.pages) return
-                this.search(Number(this.givenPage))
+                this.goToPage(Number(this.givenPage))
             },
             goToPre: function () {
                 if (this.firstPage) return

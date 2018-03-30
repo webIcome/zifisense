@@ -36,7 +36,7 @@
         <el-form-item v-if="operData.controltype == 1" label="控制回路：" prop="loop">
           <template v-for="(item,index) in selectedLoops" >
             <div style="margin-bottom: 10px">
-              <el-input style="width: 100px; margin-right: 10px" v-model="item.number"></el-input>
+              <el-input type="number" style="width: 100px; margin-right: 10px" v-model="item.number"></el-input>
               <div style="display: inline-block;" v-if="operData.controltype==1">
                 <el-radio v-model="item.switchtype" :label='1'>开</el-radio>
                 <el-radio v-model="item.switchtype" :label='2'>关</el-radio>

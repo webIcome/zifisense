@@ -65,7 +65,7 @@
           <td style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.runningstate">{{item.runningstate}}</td>
           <td>{{item.position}}</td>
           <td>{{item.switchstate | switchStateNameConverter}}</td>
-          <td>{{item.brightness == 255? '控制异常' : item.brightness}}</td>
+          <td>{{item.brightness == 255? '控制异常' : item.brightness + '%'}}</td>
           <td>{{item.voltage}} V</td>
           <td>{{item.current}} A</td>
           <td>{{item.sumpower}} Wh</td>
@@ -372,6 +372,12 @@
             },
             initLamp: function () {
                 this.findList(this.defaultPaging)
+                this.clearSearchParams();
+            },
+            clearSearchParams: function () {
+                Object.keys(this.searchParams).forEach(key => {
+                    this.searchParams[key] = '';
+                })
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {

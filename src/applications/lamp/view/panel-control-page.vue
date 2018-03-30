@@ -234,6 +234,12 @@
             },
             initPanel: function () {
                 this.findList(this.defaultPaging)
+                this.clearSearchParams();
+            },
+            clearSearchParams: function () {
+                Object.keys(this.searchParams).forEach(key => {
+                    this.searchParams[key] = '';
+                })
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {

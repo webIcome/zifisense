@@ -7,12 +7,12 @@
           <el-input type="text" v-model="searchParams.groupname" placeholder="输入策略名称"></el-input>
         </el-form-item>
         <el-form-item prop="switchstate">
-          <el-select v-model="searchParams.moduleType" placeholder="选择类" clearable>
+          <el-select v-model="searchParams.moduletype" placeholder="选择类型" clearable>
             <el-option v-for="status in deviceType" :key="status.value" :value="status.value"
                        :label="status.text"></el-option>
           </el-select>
         </el-form-item>
-        <el-button type="primary" @click="findList" icon="el-icon-search">筛选</el-button>
+        <el-button type="primary" @click="search" icon="el-icon-search">筛选</el-button>
       </el-form>
       <div>
         <el-table ref="singleTable" :data="list" border class="table" @row-click="select" highlight-current-row>
@@ -34,8 +34,8 @@
         data() {
             return {
                 searchParams: {
-                    strategyName: '',
-                    moduleType: ''
+                    groupname: '',
+                    moduletype: ''
                 },
                 deviceType: [],
                 defaultPaging: {

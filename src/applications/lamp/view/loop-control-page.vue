@@ -109,7 +109,7 @@
                                     :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
-          <el-input type="text" v-model="operData.loopnum" placeholder="请输入回路数"/>
+          <el-input type="number" v-model="operData.loopnum" placeholder="请输入回路数"/>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
@@ -144,7 +144,7 @@
                                     :moduletype="moduleType.loop"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="回路数：" prop="loopnum">
-          <el-input type="text" v-model="operData.loopnum" placeholder="请输入回路数"/>
+          <el-input type="number" v-model="operData.loopnum" placeholder="请输入回路数"/>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
           <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
@@ -283,6 +283,12 @@
             },
             initLoop: function () {
                 this.findList(this.defaultPaging)
+                this.clearSearchParams();
+            },
+            clearSearchParams: function () {
+                Object.keys(this.searchParams).forEach(key => {
+                    this.searchParams[key] = '';
+                })
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {

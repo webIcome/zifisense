@@ -242,6 +242,12 @@
             },
             initUsers: function () {
                 this.getUsers(this.defaultPaging)
+                this.clearSearchParams();
+            },
+            clearSearchParams: function () {
+                Object.keys(this.searchParams).forEach(key => {
+                    this.searchParams[key] = '';
+                })
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;

@@ -6,19 +6,19 @@
         <label class="col-md-3 control-label">设备名称：</label>
         <div class="col-md-3 form-control-static">{{device.devicename}}</div>
         <label class="col-md-3 control-label">电压：</label>
-        <div class="col-md-3 form-control-static">{{device.voltage}}</div>
+        <div class="col-md-3 form-control-static">{{device.voltage}} V</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">设备ID：</label>
         <div class="col-md-3 form-control-static">{{device.sn}}</div>
         <label class="col-md-3 control-label">电流：</label>
-        <div class="col-md-3 form-control-static">{{device.current}}</div>
+        <div class="col-md-3 form-control-static">{{device.current}} A</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属组：</label>
         <div class="col-md-3 form-control-static">{{device.groupname}}</div>
         <label class="col-md-3 control-label">累计电能：</label>
-        <div class="col-md-3 form-control-static">{{device.sumpower || 0}} KWH</div>
+        <div class="col-md-3 form-control-static">{{device.sumpower || 0}} kW·h</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属回路控制器：</label>
@@ -46,7 +46,7 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">亮度值：</label>
-        <div class="col-md-3 form-control-static">{{device.brightness == 255? '控制异常' : device.brightness}}</div>
+        <div class="col-md-3 form-control-static">{{device.brightness == 255? '控制异常' : device.brightness + '%'}}</div>
         <label class="col-md-3 control-label">亮灯时长：</label>
         <div class="col-md-3 form-control-static">{{device.sumlighttime || 0}} 分钟</div>
       </div>
@@ -81,8 +81,8 @@
         <div class="col-md-3 form-control-static">{{device.volabratio}}</div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">电流转化倍率：</label>
-        <div class="col-md-3 form-control-static">{{device.volabratio}}</div>
+        <label class="col-md-3 control-label">归属路数：</label>
+        <div class="col-md-3 form-control-static">{{device.toloopnum}}</div>
         <label class="col-md-3 control-label">电流转化倍率：</label>
         <div class="col-md-3 form-control-static">{{device.curratio}}</div>
       </div>
@@ -143,8 +143,6 @@
       <div class="form-group">
         <label class="col-md-3 control-label">无感应RGB：</label>
         <div class="col-md-3 form-control-static">{{device.noinducedrgb}}</div>
-        <label class="col-md-3 control-label">归属路数：</label>
-        <div class="col-md-3 form-control-static">{{device.toloopnum}}</div>
       </div>
       <div class="text-center">
         <div @click="goBack" class="default-btn">返回</div>

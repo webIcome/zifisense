@@ -67,13 +67,13 @@
                                      :moduletype="moduleType.light"></select-strategy-component>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 3" label="亮度：">
-          <el-slider v-model="operData.brightness" show-input></el-slider>
+          <el-slider v-model="operData.brightness"></el-slider>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 7" label="RGB：" prop="rgb">
           <el-input type="color" v-model="operData.rgb"/>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 6" label="色温：" prop="colortemp">
-          <el-slider v-model="operData.colortemp" show-input>
+          <el-slider v-model="operData.colortemp">
           </el-slider>
         </el-form-item>
         <template v-if="operData.controltype == 8">
@@ -151,7 +151,7 @@
         </el-form-item>
         <template  v-if="operData.controltype == 16">
           <el-form-item label="有感应亮度：" prop="inducedbrightness">
-            <el-slider v-model="operData.inducedbrightness" show-input>
+            <el-slider v-model="operData.inducedbrightness">
             </el-slider>
           </el-form-item>
           <el-form-item label="无感应亮度：" prop="noinducedbrightness">
@@ -160,17 +160,17 @@
             </div>
             <div>
               <el-radio v-model="noinducedbrightness" :label='1'>亮度</el-radio>
-              <el-slider v-if="noinducedbrightness == 1" v-model="operData.noinducedbrightness" show-input></el-slider>
+              <el-slider v-if="noinducedbrightness == 1" v-model="operData.noinducedbrightness"></el-slider>
             </div>
           </el-form-item>
         </template>
         <template  v-if="operData.controltype == 17">
           <el-form-item label="有感应色温：" prop="inducedcolortemp">
-            <el-slider v-model="operData.inducedcolortemp" show-input>
+            <el-slider v-model="operData.inducedcolortemp">
             </el-slider>
           </el-form-item>
           <el-form-item label="无感应色温：" prop="noinducedcolortemp">
-            <el-slider v-model="operData.noinducedcolortemp" show-input>
+            <el-slider v-model="operData.noinducedcolortemp">
             </el-slider>
           </el-form-item>
         </template>

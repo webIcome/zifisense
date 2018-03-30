@@ -123,6 +123,11 @@
                 this.selectDataList = [];
                 this.selectedList = [];
                 this.$emit('input', '');
+            },
+            moduletype: function () {
+                this.selectDataList = [];
+                this.selectedList = [];
+                this.$emit('input', '');
             }
         },
         methods: {

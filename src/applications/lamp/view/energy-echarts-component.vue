@@ -114,6 +114,13 @@
            /* excelUrl: function () {
                 return this.getUrl(Config.LAMP_URL_API, 'consumption/getExcelList', this.searchParams)
             }*/
+           unit: function () {
+               let unit = 'kW·h';
+               if (this.searchParams.moduletype == 2) {
+                   unit = 'W·h'
+               }
+               return unit;
+           }
         },
         mounted: function () {
             this.initData();
@@ -139,6 +146,9 @@
                     yAxis: {
                         splitLine: {
                             show: false
+                        },
+                        axisLabel: {
+                            formatter: '{value} ' + this.unit
                         }
                     },
                     series: this.series

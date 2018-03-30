@@ -9,29 +9,29 @@
                       placeholder="输入策略名称" clearable></el-input>
           </div>
           <div class="form-group">
-            <label>有效时间起：</label>
-            <el-date-picker style="width: 180px" v-model="searchParams.validitystartST" type="date"
-                            placeholder="选择时间"></el-date-picker>
-            到
-
-            <el-date-picker style="width: 180px" v-model="searchParams.validitystartED" type="date"
-                            placeholder="选择时间"></el-date-picker>
-          </div>
-          <div class="form-group">
-            <label>有效时间止：</label>
-            <el-date-picker style="width: 180px" v-model="searchParams.validityendST" type="date"
-                            placeholder="选择时间"></el-date-picker>
-            到
-
-            <el-date-picker style="width: 180px" v-model="searchParams.validityendED" type="date"
-                            placeholder="选择时间"></el-date-picker>
-          </div>
-          <div class="form-group">
             <label>策略类别：</label>
             <el-select v-model="searchParams.moduletype" placeholder="选择策略类别" clearable>
               <el-option v-for="status in deviceType" :key="status.value" :value="status.value"
                          :label="status.text"></el-option>
             </el-select>
+          </div>
+          <div class="form-group">
+            <label>有效时间起：</label>
+            <el-date-picker style="width: 240px" v-model="searchParams.validitystartST" type="datetime"
+                            placeholder="选择时间"></el-date-picker>
+            到
+
+            <el-date-picker style="width: 240px" v-model="searchParams.validitystartED" type="datetime"
+                            placeholder="选择时间"></el-date-picker>
+          </div>
+          <div class="form-group">
+            <label>有效时间止：</label>
+            <el-date-picker style="width: 240px" v-model="searchParams.validityendST" type="datetime"
+                            placeholder="选择时间"></el-date-picker>
+            到
+
+            <el-date-picker style="width: 240px" v-model="searchParams.validityendED" type="datetime"
+                            placeholder="选择时间"></el-date-picker>
           </div>
           <div @click="search" class="form-group default-btn"><span class="quick-search-icon default-icon"></span>快速筛选
 
@@ -134,7 +134,7 @@
             <el-radio v-model="operData.taskcmd" label="lightAdjust">调节亮度</el-radio>
             <div style="position: absolute; width: 300px; right: 0; top: 5px">
               <el-slider :disabled="operData.taskcmd != 'lightAdjust'" v-model="operData.brightness"
-                         show-input></el-slider>
+                         ></el-slider>
             </div>
           </div>
           <div>
@@ -144,7 +144,7 @@
             <el-radio v-model="operData.taskcmd" label="colorTempAdjust">调节色温</el-radio>
             <div style="position: absolute; width: 300px; right: 0; top: 5px">
               <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
-                         show-input></el-slider>
+                         ></el-slider>
             </div>
           </div>
           <div style="position: relative">
@@ -236,7 +236,7 @@
             <el-radio v-model="operData.taskcmd" label="lightAdjust">调节亮度</el-radio>
             <div style="position: absolute; width: 300px; right: 0; top: 5px">
               <el-slider :disabled="operData.taskcmd != 'lightAdjust'" v-model="operData.brightness"
-                         show-input></el-slider>
+                         ></el-slider>
             </div>
           </div>
           <div>
@@ -246,7 +246,7 @@
             <el-radio v-model="operData.taskcmd" label="colorTempAdjust">调节色温</el-radio>
             <div style="position: absolute; width: 300px; right: 0; top: 5px">
               <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
-                         show-input></el-slider>
+                         ></el-slider>
             </div>
           </div>
           <div style="position: relative">
@@ -417,6 +417,7 @@
             },
             initPaging: function () {
                 this.findList(this.defaultPaging)
+                this.clearSearchParams()
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {
@@ -425,6 +426,11 @@
             },
             initOperData: function () {
 //                this.operData = this.$common.copyObj(LampContent);
+            },
+            clearSearchParams: function () {
+                Object.keys(this.searchParams).forEach(key => {
+                    this.searchParams[key] = '';
+                })
             },
             changeModuletype: function () {
                 if (this.operData.taskcmd) this.operData.taskcmd = '';

@@ -4,8 +4,8 @@
       <div class="search pull-left">
         <form class="form-inline default-form">
           <div class="form-group">
-            <label class="sr-only">设备名称：</label>
-            <el-input type="text" v-model="searchParams.areaname" placeholder="输入设备名称" clearable></el-input>
+            <label class="sr-only">区域名称：</label>
+            <el-input type="text" v-model="searchParams.areaname" placeholder="输入区域名称" clearable></el-input>
           </div>
           <div class="form-group">
             <label class="sr-only">类型：</label>
@@ -234,6 +234,12 @@
             },
             initList: function () {
                 this.findList(this.defaultPaging)
+                this.clearSearchParams();
+            },
+            clearSearchParams: function () {
+                Object.keys(this.searchParams).forEach(key => {
+                    this.searchParams[key] = '';
+                })
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {

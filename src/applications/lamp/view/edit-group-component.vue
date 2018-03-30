@@ -86,6 +86,9 @@
               if (newVal) this.getSelectedList();
           }
       },
+      created: function () {
+          this.initData();
+      },
       methods: {
           initData: function () {
               CommonConstant.deviceType.forEach(item => {
