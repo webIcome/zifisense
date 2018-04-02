@@ -72,7 +72,7 @@
         <el-button type="primary" @click="editCompany('editCompany')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="创建企业" :visible.sync="addCompanyDialogVisible" center :width="'600px'">
+    <el-dialog title="创建企业" :visible.sync="addCompanyDialogVisible" center :width="'600px'" @close="clearValidate('addCompany')">
       <el-form label-width="140px" :model="addCompanyData" :rules="addCompanyRoules" ref="addCompany" class="el-form-default">
         <el-form-item label="上级企业：" prop="parentid">
           <tree-select-component v-model="addCompanyData.parentid" :list="companies"></tree-select-component>
@@ -108,7 +108,7 @@
         <el-button type="primary" @click="editPost('editPost')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="创建岗位" :visible.sync="addPostDialogVisible" center :width="'600px'">
+    <el-dialog title="创建岗位" :visible.sync="addPostDialogVisible" center :width="'600px'" @close="clearValidate('addPost')">
       <el-form label-width="140px" :model="operPost" :rules="editPostRoules" ref="addPost" class="el-form-default">
         <el-form-item label="名称：" prop="postname">
           <el-input :span="12" v-model="operPost.postname" placeholder="请输入名称"></el-input>
@@ -528,6 +528,9 @@
             resetData: function () {
                 this.operCompany = this.$common.copyObj(ContentCompany);
                 this.operPost = this.$common.copyObj(ContentPost)
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
             }
         },
         watch: {

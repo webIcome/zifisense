@@ -65,7 +65,7 @@
     </div>
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-    <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'">
+    <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'"  @close="clearValidate('addGroup')">
       <el-form label-width="100px" :model="addGroupData" :rules="Rules"  ref="addGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
           <el-input type="text" v-model="addGroupData.groupname" placeholder="输入名称"></el-input>
@@ -97,7 +97,7 @@
         <el-button type="primary" @click="addGroup('addGroup')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'">
+    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'" @close="clearValidate('editGroup')">
       <el-form label-width="100px" :model="editGroupData" :rules="Rules"  ref="editGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
           <el-input type="text" v-model="editGroupData.groupname" placeholder="输入名称"></el-input>
@@ -362,6 +362,9 @@
                 this.repealGroupData = {};
                 this.issueGroupData = {};
             },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
+            }
         }
     }
 </script>

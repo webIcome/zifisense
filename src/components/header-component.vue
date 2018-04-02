@@ -16,7 +16,7 @@
       <div @click="goToHome" v-if="!isHome" class="go-home"><i class="home-icon"></i>返回主页
       </div>
     </div>
-    <el-dialog title="修改密码" :visible.sync="dialogVisible" center :width="'600px'">
+    <el-dialog title="修改密码" :visible.sync="dialogVisible" center :width="'600px'" @close="clearValidate('controlDevice')">
       <el-form label-width="140px" :model="password" ref="controlDevice" :rules="Rules" class="el-form-default">
         <el-form-item label="当前密码：" prop="oldpwd">
           <el-input type="password" v-model="password.oldpwd" placeholder="请输入当前密码"></el-input>
@@ -119,6 +119,9 @@
             },
             dropdown: function () {
                 $('.personal-center').dropdown()
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
             }
         },
         mounted: function () {

@@ -82,7 +82,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="创建灯控器" :visible.sync="addDeviceDialogVisible" center :width="'600px'">
+    <el-dialog title="创建灯控器" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @close="clearValidate('addDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
         <el-form-item label="设备名称：" prop="devicename">
           <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
@@ -137,7 +137,7 @@
         <el-button type="primary" @click="addDevice('addDevice')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑灯控器" :visible.sync="editDeviceDialogVisible" center :width="'600px'">
+    <el-dialog title="编辑灯控器" :visible.sync="editDeviceDialogVisible" center :width="'600px'" @close="clearValidate('editDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="editDevice" class="el-form-default">
         <el-form-item label="设备名称：" prop="devicename">
           <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
@@ -509,8 +509,10 @@
             resetData: function () {
                 this.operData = this.$common.copyObj(ContentLamp);
                 this.showSelectedLoopName = '';
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
             }
-
         }
     }
 </script>

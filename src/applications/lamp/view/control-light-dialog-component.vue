@@ -147,7 +147,7 @@
           <el-radio v-model="operData.enablesensor" :label='2'>无效</el-radio>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 15 && operData.enablesensor == 1" label="感应保持状态时间：" prop="inducedkeeptime">
-          <el-input type="text" v-model.number="operData.inducedkeeptime"></el-input>
+          <el-input type="text" v-model.trim.number="operData.inducedkeeptime"></el-input>
         </el-form-item>
         <template  v-if="operData.controltype == 16">
           <el-form-item label="有感应亮度：" prop="inducedbrightness">

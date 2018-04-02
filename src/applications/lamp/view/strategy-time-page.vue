@@ -72,9 +72,9 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="时序控制-新建" :visible.sync="addStrategyDialogVisible" center :width="'650px'">
+    <el-dialog title="时序控制-新建" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="clearValidate('addStrategy')">
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="addStrategyRules"
-               class="el-form-default">
+               class="el-form-default" :validate-on-rule-change="false">
         <el-form-item label="策略名称：" prop="strategyname">
           <el-input type="text" v-model="operData.strategyname" placeholder="输入名称"></el-input>
         </el-form-item>
@@ -174,7 +174,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="时序控制-编辑" :visible.sync="editStrategyDialogVisible" center :width="'650px'">
+    <el-dialog title="时序控制-编辑" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="clearValidate('editStrategy')">
       <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="addStrategyRules"
                class="el-form-default">
         <el-form-item label="策略名称：" prop="strategyname">
@@ -370,7 +370,7 @@
                 switch (this.operData.periodtype) {
                     case this.period.single:
                         rules.singlextime = [
-                            {required: true, message: '请选择时间'}
+                            {validator: dateValidatePass, required: true}
                         ];
                         break;
                     case this.period.day:
@@ -380,7 +380,7 @@
                         break;
                     case this.period.week:
                         rules.periodextime = [
-                            {validator: dateValidatePass}
+                            {validator: dateValidatePass, required: true}
                         ];
                         rules.weeknumber = [
                             {required: true, message: '请选择时间'}
@@ -544,6 +544,9 @@
             resetData: function () {
                 this.operData = {};
                 this.operLoopData = {};
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
             }
 
         }

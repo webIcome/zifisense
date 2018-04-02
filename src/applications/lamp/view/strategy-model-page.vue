@@ -42,7 +42,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="新建情景" :visible.sync="addStrategyDialogVisible" center :width="'650px'">
+    <el-dialog title="新建情景" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="clearValidate('addStrategy')">
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
           <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
@@ -63,7 +63,7 @@
         <el-button type="primary" @click="addStrategy('addStrategy')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'">
+    <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="clearValidate('editStrategy')">
       <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
           <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
@@ -85,7 +85,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'650px'">
+    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'650px'" @close="clearGroupValidate('editGroup')">
       <template v-for="(groupItem,index) in editGroupData">
         <el-form label-width="120px" :model="groupItem" ref="editGroup" :rules="groupRules" class="el-form-default">
           <el-form-item label="应用组：" prop="objectid">
@@ -387,6 +387,14 @@
                 } else {
                     this.$refs.editStrategy.validateField('groups');
                 }
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
+            },
+            clearGroupValidate: function (formName) {
+                this.$refs[formName].forEach(item => {
+                    item.clearValidate();
+                })
             }
 
         }

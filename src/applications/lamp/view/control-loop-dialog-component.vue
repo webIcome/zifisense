@@ -1,8 +1,8 @@
 <template>
   <div class="icon-item">
     <span @click="dialogControlDevice" class="set-icon"></span>
-    <el-dialog title="控制回路控制器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
-      <el-form label-width="170px" :model="operData" :rules="Rules"  ref="controlDevice" class="el-form-default">
+    <el-dialog title="控制回路控制器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'" @close="clearValidate('controlDevice')">
+      <el-form label-width="170px" :model="operData" :rules="Rules"  ref="controlDevice" class="el-form-default" :validate-on-rule-change="false">
         <el-form-item label="指令选择：" prop="controltype">
           <div>
             <el-radio v-model="operData.controltype" :label="1">开关</el-radio>
@@ -158,7 +158,10 @@
                 }).join();
             },
             deleteLoop: function (index) {
-                this.selectedLoops.splice(index, 1)
+                this.selectedLoops.splice(index, 1);
+                this.operData.loop = this.selectedLoops.map(item => {
+                    return item.number;
+                }).join();
             },
             hideModal: function () {
                 this.controlDeviceDialogVisible = false;
@@ -169,6 +172,9 @@
                     strategyid: '',
                     controltype: 1,
                 };
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
             }
 
         }

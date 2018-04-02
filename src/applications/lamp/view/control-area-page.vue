@@ -59,7 +59,7 @@
     </div>
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-    <el-dialog title="创建区域" :visible.sync="addAreaDialogVisible" center :width="'600px'">
+    <el-dialog title="创建区域" :visible.sync="addAreaDialogVisible" center :width="'600px'" @close="clearValidate('addArea')">
       <el-form label-width="100px" :model="addAreaData" :rules="Rules"  ref="addArea" class="el-form-default">
         <el-form-item label="名称：" prop="areaname">
           <el-input type="text" v-model="addAreaData.areaname" placeholder="输入名称"></el-input>
@@ -91,7 +91,7 @@
         <el-button type="primary" @click="addArea('addArea')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑区域" :visible.sync="editAreaDialogVisible" center :width="'600px'">
+    <el-dialog title="编辑区域" :visible.sync="editAreaDialogVisible" center :width="'600px'" @close="clearValidate('editArea')">
       <el-form label-width="100px" :model="editAreaData" :rules="Rules" ref="editArea" class="el-form-default">
         <el-form-item label="名称：" prop="areaname">
           <el-input type="text" v-model="editAreaData.areaname" placeholder="输入名称"></el-input>
@@ -353,6 +353,9 @@
                 this.repealAreaData = {};
                 this.issueAreaData = {};
                 this.deleteAreaData = {};
+            },
+            clearValidate: function (formName) {
+                this.$refs[formName].clearValidate();
             }
 
         }
