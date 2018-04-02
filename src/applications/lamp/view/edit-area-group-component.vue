@@ -2,7 +2,7 @@
   <el-row type="flex" justify="space-between">
     <el-col :span="18">{{deviceNumber}}个组</el-col>
     <el-button :disabled="!editable" :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-    <el-dialog title="编辑组" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
+    <el-dialog title="选择" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
       <el-transfer v-model="selectedList"
                    :titles="titles"
                    :data="list"
@@ -90,7 +90,13 @@
         watch: {
             run: function (newVal) {
                 if (newVal) this.getSelectedList();
-            }
+            },
+            moduletype: function (nuwVal, oldVal) {
+                if (this.run && oldVal) this.getSelectedList();
+            },
+            companyid: function (nuwVal, oldVal) {
+                if (this.run && oldVal) this.getSelectedList();
+            },
         },
         methods: {
             initData: function () {
@@ -120,15 +126,22 @@
                 });
             },
             getSelectedList: function () {
-                this.selectedList = [];
-                if (!this.areaid) return;
+                if (!this.areaid) {
+                    this.initSelectDataList();
+                    return;
+                }
                 Services.getSelectedDevicesAreaList({companyid: this.companyid, moduletype: this.moduletype, objectid: this.areaid}).then(data => {
                     this.selectDataList = data;
-                    this.selectDataList.forEach(item => {
-                        this.selectedList.push(item.objectid);
-                    });
+                    this.initSelectDataList();
                     this.$emit('input', this.selectedList.join());
                 })
+            },
+            initSelectDataList: function () {
+                this.selectedList = [];
+                this.selectDataList.forEach(item => {
+                    this.selectedList.push(item.objectid);
+                });
+                this.$emit('input', this.selectedList.join());
             },
             selectDevice: function () {
                 this.$emit('input', this.selectedList.join());

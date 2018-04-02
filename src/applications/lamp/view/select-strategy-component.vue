@@ -7,7 +7,7 @@
         <el-form-item prop="strategyname">
           <el-input type="text" v-model="searchParams.strategyname" placeholder="输入策略名称"></el-input>
         </el-form-item>
-        <el-button type="primary" @click="findList" icon="el-icon-search">筛选</el-button>
+        <el-button type="primary" @click="search" icon="el-icon-search">筛选</el-button>
       </el-form>
       <div>
         <el-table ref="singleTable" :data="list" border class="table" @row-click="select" highlight-current-row>
@@ -62,6 +62,9 @@
             },
             pagingEvent: function (pageNumber) {
                 this.searchParams.pageNum = pageNumber;
+                this.findList(this.searchParams);
+            },
+            search: function () {
                 this.findList(this.searchParams);
             },
             findList: function (params) {

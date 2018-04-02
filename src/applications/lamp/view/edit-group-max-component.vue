@@ -2,7 +2,7 @@
   <el-row type="flex" justify="space-between">
     <el-col :span="18">{{deviceNumber}}个组</el-col>
     <el-button :disabled="!editable" :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
-    <el-dialog title="编辑组" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
+    <el-dialog title="选择" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
       <el-transfer v-model="selectedList"
                    :titles="titles"
                    :data="list"
@@ -84,6 +84,9 @@
         watch: {
             value: function (newVal) {
                 if (newVal && this.run) this.getSelectedList();
+            },
+            companyid: function (newVal, oldVal) {
+                if (this.run && oldVal) this.initSelectedDataList();
             }
         },
         methods: {
@@ -134,6 +137,14 @@
                 this.selectDataList.forEach(item => {
                     this.selectedList.push(item.objectid);
                 });
+            },
+            initSelectedDataList: function () {
+                this.selectDataList = [];
+                this.selectedList = [];
+                this.selectDataList.forEach(item => {
+                    this.selectedList.push(item.objectid);
+                });
+                this.selectDevice();
             },
             getGroups: function (id, name) {
                 let ids = id.split(',');

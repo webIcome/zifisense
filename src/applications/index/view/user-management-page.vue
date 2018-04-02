@@ -53,7 +53,7 @@
         </tbody>
       </table>
     </div>
-    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
+    <paging-component v-if="pagingParams.pages" :pageNumber="pagingParams.pageNum" :pages="pagingParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
     <el-dialog title="创建账号" :visible.sync="addUserDialogVisible" center :width="'600px'" @close="clearValidate('addUser')">
       <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="addUser" class="el-form-default">
@@ -211,6 +211,7 @@
                     loginname: '',
                     postname: ''
                 },
+                pagingParams: {},
                 advancedSearchParams: {
                     postid: '',
                     companyid: '',
@@ -250,14 +251,14 @@
                 })
             },
             pagingEvent: function (pageNumber) {
-                this.searchParams.pageNum = pageNumber;
-                this.getUsers(this.searchParams);
+                this.pagingParams.pageNum = pageNumber;
+                this.getUsers(this.pagingParams);
             },
             getUsers: function (params) {
                 this.$http.get(RestfulConstant.USER + '/' + RestfulConstant.GET_LIST, {params: params}).then(res => {
-                    this.searchParams.pageNum = res.body.data.pageNum;
-                    this.searchParams.pages = res.body.data.pages;
-                    this.searchParams.pageSize = res.body.data.pageSize;
+                    this.pagingParams.pageNum = res.body.data.pageNum;
+                    this.pagingParams.pages = res.body.data.pages;
+                    this.pagingParams.pageSize = res.body.data.pageSize;
                     this.users = this.transformTime(res.body.data.list);
                 })
             },
@@ -281,10 +282,12 @@
                 this.highSearchDialogVisible = true;
             },
             search: function () {
-                this.getUsers(Object.assign(this.searchParams, this.defaultPaging));
+                this.pagingParams = {};
+                this.getUsers(Object.assign(this.pagingParams, this.searchParams, this.defaultPaging));
             },
             highSearch: function () {
-                this.getUsers(Object.assign(this.advancedSearchParams, this.defaultPaging));
+                this.pagingParams = {};
+                this.getUsers(Object.assign(this.pagingParams, this.advancedSearchParams, this.defaultPaging));
                 this.closeMode()
             },
             dialogAddUser: function () {

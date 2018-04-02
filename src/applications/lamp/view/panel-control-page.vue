@@ -56,7 +56,7 @@
         </tbody>
       </table>
     </div>
-    <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
+    <paging-component v-if="pagingParams.pages" :pageNumber="pagingParams.pageNum" :pages="pagingParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
     <el-dialog title="创建控制面版" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @close="clearValidate('addDevice')">
@@ -182,6 +182,7 @@
                     sn: '',
                     companyid: '',
                 },
+                pagingParams: {},
                 advancedSearchParams: {
                     devicename: '',
                     sn: '',
@@ -256,14 +257,14 @@
                 this.vendor = CommonConstant.vendor;
             },
             pagingEvent: function (pageNumber) {
-                this.searchParams.pageNum = pageNumber;
-                this.findList(this.searchParams);
+                this.pagingParams.pageNum = pageNumber;
+                this.findList(this.pagingParams);
             },
             findList: function (params) {
                 Services.findPanelList(params).then(data => {
-                    this.searchParams.pageNum = data.pageNum;
-                    this.searchParams.pages = data.pages;
-                    this.searchParams.pageSize = data.pageSize;
+                    this.pagingParams.pageNum = data.pageNum;
+                    this.pagingParams.pages = data.pages;
+                    this.pagingParams.pageSize = data.pageSize;
                     this.list = data.list;
                 });
             },
@@ -274,10 +275,12 @@
                 this.showPage(this.pages.search)
             },
             search: function () {
-                this.findList(Object.assign(this.searchParams, this.defaultPaging));
+                this.pagingParams = {};
+                this.findList(Object.assign(this.pagingParams, this.searchParams, this.defaultPaging));
             },
             highSearch: function (searchParams) {
-                this.findList(Object.assign(searchParams, this.defaultPaging));
+                this.pagingParams = {};
+                this.findList(Object.assign(this.pagingParams, searchParams, this.defaultPaging));
                 this.goBack();
             },
             goBack: function () {

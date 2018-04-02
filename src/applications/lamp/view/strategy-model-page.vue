@@ -85,7 +85,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'650px'" @close="clearGroupValidate('editGroup')">
+    <el-dialog title="选择" :visible.sync="editGroupDialogVisible" center :width="'650px'" @close="clearGroupValidate('editGroup')">
       <template v-for="(groupItem,index) in editGroupData">
         <el-form label-width="120px" :model="groupItem" ref="editGroup" :rules="groupRules" class="el-form-default">
           <el-form-item label="应用组：" prop="objectid">
