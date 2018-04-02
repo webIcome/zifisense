@@ -67,13 +67,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="登录名：" prop="loginname">
-          <el-input v-model="operUser.loginname" placeholder="请输入登录名"></el-input>
+          <el-input v-model.trim="operUser.loginname" placeholder="请输入登录名"></el-input>
         </el-form-item>
         <el-form-item label="姓名：" prop="username">
-          <el-input v-model="operUser.username" placeholder="请输入姓名"></el-input>
+          <el-input v-model.trim="operUser.username" placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item label="电子邮箱：" prop="email">
-          <el-input :span="12" v-model="operUser.email" placeholder="请输入邮箱"></el-input>
+          <el-input :span="12" v-model.trim="operUser.email" placeholder="请输入邮箱"></el-input>
         </el-form-item>
         <el-form-item label="有效期至：" prop="expiretime">
           <el-date-picker v-model="operUser.expiretime" type="datetime" placeholder="选择日期"
@@ -97,13 +97,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="登录名：" prop="loginname">
-          <el-input v-model="operUser.loginname" placeholder="请输入登录名"></el-input>
+          <el-input v-model.trim="operUser.loginname" placeholder="请输入登录名"></el-input>
         </el-form-item>
         <el-form-item label="姓名：" prop="username">
-          <el-input v-model="operUser.username" placeholder="请输入姓名"></el-input>
+          <el-input v-model.trim="operUser.username" placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item label="电子邮箱：" prop="email">
-          <el-input :span="12" v-model="operUser.email" placeholder="请输入邮箱"></el-input>
+          <el-input :span="12" v-model.trim="operUser.email" placeholder="请输入邮箱"></el-input>
         </el-form-item>
         <el-form-item label="有效期至：" prop="expiretime">
           <el-date-picker v-model="operUser.expiretime" type="datetime" placeholder="选择日期"

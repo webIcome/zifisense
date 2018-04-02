@@ -50,12 +50,6 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label">DI口状态：</label>
-        <div class="col-md-3">
-          <el-select v-model="advancedSearchParams.diportstate" placeholder="选择DI口状态" clearable  style="width: 100%;">
-            <el-option v-for="type in diPortStatus" :key="type.value" :value="type.value" :label="type.text"></el-option>
-          </el-select>
-        </div>
         <label class="col-md-3 control-label">归属企业：</label>
         <div class="col-md-3">
           <tree-select-component v-model="advancedSearchParams.companyid" :list="companies"></tree-select-component>

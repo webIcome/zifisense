@@ -62,10 +62,10 @@
     <el-dialog title="创建控制面版" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @close="clearValidate('addDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
         <el-form-item label="设备名称：" prop="devicename">
-          <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
+          <el-input v-model.trim="operData.devicename" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="设备ID：" prop="sn">
-          <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
+          <el-input type="text" v-model.trim="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
@@ -79,7 +79,7 @@
                                     :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
-          <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
+          <el-input type="text" v-model.trim="operData.position" placeholder="请输入地理位置"/>
         </el-form-item>
         <el-form-item label="归属厂商：" prop="vendor">
           <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">
@@ -94,10 +94,10 @@
     <el-dialog title="编辑控制面版" :visible.sync="editDeviceDialogVisible" center :width="'600px'" @close="clearValidate('editDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="editDevice" class="el-form-default">
         <el-form-item label="设备名称：" prop="devicename">
-          <el-input v-model="operData.devicename" placeholder="请输入名称"></el-input>
+          <el-input v-model.trim="operData.devicename" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="设备ID：" prop="sn">
-          <el-input type="text" v-model="operData.sn" placeholder="请输入设备ID"/>
+          <el-input type="text" v-model.trim="operData.sn" placeholder="请输入设备ID"/>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
@@ -111,7 +111,7 @@
                                     :moduletype="moduleType.panel"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="地理位置：" prop="position">
-          <el-input type="text" v-model="operData.position" placeholder="请输入地理位置"/>
+          <el-input type="text" v-model.trim="operData.position" placeholder="请输入地理位置"/>
         </el-form-item>
         <el-form-item label="归属厂商：" prop="vendor">
           <el-select v-model="operData.vendor" placeholder="选择归属厂商" clearable  style="width: 100%;">

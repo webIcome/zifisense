@@ -19,13 +19,13 @@
     <el-dialog title="修改密码" :visible.sync="dialogVisible" center :width="'600px'" @close="clearValidate('controlDevice')">
       <el-form label-width="140px" :model="password" ref="controlDevice" :rules="Rules" class="el-form-default">
         <el-form-item label="当前密码：" prop="oldpwd">
-          <el-input type="password" v-model="password.oldpwd" placeholder="请输入当前密码"></el-input>
+          <el-input type="password" v-model.trim="password.oldpwd" placeholder="请输入当前密码"></el-input>
         </el-form-item>
         <el-form-item label="新密码：" prop="newpwd">
-          <el-input type="password" v-model="password.newpwd" placeholder="请输入当前密码"></el-input>
+          <el-input type="password" v-model.trim="password.newpwd" placeholder="请输入当前密码"></el-input>
         </el-form-item>
         <el-form-item label="确认新密码：" prop="secondNew">
-          <el-input type="password" v-model="password.secondNew" placeholder="请输入当前密码"></el-input>
+          <el-input type="password" v-model.trim="password.secondNew" placeholder="请输入当前密码"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

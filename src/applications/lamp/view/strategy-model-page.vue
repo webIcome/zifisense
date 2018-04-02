@@ -45,7 +45,7 @@
     <el-dialog title="新建情景" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="clearValidate('addStrategy')">
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
-          <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
+          <el-input type="text" v-model.trim="operData.scenarioname" placeholder="输入情景名称"></el-input>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
@@ -66,7 +66,7 @@
     <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="clearValidate('editStrategy')">
       <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
-          <el-input type="text" v-model="operData.scenarioname" placeholder="输入情景名称"></el-input>
+          <el-input type="text" v-model.trim="operData.scenarioname" placeholder="输入情景名称"></el-input>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>

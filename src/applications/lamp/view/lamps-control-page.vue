@@ -69,19 +69,19 @@
     <el-dialog title="创建灯具类型" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @close="clearValidate('addDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
         <el-form-item label="灯具型号：" prop="modelnum">
-          <el-input v-model="operData.modelnum" placeholder="请输入灯具型号"></el-input>
+          <el-input v-model.trim="operData.modelnum" placeholder="请输入灯具型号"></el-input>
         </el-form-item>
         <el-form-item label="灯具寿命：" prop="lifetime">
-          <el-input type="text" v-model="operData.lifetime" placeholder="请输入灯具寿命"/>
+          <el-input type="text" v-model.trim="operData.lifetime" placeholder="请输入灯具寿命"/>
         </el-form-item>
         <el-form-item label="灯具功率：" prop="power">
-          <el-input type="text" v-model="operData.power" placeholder="请输入灯具功率"/>
+          <el-input type="text" v-model.trim="operData.power" placeholder="请输入灯具功率"/>
         </el-form-item>
         <el-form-item label="额定电流：" prop="ratedcurrent">
-          <el-input type="text" v-model="operData.ratedcurrent" placeholder="请输入额定电流"/>
+          <el-input type="text" v-model.trim="operData.ratedcurrent" placeholder="请输入额定电流"/>
         </el-form-item>
         <el-form-item label="额定电压：" prop="ratedvoltage">
-          <el-input type="text" v-model="operData.ratedvoltage" placeholder="请输入额定电压"/>
+          <el-input type="text" v-model.trim="operData.ratedvoltage" placeholder="请输入额定电压"/>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>
@@ -104,19 +104,19 @@
     <el-dialog title="编辑灯具" :visible.sync="editDeviceDialogVisible" center :width="'600px'" @close="clearValidate('editDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="editDevice" class="el-form-default">
         <el-form-item label="灯具型号：" prop="modelnum">
-          <el-input v-model="operData.modelnum" placeholder="请输入灯具型号"></el-input>
+          <el-input v-model.trim="operData.modelnum" placeholder="请输入灯具型号"></el-input>
         </el-form-item>
         <el-form-item label="灯具寿命：" prop="lifetime">
-          <el-input type="text" v-model="operData.lifetime" placeholder="请输入灯具寿命"/>
+          <el-input type="text" v-model.trim="operData.lifetime" placeholder="请输入灯具寿命"/>
         </el-form-item>
         <el-form-item label="灯具功率：" prop="power">
-          <el-input type="text" v-model="operData.power" placeholder="请输入灯具功率"/>
+          <el-input type="text" v-model.trim="operData.power" placeholder="请输入灯具功率"/>
         </el-form-item>
         <el-form-item label="额定电流：" prop="ratedcurrent">
-          <el-input type="text" v-model="operData.ratedcurrent" placeholder="请输入额定电流"/>
+          <el-input type="text" v-model.trim="operData.ratedcurrent" placeholder="请输入额定电流"/>
         </el-form-item>
         <el-form-item label="额定电压：" prop="ratedvoltage">
-          <el-input type="text" v-model="operData.ratedvoltage" placeholder="请输入额定电压"/>
+          <el-input type="text" v-model.trim="operData.ratedvoltage" placeholder="请输入额定电压"/>
         </el-form-item>
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operData.companyid" :list="companies"></tree-select-component>

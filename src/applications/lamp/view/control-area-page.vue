@@ -62,7 +62,7 @@
     <el-dialog title="创建区域" :visible.sync="addAreaDialogVisible" center :width="'600px'" @close="clearValidate('addArea')">
       <el-form label-width="100px" :model="addAreaData" :rules="Rules"  ref="addArea" class="el-form-default">
         <el-form-item label="名称：" prop="areaname">
-          <el-input type="text" v-model="addAreaData.areaname" placeholder="输入名称"></el-input>
+          <el-input type="text" v-model.trim="addAreaData.areaname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="addAreaData.companyid" :list="companies"></tree-select-component>
@@ -94,7 +94,7 @@
     <el-dialog title="编辑区域" :visible.sync="editAreaDialogVisible" center :width="'600px'" @close="clearValidate('editArea')">
       <el-form label-width="100px" :model="editAreaData" :rules="Rules" ref="editArea" class="el-form-default">
         <el-form-item label="名称：" prop="areaname">
-          <el-input type="text" v-model="editAreaData.areaname" placeholder="输入名称"></el-input>
+          <el-input type="text" v-model.trim="editAreaData.areaname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="editAreaData.companyid" :list="companies"></tree-select-component>

@@ -1,62 +1,40 @@
 <template>
   <div class="icon-item">
     <span @click="dialogControlDevice" class="set-icon"></span>
-    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'650px'">
+    <el-dialog title="控制灯控器" :visible.sync="controlDeviceDialogVisible" center :width="'1000px'">
       <el-form label-width="220px" :model="operData" ref="controlDevice" :rules="Rules" class="el-form-default">
         <el-form-item label="指令选择：" prop="controltype">
-          <div>
-            <el-radio v-model="operData.controltype" :label='1'>开灯</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='2'>关灯</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" :label='3'>调节亮度</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='4'>状态读取</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" :label='5'>下发策略</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" :label='6'>调节色温</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.controltype" label=7>调节RGB</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='8'>故障阈值设置</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='9'>故障阈值查询</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='10'>故障使能</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='11'>故障使能查询</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='12'>电参数上报周期设置</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='13'>电能累计清零</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='14'>亮灯时长累计清零</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='15'>传感器使能</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='16'>感应亮度设置</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='17'>感应色温设置</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.controltype" :label='18'>感应RGB设置</el-radio>
+          <div style="white-space: normal">
+            <el-row>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='1'>开灯</el-radio></el-col>
+              <el-col :span="8"> <el-radio v-model="operData.controltype" :label='2'>关灯</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='3'>调节亮度</el-radio></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='4'>状态读取</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='5'>下发策略</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='6'>调节色温</el-radio></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8"><el-radio v-model="operData.controltype" label=7>调节RGB</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='8'>故障阈值设置</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='9'>故障阈值查询</el-radio></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8"> <el-radio v-model="operData.controltype" :label='10'>故障使能</el-radio></el-col>
+              <el-col :span="8"> <el-radio v-model="operData.controltype" :label='11'>故障使能查询</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='12'>电参数上报周期设置</el-radio></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='13'>电能累计清零</el-radio></el-col>
+              <el-col :span="8"> <el-radio v-model="operData.controltype" :label='14'>亮灯时长累计清零</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='15'>传感器使能</el-radio></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='16'>感应亮度设置</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='17'>感应色温设置</el-radio></el-col>
+              <el-col :span="8"><el-radio v-model="operData.controltype" :label='18'>感应RGB设置</el-radio></el-col>
+            </el-row>
           </div>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 5" label="策略：" prop="strategyid">
@@ -70,74 +48,126 @@
           <el-slider v-model="operData.brightness"></el-slider>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 7" label="RGB：" prop="rgb">
-          <el-input type="color" v-model="operData.rgb"/>
+          <el-input style="width: 200px" type="color" v-model="operData.rgb"/>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 6" label="色温：" prop="colortemp">
           <el-slider v-model="operData.colortemp">
           </el-slider>
         </el-form-item>
         <template v-if="operData.controltype == 8">
-          <el-form-item label="电源额定电流：" prop="supplycurrent">
-            <el-input type="text" v-model.number="operData.supplycurrent"></el-input>
-          </el-form-item>
-          <el-form-item label="灯具额定电流：" prop="lampcurrent">
-            <el-input type="text" v-model.number="operData.lampcurrent"></el-input>
-          </el-form-item>
-          <el-form-item label="灯具额定电压：" prop="lampvol">
-            <el-input type="text" v-model.number="operData.lampvol"></el-input>
-          </el-form-item>
-          <el-form-item label="电源功率因素：" prop="powerfactor">
-            <el-input type="text" v-model.number="operData.powerfactor"></el-input>
-          </el-form-item>
-          <el-form-item label="电压转化倍率：" prop="voltageratio">
-            <el-input type="text" v-model.number="operData.voltageratio"></el-input>
-          </el-form-item>
-          <el-form-item label="电压异常比例：" prop="volabratio">
-            <el-input type="text" v-model.number="operData.volabratio"></el-input>
-          </el-form-item>
-          <el-form-item label="电流转化倍率：" prop="curratio">
-            <el-input type="text" v-model.number="operData.curratio"></el-input>
-          </el-form-item>
-          <el-form-item label="电流异常比例：" prop="curabratio">
-            <el-input type="text" v-model.number="operData.curabratio"></el-input>
-          </el-form-item>
-          <el-form-item label="温度告警阈值：" prop="tempthres">
-            <el-input type="text" v-model.number="operData.tempthres"></el-input>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="电源额定电流：" prop="supplycurrent">
+                <el-input type="text" v-model.number="operData.supplycurrent"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="灯具额定电流：" prop="lampcurrent">
+                <el-input type="text" v-model.number="operData.lampcurrent"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="灯具额定电压：" prop="lampvol">
+                <el-input type="text" v-model.number="operData.lampvol"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="电源功率因素：" prop="powerfactor">
+                <el-input type="text" v-model.number="operData.powerfactor"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="电压转化倍率：" prop="voltageratio">
+                <el-input type="text" v-model.number="operData.voltageratio"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="电压异常比例：" prop="volabratio">
+                <el-input type="text" v-model.number="operData.volabratio"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="电流转化倍率：" prop="curratio">
+                <el-input type="text" v-model.number="operData.curratio"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="电流异常比例：" prop="curabratio">
+                <el-input type="text" v-model.number="operData.curabratio"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="温度告警阈值：" prop="tempthres">
+                <el-input type="text" v-model.number="operData.tempthres"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </template>
         <template v-if="operData.controltype == 10">
-          <el-form-item label="灯具故障检测开启标志：" prop="lampfault">
-            <el-radio v-model="operData.lampfault" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.lampfault" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="电源故障检测开启标志：" prop="supplyfault">
-            <el-radio v-model="operData.supplyfault" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.supplyfault" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="功率故障检测开启标志：" prop="powerfactorfault">
-            <el-radio v-model="operData.powerfactorfault" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.powerfactorfault" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="过压检测开启标志：" prop="overvoltage">
-            <el-radio v-model="operData.overvoltage" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.overvoltage" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="欠压检测开启标志：" prop="undervoltage">
-            <el-radio v-model="operData.undervoltage" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.undervoltage" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="过流检测开启标志：" prop="overcurrent">
-            <el-radio v-model="operData.overcurrent" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.overcurrent" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="欠流检测开启标志：" prop="undercurrent">
-            <el-radio v-model="operData.undercurrent" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.undercurrent" :label='2'>关闭</el-radio>
-          </el-form-item>
-          <el-form-item label="温度异常检测开启标志：" prop="tempfault">
-            <el-radio v-model="operData.tempfault" :label='1'>开启</el-radio>
-            <el-radio v-model="operData.tempfault" :label='2'>关闭</el-radio>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="灯具故障检测开启标志：" prop="lampfault">
+                <el-radio v-model="operData.lampfault" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.lampfault" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="电源故障检测开启标志：" prop="supplyfault">
+                <el-radio v-model="operData.supplyfault" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.supplyfault" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="功率故障检测开启标志：" prop="powerfactorfault">
+                <el-radio v-model="operData.powerfactorfault" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.powerfactorfault" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="过压检测开启标志：" prop="overvoltage">
+                <el-radio v-model="operData.overvoltage" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.overvoltage" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="欠压检测开启标志：" prop="undervoltage">
+                <el-radio v-model="operData.undervoltage" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.undervoltage" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="过流检测开启标志：" prop="overcurrent">
+                <el-radio v-model="operData.overcurrent" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.overcurrent" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="欠流检测开启标志：" prop="undercurrent">
+                <el-radio v-model="operData.undercurrent" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.undercurrent" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="温度异常检测开启标志：" prop="tempfault">
+                <el-radio v-model="operData.tempfault" :label='1'>开启</el-radio>
+                <el-radio v-model="operData.tempfault" :label='2'>关闭</el-radio>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </template>
         <el-form-item v-if="operData.controltype == 12" label="电参数上报周期：" prop="elecuploadperiod">
           <el-input style="width: 200px" type="text" v-model.number="operData.elecuploadperiod"></el-input> H
@@ -176,10 +206,10 @@
         </template>
         <template  v-if="operData.controltype == 18">
           <el-form-item label="有感应rgb：" prop="inducedrgb">
-            <el-input type="color" v-model.number="operData.inducedrgb"></el-input>
+            <el-input style="width: 200px" type="color" v-model.number="operData.inducedrgb"></el-input>
           </el-form-item>
           <el-form-item label="无感应rgb：" prop="noinducedrgb">
-            <el-input type="color" v-model.number="operData.noinducedrgb"></el-input>
+            <el-input style="width: 200px" type="color" v-model.number="operData.noinducedrgb"></el-input>
           </el-form-item>
         </template>
       </el-form>
@@ -279,7 +309,7 @@
                         break;
                     case 10:
                         rules.lampfault = [
-                            {required: true, message: '请选择灯具故障检测开启标志'}
+                            {required: true, message: '请选择灯具故障检测开启标志', trigger: 'change'}
                         ];
                         rules.supplyfault = [
                             {required: true, message: '请选择电源故障检测开启标志'}

@@ -18,19 +18,9 @@
           </div>
           <div>
             <el-radio v-model="operData.controltype" :label="5">下发策略</el-radio>
-            <el-form-item v-if="operData.controltype == 5" style="display: inline-block"  prop="strategyid">
-              <select-strategy-component v-model="operData.strategyid"
-                                         :strategyName="operData.strategyname"
-                                         :companyId="device.companyid"
-                                         @strategyname="operData.strategyname = arguments[0]"
-                                         :moduletype="moduleType.loop"></select-strategy-component>
-            </el-form-item>
           </div>
           <div>
             <el-radio v-model="operData.controltype" :label="6">设置心跳包周期</el-radio>
-            <el-form-item v-if="operData.controltype == 6" style="display: inline-block; width: 100px;margin-left: 10px"  prop="heartperiod">
-              <el-input type="text" v-model.number="operData.heartperiod"></el-input> 分钟
-            </el-form-item>
           </div>
         </el-form-item>
         <el-form-item v-if="operData.controltype == 1" label="控制回路：" prop="loop">
@@ -48,6 +38,16 @@
             <el-button type="primary" @click="addLoop">添加回路</el-button>
           </div>
         </el-form-item>
+        <el-form-item v-if="operData.controltype == 5" label="选择策略"  prop="strategyid">
+          <select-strategy-component v-model="operData.strategyid"
+                                     :strategyName="operData.strategyname"
+                                     :companyId="device.companyid"
+                                     @strategyname="operData.strategyname = arguments[0]"
+                                     :moduletype="moduleType.loop"></select-strategy-component>
+        </el-form-item>
+        <el-form-item v-if="operData.controltype == 6" label="输入心跳包周期" prop="heartperiod">
+          <el-input style="width: 200px" type="text" v-model.trim.number="operData.heartperiod"></el-input> 分钟
+            </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="controlDevice('controlDevice')">确 定</el-button>

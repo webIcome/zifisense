@@ -68,7 +68,7 @@
     <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'"  @close="clearValidate('addGroup')">
       <el-form label-width="100px" :model="addGroupData" :rules="Rules"  ref="addGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
-          <el-input type="text" v-model="addGroupData.groupname" placeholder="输入名称"></el-input>
+          <el-input type="text" v-model.trim="addGroupData.groupname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="addGroupData.companyid" :list="companies"></tree-select-component>
@@ -100,7 +100,7 @@
     <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'" @close="clearValidate('editGroup')">
       <el-form label-width="100px" :model="editGroupData" :rules="Rules"  ref="editGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
-          <el-input type="text" v-model="editGroupData.groupname" placeholder="输入名称"></el-input>
+          <el-input type="text" v-model.trim="editGroupData.groupname" placeholder="输入名称"></el-input>
         </el-form-item>
         <el-form-item label="企业：" prop="companyid">
           <tree-select-component v-model="editGroupData.companyid" :list="companies"></tree-select-component>
