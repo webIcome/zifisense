@@ -33,8 +33,11 @@ let plugins = []
 Object.keys(entries).forEach(function(name) {
     // 每个页面生成一个html
     let filename = path.resolve(__dirname, `../dist/${name.split('/')[0]}/index.html`);
-    if (name.split('/')[0] == 'index') filename = path.resolve(__dirname, `../dist/index.html`);
-    if (process.env.NODE_ENV == 'production') filename = path.resolve(__dirname, `../dist/${name.split('/')[0]}.html`)
+    if (name.split('/')[0] == 'index') {
+        filename = path.resolve(__dirname, `../dist/index.html`);
+    }  /*else if (process.env.NODE_ENV == 'production') {
+        filename = path.resolve(__dirname, `../dist/${name.split('/')[0]}/index.html`)
+    }*/
     var plugin = new HtmlWebpackPlugin({
         filename: filename,
         template: './index.html',

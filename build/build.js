@@ -15,6 +15,23 @@ const archiver = require('archiver')
 
 const spinner = ora('building for production...')
 spinner.start()
+webpackConfig.module.rules.push({
+    test: /\.(png|jpg|gif|svg)$/,
+    use: [   // 推荐这样配置
+        {
+            loader: 'image-webpack-loader',
+            query: {
+                progressive: true,
+                optimizationLevel: 7,
+                interlaced: false,
+                pngquant: {
+                    quality: '65-90',
+                    speed: 4
+                }
+            }
+        }
+    ]
+})
 
 webpackConfig.plugins.push(new webpack.ProgressPlugin(function (percentage, msg) {
     if (percentage === 1) {
