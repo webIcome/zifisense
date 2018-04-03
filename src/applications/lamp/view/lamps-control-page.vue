@@ -66,7 +66,7 @@
     <paging-component v-if="pagingParams.pages" :pageNumber="pagingParams.pageNum" :pages="pagingParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="创建灯具类型" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @close="clearValidate('addDevice')">
+    <el-dialog title="创建灯具类型" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @open="clearValidate('addDevice')" @close="resetData">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
         <el-form-item label="灯具型号：" prop="modelnum">
           <el-input v-model.trim="operData.modelnum" placeholder="请输入灯具型号"></el-input>
@@ -101,7 +101,7 @@
         <el-button type="primary" @click="addDevice('addDevice')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑灯具" :visible.sync="editDeviceDialogVisible" center :width="'600px'" @close="clearValidate('editDevice')">
+    <el-dialog title="编辑灯具" :visible.sync="editDeviceDialogVisible" center :width="'600px'" @open="clearValidate('editDevice')" @close="resetData">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="editDevice" class="el-form-default">
         <el-form-item label="灯具型号：" prop="modelnum">
           <el-input v-model.trim="operData.modelnum" placeholder="请输入灯具型号"></el-input>
@@ -298,11 +298,9 @@
                 this.currentPage = page;
             },
             dialogAddDevice: function () {
-                this.resetData();
                 this.addDeviceDialogVisible = true;
             },
             dialogEditDevice: function (device) {
-                this.resetData();
                 this.operData = device;
                 this.editDeviceDialogVisible = true;
             },
@@ -346,7 +344,7 @@
                 this.operData = this.$common.copyObj(ContentLamps);
             },
             clearValidate: function (formName) {
-                this.$refs[formName].clearValidate();
+                if (this.$refs[formName]) this.$refs[formName].clearValidate();
             }
         }
     }

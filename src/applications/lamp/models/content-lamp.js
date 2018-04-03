@@ -18,7 +18,7 @@ export const Lamp ={
     loopcontrollerSn: '',
     groupid: '',
     vendor: '',
-    lampTypeID: 1,
+    lampTypeID: '',
     toloopnum: '',
     lampType: ''
 };

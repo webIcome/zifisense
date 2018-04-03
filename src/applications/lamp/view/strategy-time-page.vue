@@ -72,7 +72,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="时序控制-新建" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="clearValidate('addStrategy')">
+    <el-dialog title="时序控制-新建" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="resetData" @open="clearValidate('addStrategy')">
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="addStrategyRules"
                class="el-form-default" :validate-on-rule-change="false">
         <el-form-item label="策略名称：" prop="strategyname">
@@ -124,49 +124,53 @@
           <el-input style="width: 200px" v-model.number="operData.intervaltime"></el-input> 分钟
         </el-form-item>
         <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
-          <div>
-            <el-radio v-model="operData.taskcmd" label="lightOn">开灯</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="lightOff">关灯</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.taskcmd" label="lightAdjust">调节亮度</el-radio>
-            <div style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-slider :disabled="operData.taskcmd != 'lightAdjust'" v-model="operData.brightness"
-                         ></el-slider>
+          <el-radio-group v-model="operData.taskcmd" style="font-size: inherit; display: inherit; line-height: inherit">
+            <div>
+              <el-radio label="lightOn">开灯</el-radio>
             </div>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="lightSate">状态读取</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.taskcmd" label="colorTempAdjust">调节色温</el-radio>
-            <div style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
-                         ></el-slider>
+            <div>
+              <el-radio label="lightOff">关灯</el-radio>
             </div>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.taskcmd" label="rgbAdjust">调节RGB</el-radio>
-            <div style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-input :disabled="operData.taskcmd != 'rgbAdjust'" type="color" v-model="operData.rgb"/>
+            <div style="position: relative">
+              <el-radio label="lightAdjust">调节亮度</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-slider :disabled="operData.taskcmd != 'lightAdjust'" v-model="operData.brightness"
+                ></el-slider>
+              </div>
             </div>
-          </div>
+            <div>
+              <el-radio label="lightSate">状态读取</el-radio>
+            </div>
+            <div style="position: relative">
+              <el-radio label="colorTempAdjust">调节色温</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
+                ></el-slider>
+              </div>
+            </div>
+            <div style="position: relative">
+              <el-radio v-model="operData.taskcmd" label="rgbAdjust">调节RGB</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-input :disabled="operData.taskcmd != 'rgbAdjust'" type="color" v-model="operData.rgb"/>
+              </div>
+            </div>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="执行功能：" v-else prop="taskcmd">
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryOn">开线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryOff">关线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryState">状态读取</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryMeter">读取电表</el-radio>
-          </div>
+          <el-radio-group v-model="operData.taskcmd" style="font-size: inherit; display: inherit; line-height: inherit">
+            <div>
+              <el-radio label="circuitryOn">开线路</el-radio>
+            </div>
+            <div>
+              <el-radio label="circuitryOff">关线路</el-radio>
+            </div>
+            <div>
+              <el-radio label="circuitryState">状态读取</el-radio>
+            </div>
+            <div>
+              <el-radio label="circuitryMeter">读取电表</el-radio>
+            </div>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -174,7 +178,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="时序控制-编辑" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="clearValidate('editStrategy')">
+    <el-dialog title="时序控制-编辑" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="resetData" @open="clearValidate('editStrategy')">
       <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="addStrategyRules"
                class="el-form-default">
         <el-form-item label="策略名称：" prop="strategyname">
@@ -226,49 +230,53 @@
           <el-input type="text" style="width: 200px" v-model.number="operData.intervaltime"></el-input> 分钟
         </el-form-item>
         <el-form-item label="执行功能：" v-if="operData.moduletype==1" prop="taskcmd">
-          <div>
-            <el-radio v-model="operData.taskcmd" label="lightOn">开灯</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="lightOff">关灯</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.taskcmd" label="lightAdjust">调节亮度</el-radio>
-            <div style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-slider :disabled="operData.taskcmd != 'lightAdjust'" v-model="operData.brightness"
-                         ></el-slider>
+          <el-radio-group v-model="operData.taskcmd" style="font-size: inherit; display: inherit; line-height: inherit">
+            <div>
+              <el-radio label="lightOn">开灯</el-radio>
             </div>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="lightSate">状态读取</el-radio>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.taskcmd" label="colorTempAdjust">调节色温</el-radio>
-            <div style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
-                         ></el-slider>
+            <div>
+              <el-radio label="lightOff">关灯</el-radio>
             </div>
-          </div>
-          <div style="position: relative">
-            <el-radio v-model="operData.taskcmd" label="rgbAdjust">调节RGB</el-radio>
-            <div style="position: absolute; width: 300px; right: 0; top: 5px">
-              <el-input :disabled="operData.taskcmd != 'rgbAdjust'" type="color" v-model="operData.rgb"/>
+            <div style="position: relative">
+              <el-radio label="lightAdjust">调节亮度</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-slider :disabled="operData.taskcmd != 'lightAdjust'" v-model="operData.brightness"
+                ></el-slider>
+              </div>
             </div>
-          </div>
+            <div>
+              <el-radio label="lightSate">状态读取</el-radio>
+            </div>
+            <div style="position: relative">
+              <el-radio label="colorTempAdjust">调节色温</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-slider :disabled="operData.taskcmd != 'colorTempAdjust'" v-model="operData.colortemp"
+                ></el-slider>
+              </div>
+            </div>
+            <div style="position: relative">
+              <el-radio v-model="operData.taskcmd" label="rgbAdjust">调节RGB</el-radio>
+              <div style="position: absolute; width: 300px; right: 0; top: 5px">
+                <el-input :disabled="operData.taskcmd != 'rgbAdjust'" type="color" v-model="operData.rgb"/>
+              </div>
+            </div>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="执行功能：" v-else prop="taskcmd">
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryOn">开线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryOff">关线路</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryState">状态读取</el-radio>
-          </div>
-          <div>
-            <el-radio v-model="operData.taskcmd" label="circuitryMeter">读取电表</el-radio>
-          </div>
+          <el-radio-group v-model="operData.taskcmd" style="font-size: inherit; display: inherit; line-height: inherit">
+            <div>
+              <el-radio label="circuitryOn">开线路</el-radio>
+            </div>
+            <div>
+              <el-radio label="circuitryOff">关线路</el-radio>
+            </div>
+            <div>
+              <el-radio label="circuitryState">状态读取</el-radio>
+            </div>
+            <div>
+              <el-radio label="circuitryMeter">读取电表</el-radio>
+            </div>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -364,7 +372,7 @@
                         {required: true, message: '请选择执行频率'}
                     ],
                     taskcmd: [
-                        {required: true, message: '请选择执行功能'}
+                        {required: true, message: '请选择执行功能', trigger: 'change'}
                     ],
                 };
                 switch (this.operData.periodtype) {
@@ -454,11 +462,9 @@
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
             dialogAddStrategy: function () {
-                this.resetData();
                 this.addStrategyDialogVisible = true;
             },
             dialogEditStrategy: function (item) {
-                this.resetData();
                 this.getStrategyDetail(item.objectid).then(data => {
                     if (data.rgb) data.rgb = this.$common.rgbColor(data.rgb);
                     this.operData = data;
@@ -546,7 +552,7 @@
                 this.operLoopData = {};
             },
             clearValidate: function (formName) {
-                this.$refs[formName].clearValidate();
+                if (this.$refs[formName]) this.$refs[formName].clearValidate();
             }
 
         }

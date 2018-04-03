@@ -29,8 +29,8 @@
         <tbody>
         <tr v-for="item in list">
           <td>{{item.scenarioname}}</td>
-          <td>{{item.groupname}}</td>
-          <td style="max-width: 500px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.analysistask">{{item.analysistask}}</td>
+          <td style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.groupname">{{item.groupname}}</td>
+          <td style="max-width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="item.analysistask">{{item.analysistask}}</td>
           <td class="td-btns">
             <div class="icon-item"><span @click="dialogEditStrategy(item)" class="edit-icon"></span></div>
             <div class="icon-item"><span @click="dialogDeleteStrategy(item)" class="delete-icon"></span></div>
@@ -42,7 +42,7 @@
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="新建情景" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="clearValidate('addStrategy')">
+    <el-dialog title="新建情景" :visible.sync="addStrategyDialogVisible" center :width="'650px'" @close="resetData" @open="clearValidate('addStrategy')">
       <el-form label-width="120px" :model="operData" ref="addStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
           <el-input type="text" v-model.trim="operData.scenarioname" placeholder="输入情景名称"></el-input>
@@ -63,7 +63,7 @@
         <el-button type="primary" @click="addStrategy('addStrategy')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="clearValidate('editStrategy')">
+    <el-dialog title="编辑情景" :visible.sync="editStrategyDialogVisible" center :width="'650px'" @close="resetData" @open="clearValidate('editStrategy')">
       <el-form label-width="120px" :model="operData" ref="editStrategy" :rules="operDataRules" class="el-form-default">
         <el-form-item label="情景名称：" prop="scenarioname">
           <el-input type="text" v-model.trim="operData.scenarioname" placeholder="输入情景名称"></el-input>
@@ -85,7 +85,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="选择" :visible.sync="editGroupDialogVisible" center :width="'650px'" @close="clearGroupValidate('editGroup')">
+    <el-dialog title="选择" :visible.sync="editGroupDialogVisible" center :width="'650px'" @open="clearGroupValidate('editGroup')">
       <template v-for="(groupItem,index) in editGroupData">
         <el-form label-width="120px" :model="groupItem" ref="editGroup" :rules="groupRules" class="el-form-default">
           <el-form-item label="应用组：" prop="objectid">
@@ -176,7 +176,7 @@
                 operData: {},
                 group: [],
                 strategy: [{}],
-                editGroupData: [{}],
+                editGroupData: [],
                 list: [],
                 companies: [],
                 sensorType: [
@@ -223,7 +223,7 @@
             },
             initOperData: function () {
                 this.operData = {};
-                this.operData.groups = [{}];
+                this.operData.groups = [];
             },
             initCompanies: function () {
                 this.$globalCache.companies.then(companies => {
@@ -281,6 +281,9 @@
                 data.groups.forEach(item => {
                     groupsId.push(item.objectid);
                     let task = item.task;
+                    if (!item.brightness) {
+                        item.brightness = 0
+                    }
                     if (task == 3) {
                         task = task + "|" + item.brightness;
                     }
@@ -298,11 +301,9 @@
                 return operData;
             },
             dialogAddStrategy: function () {
-                this.resetData();
                 this.addStrategyDialogVisible = true;
             },
             dialogEditStrategy: function (strategy) {
-                this.resetData();
                 this.operData = this.transformDataToUse(strategy);
                 this.editStrategyDialogVisible = true;
 //                this.validateGroups();
@@ -314,7 +315,7 @@
             },
             dialogEditGroup: function () {
                 this.resetEditGroupData();
-                if (this.operData.groups.length > 0) {
+                if (this.operData.groups.length > 0 && this.operData.groups[0]) {
                     this.editGroupData = this.operData.groups;
                 } else {
                 }
@@ -389,10 +390,10 @@
                 }
             },
             clearValidate: function (formName) {
-                this.$refs[formName].clearValidate();
+                if (this.$refs[formName]) this.$refs[formName].clearValidate();
             },
             clearGroupValidate: function (formName) {
-                this.$refs[formName].forEach(item => {
+                if (this.$refs[formName]) this.$refs[formName].forEach(item => {
                     item.clearValidate();
                 })
             }

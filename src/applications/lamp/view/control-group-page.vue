@@ -65,7 +65,7 @@
     </div>
     <paging-component v-if="searchParams.pages" :pageNumber="searchParams.pageNum" :pages="searchParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-    <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'"  @close="clearValidate('addGroup')">
+    <el-dialog title="创建组" :visible.sync="addGroupDialogVisible" center :width="'600px'" @close="resetData"  @open="clearValidate('addGroup')">
       <el-form label-width="100px" :model="addGroupData" :rules="Rules"  ref="addGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
           <el-input type="text" v-model.trim="addGroupData.groupname" placeholder="输入名称"></el-input>
@@ -80,7 +80,6 @@
         </el-form-item>
         <el-form-item label="设备：" prop="deviceid">
           <edit-group-component v-model="addGroupData.deviceid"
-                                :groupid="addGroupData.objectid"
                                 :run="addGroupDialogVisible"
                                 :moduletype="addGroupData.moduletype"
                                 :companyid="addGroupData.companyid"></edit-group-component>
@@ -97,7 +96,7 @@
         <el-button type="primary" @click="addGroup('addGroup')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'" @close="clearValidate('editGroup')">
+    <el-dialog title="编辑组" :visible.sync="editGroupDialogVisible" center :width="'600px'" @close="resetData" @open="clearValidate('editGroup')">
       <el-form label-width="100px" :model="editGroupData" :rules="Rules"  ref="editGroup" class="el-form-default">
         <el-form-item label="名称：" prop="groupname">
           <el-input type="text" v-model.trim="editGroupData.groupname" placeholder="输入名称"></el-input>
@@ -205,10 +204,24 @@
                     pageSize: Config.DEFAULT_PAGE_SIZE,
                     pageNum: 1
                 },
+                Rules: {
+                    groupname: [
+                        {required: true, message: '请输入名称'}
+                    ],
+                    companyid: [
+                        {required: true, message: '请选择企业'}
+                    ],
+                    moduletype: [
+                        {required: true, message: '请选择类型'}
+                    ],
+                    deviceid: [
+                        {required: true, message: '请选择设备'}
+                    ],
+                }
             }
         },
         computed: {
-            Rules: function() {
+            /*Rules: function() {
                 let rules = {
                         groupname: [
                             {required: true, message: '请输入名称'}
@@ -223,14 +236,14 @@
                             {required: true, message: '请选择设备'}
                         ],
                     };
-               /* if ((this.addGroupDialogVisible && this.addGroupData.moduletype != this.moduleType.panel)||
+               /!* if ((this.addGroupDialogVisible && this.addGroupData.moduletype != this.moduleType.panel)||
                     (this.editGroupDialogVisible && this.editGroupData.moduletype != this.moduleType.panel)) {
                     rules.strategyid = [
                         {required: true, message: '请选择策略'}
                     ]
-                }*/
+                }*!/
                 return rules;
-            },
+            },*/
         },
         created: function () {
             this.initData()
@@ -281,11 +294,9 @@
                 this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
             dialogAddGroup: function () {
-                this.resetData();
                 this.addGroupDialogVisible = true;
             },
             dialogEditGroup: function (item) {
-                this.resetData();
                 this.editGroupData = {
                     objectid: item.objectid,
                     companyid: item.companyid,
@@ -297,17 +308,14 @@
                 this.editGroupDialogVisible = true;
             },
             dialogRepealGroup: function (item) {
-                this.resetData();
                 this.repealGroupData = item;
                 this.repealGroupDialogVisible = true;
             },
             dialogIssueGroup: function (item) {
-                this.resetData();
                 this.issueGroupData = item;
                 this.issueGroupDialogVisible = true;
             },
             dialogDeleteGroup: function (item) {
-                this.resetData();
                 this.deleteGroupData = item;
                 this.deleteGroupDialogVisible = true;
             },
@@ -363,7 +371,7 @@
                 this.issueGroupData = {};
             },
             clearValidate: function (formName) {
-                this.$refs[formName].clearValidate();
+                if (this.$refs[formName]) this.$refs[formName].clearValidate();
             }
         }
     }

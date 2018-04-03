@@ -65,7 +65,7 @@
                 this.findList(this.searchParams);
             },
             search: function () {
-                this.findList(this.searchParams);
+                this.findList(Object.assign(this.searchParams, this.defaultPaging));
             },
             findList: function (params) {
                 Services.findStrategy(params).then(data => {

@@ -82,7 +82,7 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">归属路数：</label>
-        <div class="col-md-3 form-control-static">{{device.toloopnum}}</div>
+        <div class="col-md-3 form-control-static">{{device.toloopnum  == 0? '无': device.toloopnum}}</div>
         <label class="col-md-3 control-label">电流转化倍率：</label>
         <div class="col-md-3 form-control-static">{{device.curratio}}</div>
       </div>

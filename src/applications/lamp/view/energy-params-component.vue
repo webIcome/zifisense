@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form label-width="210px" :model="searchParams" :rules="Rules" ref="search" class="el-form-default"
-             style="padding: 0 200px;">
+             style="padding: 0 200px;" :validate-on-rule-change="false">
       <el-form-item label="请选择设备类型：" prop="moduletype">
         <el-radio v-model="searchParams.moduletype" :label="1">灯控器</el-radio>
         <el-radio v-model="searchParams.moduletype" :label="2">回路控制器</el-radio>

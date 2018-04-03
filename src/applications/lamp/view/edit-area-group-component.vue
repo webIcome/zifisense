@@ -1,6 +1,7 @@
 <template>
   <el-row type="flex" justify="space-between">
     <el-col :span="18">{{deviceNumber}}个组</el-col>
+    <el-input v-model="value" v-show="false"></el-input>
     <el-button :disabled="!editable" :span="6" type="primary" icon="el-icon-edit-outline" @click="dialogEditDevice">编辑</el-button>
     <el-dialog title="选择" :visible.sync="dialogVisible" center :width="'550px'"  append-to-body>
       <el-transfer v-model="selectedList"

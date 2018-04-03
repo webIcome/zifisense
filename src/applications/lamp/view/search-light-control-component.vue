@@ -20,7 +20,7 @@
         </div>
         <label class="col-md-3 control-label">电流/A：</label>
         <div class="col-md-3">
-          <el-input type="text" class="input-two" v-model="advancedSearchParams.currrentlow" placeholder="输入电流"/>到<el-input
+          <el-input type="text" class="input-two" v-model="advancedSearchParams.currentlow" placeholder="输入电流"/>到<el-input
             v-model="advancedSearchParams.currenthigh" type="text" class="input-two" placeholder="输入电流"/>
         </div>
       </div>

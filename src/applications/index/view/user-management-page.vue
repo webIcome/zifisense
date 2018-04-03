@@ -55,7 +55,7 @@
     </div>
     <paging-component v-if="pagingParams.pages" :pageNumber="pagingParams.pageNum" :pages="pagingParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
-    <el-dialog title="创建账号" :visible.sync="addUserDialogVisible" center :width="'600px'" @close="clearValidate('addUser')">
+    <el-dialog title="创建账号" :visible.sync="addUserDialogVisible" center :width="'600px'" @close="resetData" @open="clearValidate('addUser')">
       <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="addUser" class="el-form-default">
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
@@ -84,7 +84,7 @@
         <el-button type="primary" @click="addUser('addUser')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑账号" :visible.sync="editUserDialogVisible" center :width="'600px'" @close="clearValidate('editUser')">
+    <el-dialog title="编辑账号" :visible.sync="editUserDialogVisible" center :width="'600px'" @close="resetData" @open="clearValidate('editUser')">
       <el-form label-width="140px" :model="operUser" :rules="addUserRoules" ref="editUser" class="el-form-default">
         <el-form-item label="归属企业：" prop="companyid">
           <tree-select-component v-model="operUser.companyid" :list="companies"></tree-select-component>
@@ -291,7 +291,6 @@
                 this.closeMode()
             },
             dialogAddUser: function () {
-                this.resetData();
                 this.addUserDialogVisible = true
             },
             addUser: function (formName) {
@@ -316,7 +315,6 @@
                 })
             },
             dialogEditUser: function (user) {
-                this.resetData();
                 this.operUser = user;
                 this.editUserDialogVisible = true;
             },
@@ -353,7 +351,7 @@
                 this.operUser = this.$common.copyObj(ContentUser);
             },
             clearValidate: function (formName) {
-                this.$refs[formName].clearValidate();
+                if (this.$refs[formName]) this.$refs[formName].clearValidate();
             }
         },
         computed: {
