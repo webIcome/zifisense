@@ -236,19 +236,19 @@ export default {
         });
     },
     controlPanelArea(body) {
-        return HttpClient.post('controlPanel/areaControl', body).then(res => {
+        return HttpClient.post('areaControl/controlPanel', body).then(res => {
             showSuccess(res);
             return res;
         })
     },
     controlLoopArea(body) {
-        return HttpClient.post('loopController/areaControl', body).then(res => {
+        return HttpClient.post('areaControl/loopController', body).then(res => {
             showSuccess(res);
             return res;
         })
     },
     controlLightArea(body) {
-        return HttpClient.post('lightController/areaControl', body).then(res => {
+        return HttpClient.post('areaControl/lightController', body).then(res => {
             showSuccess(res);
             return res;
         })

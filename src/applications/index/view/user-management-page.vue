@@ -153,13 +153,13 @@
         <el-form-item label="有效期：">
           <el-col :span="11">
             <el-form-item prop="expiretimelow">
-              <el-date-picker style="width: 100%" v-model="advancedSearchParams.expiretimelow" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker style="width: 100%" v-model="advancedSearchParams.expiretimelow" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col class="line text-center" :span="2">到</el-col>
           <el-col :span="11">
             <el-form-item prop="expiretimehigh">
-              <el-date-picker style="width: 100%" v-model="advancedSearchParams.expiretimehigh" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker style="width: 100%" v-model="advancedSearchParams.expiretimehigh" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-form-item>

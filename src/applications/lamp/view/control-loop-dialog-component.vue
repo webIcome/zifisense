@@ -126,6 +126,9 @@
                         let data = {};
                         data.deviceid = this.operData.deviceid;
                         data.controltype = this.operData.controltype;
+                        this.operData.loop = this.selectedLoops.map(item => {
+                            return item.number;
+                        }).join();
                         if (data.controltype == 4) {
                             data.strategyid = this.operData.strategyid;
                         } else if (data.controltype == 1) {
@@ -142,9 +145,14 @@
                                 this.hideModal();
                             });
 
-                        } else {
+                        } else if(this.device.groupname) {
                             data.groupid = this.device.objectid;
                             Services.controlLoopGroup(data).then(res => {
+                                this.hideModal();
+                            })
+                        } else if(this.device.areaname) {
+                            data.areaid = this.device.objectid;
+                            Services.controlLoopArea(data).then(res => {
                                 this.hideModal();
                             })
                         }
@@ -172,6 +180,7 @@
                     strategyid: '',
                     controltype: 1,
                 };
+                this.selectedLoops = []
             },
             clearValidate: function (formName) {
                 this.$refs[formName].clearValidate();

@@ -82,7 +82,7 @@
     <paging-component v-if="pagingParams.pages" :pageNumber="pagingParams.pageNum" :pages="pagingParams.pages"
                       @pagingEvent='pagingEvent'></paging-component>
 
-    <el-dialog title="创建灯控器" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @close="clearValidate('addDevice')">
+    <el-dialog title="创建灯控器" :visible.sync="addDeviceDialogVisible" center :width="'600px'" @open="clearValidate('addDevice')">
       <el-form label-width="170px" :model="operData" :rules="addDeviceRoules" ref="addDevice" class="el-form-default">
         <el-form-item label="设备名称：" prop="devicename">
           <el-input v-model.trim="operData.devicename" placeholder="请输入名称"></el-input>
@@ -102,8 +102,8 @@
                                     :moduletype="moduleType.light"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="归属回路控制器：" prop="loopcontrollersn">
-          <el-input :disabled="!operData.companyid" type="text" v-model="showSelectedLoopName" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
-          <el-input type="text"v-show="false" v-model="operData.loopcontrollersn"></el-input>
+          <el-input :disabled="!operData.companyid" type="text" v-model="operData.loopcontrollersn" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
+          <!--<el-input type="text"v-show="false" v-model="operData.loopcontrollersn"></el-input>-->
         </el-form-item>
         <el-form-item label="灯控器类型：" prop="lightControllerType">
           <el-select v-model="operData.lightControllerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
@@ -157,8 +157,8 @@
                                     :moduletype="moduleType.light"></edit-group-max-component>
         </el-form-item>
         <el-form-item label="归属回路控制器：" prop="loopcontrollersn">
-          <el-input type="text" v-model="showSelectedLoopName" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
-          <el-input type="text"v-show="false" v-model="operData.loopcontrollersn"></el-input>
+          <el-input type="text" v-model="operData.loopcontrollersn" placeholder="选择归属回路控制器" clearable @focus="dialogSelectLoop" @change="changeSelectLoop"></el-input>
+          <!--<el-input type="text"v-show="false" v-model="operData.loopcontrollersn"></el-input>-->
         </el-form-item>
         <el-form-item label="灯控器类型：" prop="lightControllerType">
           <el-select v-model="operData.lightControllerType" placeholder="选择灯控器类型" clearable  style="width: 100%;">
@@ -207,14 +207,12 @@
         <el-form-item prop="switchstate">
           <el-input type="text" v-model="searchLoopParams.devicename" placeholder="输入设备名称"></el-input>
         </el-form-item>
-        <el-form-item prop="deviceType">
-          <tree-select-component v-model="searchLoopParams.companyid" :list="companies"></tree-select-component>
-        </el-form-item>
         <el-button type="primary" @click="findLoopList" icon="el-icon-search">筛选</el-button>
       </el-form>
       <div>
         <el-table ref="singleTable" :data="loopList" border class="table" @current-change="selectLoop" highlight-current-row>
-          <el-table-column label="回路名称" prop="devicename" align="center"></el-table-column>
+          <el-table-column label="名称" prop="devicename" align="center"></el-table-column>
+          <el-table-column label="设备ID" prop="sn" align="center"></el-table-column>
           <el-table-column label="归属企业" prop="companyname" align="center"></el-table-column>
         </el-table>
         <paging-component v-if="searchLoopParams.pages" :pageNumber="searchLoopParams.pageNum" :pages="searchLoopParams.pages"
@@ -440,7 +438,7 @@
             },
             selectLoop: function (val) {
                 this.operData.loopcontrollersn = val.sn;
-                this.showSelectedLoopName = val.devicename;
+//                this.showSelectedLoopName = val.devicename;
                 this.selectLoopDialogVisible = false;
             },
             changeSelectLoop: function (val) {
@@ -461,15 +459,13 @@
                 });
             },
             dialogAddDevice: function () {
-                this.resetData();
                 this.addDeviceDialogVisible = true;
             },
             dialogEditDevice: function (device) {
-                this.resetData();
                 Services.getLight(device.deviceid).then(device => {
                     this.operData = device;
-                    this.showSelectedLoopName = device.devicename;
-                    this.showSelectedLampName = device.lampType
+//                    this.showSelectedLoopName = device.devicename;
+//                    this.showSelectedLampName = device.lampType
                 });
                 this.editDeviceDialogVisible = true;
             },
@@ -514,7 +510,8 @@
                 this.showSelectedLoopName = '';
             },
             clearValidate: function (formName) {
-                this.$refs[formName].clearValidate();
+                if (this.$refs[formName]) this.$refs[formName].clearValidate();
+                this.resetData();
             }
         }
     }

@@ -26,11 +26,11 @@
         <label class="col-md-3 control-label">接入时间：</label>
         <div class="col-md-3">
           <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="date" placeholder="请选择开始时间"></el-date-picker>
+            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimestart" type="datetime" placeholder="请选择开始时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
           </el-col>
           <el-col class="line text-center" :span="2" style="line-height: 40px">到</el-col>
           <el-col :span="11">
-            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="date" placeholder="请选择结束时间"></el-date-picker>
+            <el-date-picker style="width: 100%" v-model="advancedSearchParams.regtimeend" type="datetime" placeholder="请选择结束时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
           </el-col>
         </div>
         <label class="col-md-3 control-label">归属企业：</label>

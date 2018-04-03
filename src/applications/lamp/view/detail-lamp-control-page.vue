@@ -64,13 +64,13 @@
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">电源额定电流：</label>
-        <div class="col-md-3 form-control-static">{{device.supplycurrent}}</div>
+        <div class="col-md-3 form-control-static">{{device.supplycurrent}} A</div>
         <label class="col-md-3 control-label">灯具额定电流：</label>
-        <div class="col-md-3 form-control-static">{{device.lampcurrent}}</div>
+        <div class="col-md-3 form-control-static">{{device.lampcurrent}} A</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">灯具额定电压：</label>
-        <div class="col-md-3 form-control-static">{{device.lampvol}}</div>
+        <div class="col-md-3 form-control-static">{{device.lampvol}} V</div>
         <label class="col-md-3 control-label">电源功率因素：</label>
         <div class="col-md-3 form-control-static">{{device.powerfactor}}</div>
       </div>
@@ -120,7 +120,7 @@
         <label class="col-md-3 control-label">灯具类型名：</label>
         <div class="col-md-3 form-control-static">{{device.lampType}}</div>
         <label class="col-md-3 control-label">温度：</label>
-        <div class="col-md-3 form-control-static">{{device.temp}}</div>
+        <div class="col-md-3 form-control-static">{{device.temp}} ℃</div>
       </div>
       <div class="form-group">
         <label class="col-md-3 control-label">感应状态保持时间：</label>

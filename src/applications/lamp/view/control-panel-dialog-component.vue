@@ -117,9 +117,14 @@
                             Services.controlPanelSingle(this.operData).then(res => {
                                 this.hideModal();
                             });
-                        } else {
+                        } else if(this.device.groupname) {
                             this.operData.groupid = this.device.objectid;
                             Services.controlPanelGroup(this.operData).then(res => {
+                                this.hideModal();
+                            })
+                        }else if(this.device.areaname) {
+                            this.operData.areaid = this.device.objectid;
+                            Services.controlPanelArea(this.operData).then(res => {
                                 this.hideModal();
                             })
                         }

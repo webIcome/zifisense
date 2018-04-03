@@ -404,9 +404,14 @@
                                 this.hideModal();
                             });
 
-                        } else {
+                        } else if(this.device.groupname) {
                             data.groupid = this.device.objectid;
                             Services.controlLightGroup(data).then(res => {
+                                this.hideModal();
+                            })
+                        } else if(this.device.areaname) {
+                            data.areaid = this.device.objectid;
+                            Services.controlLightArea(data).then(res => {
                                 this.hideModal();
                             })
                         }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input :disabled="!companyId" type="text" v-model="modelnum" placeholder="选择灯具" @focus="dialogSelect" @change="changeSelect"></el-input>
+    <el-input :disabled="!companyId" type="text" v-model="modelnum" placeholder="选择灯具" @focus="dialogSelect" @change="changeSelect" clearable></el-input>
     <el-dialog title="选择灯具" :visible.sync="dialogVisible" center :width="'600px'"  append-to-body>
       <el-form :inline="true" label-width="170px" :model="searchParams">
         <el-form-item prop="switchstate">

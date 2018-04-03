@@ -4,7 +4,7 @@
     <el-dialog title="选择组" :visible.sync="dialogVisible" center :width="'600px'"  append-to-body>
       <el-form :inline="true" label-width="170px" :model="searchParams">
         <el-form-item prop="switchstate">
-          <el-input type="text" v-model="searchParams.groupname" placeholder="输入策略名称"></el-input>
+          <el-input type="text" v-model="searchParams.groupname" placeholder="输入组名称"></el-input>
         </el-form-item>
         <el-form-item prop="switchstate">
           <el-select v-model="searchParams.moduletype" placeholder="选择类型" clearable>
